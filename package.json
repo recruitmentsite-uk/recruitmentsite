@@ -35,7 +35,9 @@
     "ops:smoke": "node scripts/smoke-test-go-live.mjs",
     "ops:apply-templates": "node scripts/apply-supabase-email-templates.mjs",
     "ops:verify-admin-emails": "node scripts/verify-admin-emails.mjs",
-    "ops:seed-jobs": "node scripts/seed-demo-jobs.mjs"
+    "ops:seed-jobs": "node scripts/seed-demo-jobs.mjs",
+    "jobs:seed": "node scripts/bulk-seed-jobs.mjs",
+    "jobs:polish": "node scripts/polish-job-descriptions.mjs"
   },
   "devDependencies": {
     "@placeuk/shared": "workspace:*",

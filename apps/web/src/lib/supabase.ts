@@ -56,6 +56,7 @@ interface DbJobRow {
   application_count: number;
   published_at: string | null;
   expires_at: string | null;
+  compliance?: { employer_display?: string; source?: string } | null;
   employers?: { company_name: string } | { company_name: string }[];
 }
 
@@ -63,6 +64,7 @@ export function mapDbJob(row: DbJobRow, employerName?: string): JobListing {
   const emp = row.employers;
   const name =
     employerName ??
+    row.compliance?.employer_display ??
     (Array.isArray(emp) ? emp[0]?.company_name : emp?.company_name) ??
     "Employer";
 
@@ -101,31 +103,32 @@ export async function fetchJobsFromDb(filters?: {
   city?: string;
   q?: string;
 }): Promise<JobListing[] | null> {
-  const supabase = getSupabase();
+  const supabase = getSupabaseAdmin() ?? getSupabase();
   if (!supabase) return null;
 
   let query = supabase
     .from("jobs")
-    .select("*, employers(company_name)")
+    .select("*")
     .eq("status", "active")
     .order("featured", { ascending: false })
-    .order("published_at", { ascending: false });
+    .order("published_at", { ascending: false })
+    .limit(500);
 
   if (filters?.vertical) query = query.eq("vertical", filters.vertical);
   if (filters?.city) query = query.ilike("city", `%${filters.city}%`);
 
   const { data, error } = await query;
-  if (error || !data) return null;
+  if (error || !data?.length) return error ? null : [];
   return data.map((row) => mapDbJob(row as DbJobRow));
 }
 
 export async function fetchJobBySlug(slug: string): Promise<JobListing | null> {
-  const supabase = getSupabase();
+  const supabase = getSupabaseAdmin() ?? getSupabase();
   if (!supabase) return null;
 
   const { data, error } = await supabase
     .from("jobs")
-    .select("*, employers(company_name)")
+    .select("*")
     .eq("slug", slug)
     .eq("status", "active")
     .single();
