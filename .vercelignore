@@ -1,0 +1,17 @@
+node_modules
+.next
+dist
+.turbo
+data
+*.log
+.env*
+go-live-credentials.local.txt
+stripe-products.local.json
+.supabase-templates.json
+.cdp-*.txt
+.browse-tmp
+agent-tools
+terminals
+coverage
+**/.next
+**/node_modules

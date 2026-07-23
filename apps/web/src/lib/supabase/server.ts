@@ -1,10 +1,11 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { isUsableEnvValue, isValidHttpUrl } from "@/lib/env";
 
 export async function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
+  if (!isUsableEnvValue(url) || !isValidHttpUrl(url) || !isUsableEnvValue(key)) return null;
 
   const cookieStore = await cookies();
 

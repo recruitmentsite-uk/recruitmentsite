@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
 import { JsonLd } from "@/components/JsonLd";
 import { MarketingOnly } from "@/components/ConditionalShell";
-import { DEFAULT_SITE_URL } from "@/lib/site";
+import { DEFAULT_SITE_URL, getSiteUrl } from "@/lib/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_TAGLINE,
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? DEFAULT_SITE_URL),
+  metadataBase: new URL(getSiteUrl() || DEFAULT_SITE_URL),
   openGraph: {
     type: "website",
     locale: "en_GB",

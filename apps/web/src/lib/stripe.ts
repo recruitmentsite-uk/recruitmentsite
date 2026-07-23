@@ -7,7 +7,10 @@ export async function getStripe(): Promise<Stripe | null> {
   return new StripeSdk(key);
 }
 
+type CheckoutMode = "payment" | "subscription";
+
 export function checkoutCustomerParams(
+  mode: CheckoutMode,
   stripeCustomerId?: string | null,
   email?: string | null,
 ): Pick<Stripe.Checkout.SessionCreateParams, "customer" | "customer_email" | "customer_creation"> {
@@ -15,7 +18,10 @@ export function checkoutCustomerParams(
     return { customer: stripeCustomerId };
   }
   if (email) {
-    return { customer_email: email, customer_creation: "always" };
+    // customer_creation is only valid for one-time payment checkout sessions.
+    return mode === "payment"
+      ? { customer_email: email, customer_creation: "always" }
+      : { customer_email: email };
   }
-  return { customer_creation: "always" };
+  return mode === "payment" ? { customer_creation: "always" } : {};
 }

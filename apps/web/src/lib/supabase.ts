@@ -1,21 +1,36 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { JobListing, Vertical } from "@placeuk/shared";
+import { isUsableEnvValue, isValidHttpUrl } from "@/lib/env";
 
 let client: SupabaseClient | null = null;
 
-export function getSupabase(): SupabaseClient | null {
+function supabaseConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
-  if (!client) client = createClient(url, key);
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!isUsableEnvValue(url) || !isValidHttpUrl(url)) {
+    return null;
+  }
+
+  return {
+    url,
+    anonKey: isUsableEnvValue(anonKey) ? anonKey : null,
+    serviceKey: isUsableEnvValue(serviceKey) ? serviceKey : null,
+  };
+}
+
+export function getSupabase(): SupabaseClient | null {
+  const config = supabaseConfig();
+  if (!config?.anonKey) return null;
+  if (!client) client = createClient(config.url, config.anonKey);
   return client;
 }
 
 export function getSupabaseAdmin(): SupabaseClient | null {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return null;
-  return createClient(url, key);
+  const config = supabaseConfig();
+  if (!config?.serviceKey) return null;
+  return createClient(config.url, config.serviceKey);
 }
 
 interface DbJobRow {
