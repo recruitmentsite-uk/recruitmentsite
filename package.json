@@ -1,0 +1,50 @@
+{
+  "name": "placeuk",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Automated UK recruitment platform — compete with Reed, Hays, and Indeed without a large ops team",
+  "scripts": {
+    "dev": "pnpm --filter @placeuk/web dev",
+    "build": "pnpm --filter @placeuk/shared build && pnpm --filter @placeuk/web build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "db:push": "node scripts/supabase-push-schema.mjs",
+    "jobs:sync": "node scripts/sync-job-feeds.mjs",
+    "jobs:enrich": "node scripts/enrich-job-listings.mjs",
+    "match:run": "node scripts/run-candidate-matching.mjs",
+    "campaign:employers": "node scripts/outreach-employer-campaign.mjs",
+    "stripe:setup": "node scripts/setup-stripe-products.mjs",
+    "prospects:build": "node scripts/build-employer-prospects.mjs",
+    "prospects:enrich": "node scripts/enrich-prospect-emails.mjs",
+    "prospects:scrape": "node scripts/scrape-prospect-emails.mjs",
+    "prospects:competitors": "node scripts/enrich-competitor-boards.mjs",
+    "metrics:weekly": "node scripts/weekly-metrics.mjs",
+    "ops:readiness": "node scripts/check-production-readiness.mjs",
+    "ops:accounts": "node scripts/go-live-accounts.mjs",
+    "ops:cpanel-emails": "node scripts/cpanel-create-emails.mjs",
+    "ops:supabase": "node scripts/setup-supabase.mjs",
+    "ops:stripe": "node scripts/setup-stripe.mjs",
+    "ops:cloudflare": "node scripts/cloudflare-dns-handoff.mjs",
+    "ops:vercel": "node scripts/vercel-deploy.mjs",
+    "ops:dns": "node scripts/cpanel-update-dns.mjs",
+    "ops:go-live": "node scripts/go-live-status.mjs",
+    "ops:supabase-auth": "node scripts/supabase-auth-config.mjs",
+    "ops:resend": "node scripts/setup-resend-cloudflare.mjs",
+    "ops:resend-dns": "node scripts/add-resend-dns-cloudflare.mjs",
+    "ops:resend-verify": "node scripts/verify-resend-domain.mjs",
+    "ops:smoke": "node scripts/smoke-test-go-live.mjs",
+    "ops:apply-templates": "node scripts/apply-supabase-email-templates.mjs",
+    "ops:verify-admin-emails": "node scripts/verify-admin-emails.mjs",
+    "ops:seed-jobs": "node scripts/seed-demo-jobs.mjs"
+  },
+  "devDependencies": {
+    "@placeuk/shared": "workspace:*",
+    "next": "^15.2.3",
+    "stripe": "^17.7.0",
+    "typescript": "^5.8.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0"
+}

@@ -1,0 +1,117 @@
+Recruitment Site — Cloudflare & Nameserver Handoff for Blossom Technology
+Generated: 2026-07-22T18:38:09.694Z
+
+Domain: recruitmentsite.co.uk
+Company: Recruitment Drive Ltd (13481215)
+cPanel: https://recruitmentsite.co.uk/cpanel (username: recruitadmin)
+
+═══════════════════════════════════════════════════════════════════
+STATUS — DNS updated via cPanel Zone Editor (22 Jul 2026)
+═══════════════════════════════════════════════════════════════════
+✓ Apex A record: recruitmentsite.co.uk → 76.76.21.21 (Vercel)
+✓ www CNAME: www.recruitmentsite.co.uk → cname.vercel-dns.com
+✓ MX records unchanged (email on Blossom hosting)
+✓ Vercel production deploy: https://web-five-livid-18.vercel.app
+✓ Custom domains added to Vercel project "web"
+
+Cloudflare nameserver change is READY TO SEND — domain added 23 Jul 2026.
+Site is live via cPanel DNS until Blossom switches nameservers.
+
+═══════════════════════════════════════════════════════════════════
+ACTION REQUIRED — Blossom Technology (nameserver change to Cloudflare)
+═══════════════════════════════════════════════════════════════════
+
+Please change nameservers for recruitmentsite.co.uk from:
+  ns1.blossomsweb.net
+  ns2.blossomsweb.net
+
+To Cloudflare nameservers:
+  leland.ns.cloudflare.com
+  sue.ns.cloudflare.com
+
+Cloudflare account: admin@recruitmentsite.co.uk (separate from Brando account)
+Domain added to Cloudflare: 23 Jul 2026 — Free plan, DNS auto-imported
+
+After the NS change propagates (usually 1–24 hours), DNS is managed
+in Cloudflare — not cPanel Zone Editor.
+
+IMPORTANT: Do NOT remove MX records when migrating DNS. Email stays on
+Blossom/cPanel hosting (mx1/mx2.cloudhosting.uk).
+
+═══════════════════════════════════════════════════════════════════
+DNS RECORDS — add in Cloudflare after NS change
+═══════════════════════════════════════════════════════════════════
+
+--- Website (Vercel) ---
+Type    Name    Value                   Proxy   Notes
+A       @       76.76.21.21             OFF     Apex → Vercel
+CNAME   www     cname.vercel-dns.com    OFF     www subdomain
+CNAME   *       cname.vercel-dns.com    OFF     Employer careers subdomains
+
+--- Email (keep on Blossom/cPanel — DO NOT CHANGE) ---
+Type    Name    Value                   Priority
+MX      @       mx1.cloudhosting.uk     10
+MX      @       mx2.cloudhosting.uk     20
+A       mail    185.199.220.91          —       Webmail
+
+--- Email authentication ---
+Type    Name      Value
+TXT     @         v=spf1 +a +mx +ip4:185.199.220.91 include:relay.k.io ~all
+TXT     _dmarc    v=DMARC1; p=none;
+
+--- Resend (transactional email — verify via Cloudflare) ---
+OPTION A — One-click (recommended after NS change):
+  1. https://resend.com/domains → Add Domain → recruitmentsite.co.uk
+  2. Click "Sign in to Cloudflare" → Authorize (Domain Connect adds DNS automatically)
+  3. Wait for Verified (~5–15 min)
+
+OPTION B — Script (needs RESEND_API_KEY + CLOUDFLARE_API_TOKEN):
+  pnpm ops:resend
+
+Resend adds records on the "send" subdomain (MX + TXT + DKIM CNAMEs) — do not proxy (grey cloud).
+Keep existing MX records for hello@ / cPanel mail unchanged.
+
+--- Supabase auth (no DNS — configure in Supabase dashboard) ---
+Site URL: https://recruitmentsite.co.uk
+Redirect: https://recruitmentsite.co.uk/auth/callback
+
+═══════════════════════════════════════════════════════════════════
+MAILBOXES (already created in cPanel)
+═══════════════════════════════════════════════════════════════════
+hello@recruitmentsite.co.uk          — general contact, service signups
+notifications@recruitmentsite.co.uk  — transactional email (Resend FROM)
+admin@recruitmentsite.co.uk          — site moderation
+privacy@recruitmentsite.co.uk        — privacy policy contact
+legal@recruitmentsite.co.uk          — terms contact
+billing@recruitmentsite.co.uk        — Stripe / finance
+
+Passwords: go-live-credentials.local.txt (local only)
+
+═══════════════════════════════════════════════════════════════════
+VERCEL DEPLOY (before DNS cutover)
+═══════════════════════════════════════════════════════════════════
+Run locally: pnpm ops:vercel
+
+Quick version:
+  cd apps/web
+  vercel env add NEXT_PUBLIC_SITE_URL production     → https://recruitmentsite.co.uk
+  vercel env add NEXT_PUBLIC_SUPABASE_URL production → (from .env.production.template)
+  vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
+  vercel env add SUPABASE_SERVICE_ROLE_KEY production
+  vercel env add EMPLOYER_NOTIFY_EMAIL production    → hello@recruitmentsite.co.uk
+  vercel env add ADMIN_EMAILS production           → admin@recruitmentsite.co.uk
+  vercel --prod --yes
+  vercel domains add recruitmentsite.co.uk
+  vercel domains add www.recruitmentsite.co.uk
+
+Vercel team: backend-7626s-projects
+Vercel project: web
+
+═══════════════════════════════════════════════════════════════════
+VERIFICATION CHECKLIST (after NS + DNS propagate)
+═══════════════════════════════════════════════════════════════════
+[ ] https://recruitmentsite.co.uk loads the job board (not 404)
+[ ] https://www.recruitmentsite.co.uk loads
+[ ] hello@recruitmentsite.co.uk receives mail (send test from external address)
+[ ] cPanel webmail still works at /webmail
+[ ] Supabase auth signup/login works

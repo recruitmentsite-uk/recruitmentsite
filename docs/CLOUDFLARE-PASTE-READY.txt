@@ -1,0 +1,98 @@
+═══════════════════════════════════════════════════════════════════
+STEP 1 — GET YOUR CLOUDFLARE NAMESERVERS (30 seconds)
+═══════════════════════════════════════════════════════════════════
+
+1. Open: https://dash.cloudflare.com
+2. Log in (or sign up with hello@recruitmentsite.co.uk)
+3. Add site → recruitmentsite.co.uk → Free plan
+4. Copy the TWO nameservers Cloudflare shows:
+     leland.ns.cloudflare.com
+     sue.ns.cloudflare.com
+
+Paste them into STEP 2 below, then send STEP 2 to Blossom.
+
+
+═══════════════════════════════════════════════════════════════════
+STEP 2 — PASTE TO BLOSSOM TECHNOLOGY (nameserver change)
+═══════════════════════════════════════════════════════════════════
+
+Subject: Nameserver change to Cloudflare — recruitmentsite.co.uk
+
+Hi,
+
+Please update the nameservers for recruitmentsite.co.uk.
+
+Domain: recruitmentsite.co.uk
+Company: Recruitment Drive Ltd (Company No. 13481215)
+cPanel: https://recruitmentsite.co.uk/cpanel
+cPanel username: recruitadmin
+
+Change FROM:
+  ns1.blossomsweb.net
+  ns2.blossomsweb.net
+
+Change TO:
+  leland.ns.cloudflare.com
+  sue.ns.cloudflare.com
+
+Please keep email hosting on Blossom/cPanel — do not remove mailboxes or
+mail server configuration on your side.
+
+Thank you.
+
+
+═══════════════════════════════════════════════════════════════════
+STEP 3 — PASTE INTO CLOUDFLARE DNS (after NS propagates)
+═══════════════════════════════════════════════════════════════════
+
+Cloudflare → Websites → recruitmentsite.co.uk → DNS → Records
+
+Add or edit these. For website records set Proxy status to DNS only (grey cloud).
+
+--- Website (Vercel) ---
+Type    Name    Content                 TTL     Proxy
+A       @       76.76.21.21             Auto    DNS only (OFF)
+CNAME   www     cname.vercel-dns.com    Auto    DNS only (OFF)
+CNAME   *       cname.vercel-dns.com    Auto    DNS only (OFF)
+
+--- Email (Blossom/cPanel — DO NOT CHANGE VALUES) ---
+Type    Name    Content                 Priority    TTL
+MX      @       mx1.cloudhosting.uk     10          Auto
+MX      @       mx2.cloudhosting.uk     20          Auto
+A       mail    185.199.220.91          —           Auto
+
+--- Email authentication ---
+Type    Name      Content
+TXT     @         v=spf1 +a +mx +ip4:185.199.220.91 include:relay.k.io ~all
+TXT     _dmarc    v=DMARC1; p=none;
+
+--- Resend (after nameservers are on Cloudflare) ---
+Do NOT add these manually if using Domain Connect:
+  1. https://resend.com/domains → Add Domain → recruitmentsite.co.uk
+  2. Click "Sign in to Cloudflare" → Authorize
+  3. Records on "send" subdomain + resend._domainkey are added automatically
+
+If adding manually from Resend dashboard, use only the host name (not full domain):
+  Type    Name                  Content (from Resend)
+  MX      send                  [Resend MX value]     Priority 10
+  TXT     send                  [Resend SPF value]
+  TXT     resend._domainkey     [Resend DKIM value]
+
+Delete any conflicting records Cloudflare imported (old apex A to 185.199.220.91
+for the website — keep mail A record on "mail" only).
+
+
+═══════════════════════════════════════════════════════════════════
+STEP 4 — VERIFY (after 1–24 hours)
+═══════════════════════════════════════════════════════════════════
+
+PowerShell:
+  nslookup -type=NS recruitmentsite.co.uk 8.8.8.8
+
+Should show your two *.ns.cloudflare.com nameservers (not blossomsweb.net).
+
+Then check:
+  [ ] https://www.recruitmentsite.co.uk loads
+  [ ] https://recruitmentsite.co.uk loads
+  [ ] hello@recruitmentsite.co.uk receives test email
+  [ ] Resend domain shows Verified

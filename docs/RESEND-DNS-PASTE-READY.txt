@@ -1,0 +1,10 @@
+# Resend DNS — paste into Cloudflare (recruitmentsite.co.uk → DNS → Records)
+# All records: Proxy status = DNS only (grey cloud)
+
+Type    Name                Content                                                                 Priority
+TXT     resend._domainkey   p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCmiG8KCQpg7dqtSwirqfarkxkuAFM0Js1ISlczLxlL107tfu8NixPIKWohOZ9s7SDYjZAcNRaecx1F2ygz0yrliAHPZNworhxFkBIZKTMYsyNw2mDK6CcSrmQCVgLBRuouR1GMi9fZ+3KC/a82DNjCAwZLWQj4xUrbIj1m+aZEHwIDAQAB
+MX      send                feedback-smtp.eu-west-1.amazonses.com                                     10
+TXT     send                v=spf1 include:amazonses.com ~all
+
+After adding, verify at: https://resend.com/domains
+Or run: node scripts/verify-resend-domain.mjs

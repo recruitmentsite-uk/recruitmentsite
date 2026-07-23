@@ -1,0 +1,29 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --brand: #0f766e;
+  --brand-dark: #0d5c56;
+  --brand-light: #14b8a6;
+  --accent: #f59e0b;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .hero-overlay {
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.92) 0%, rgba(13, 92, 86, 0.85) 50%, rgba(15, 23, 42, 0.75) 100%);
+  }
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+}
