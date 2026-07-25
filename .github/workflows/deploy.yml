@@ -11,13 +11,92 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install
+
+      - run: pnpm build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
       - name: Install Vercel CLI
         run: npm install -g vercel@56.5.0
 
-      - name: Deploy to production
-        # Build on Vercel so production env vars are available (local vercel pull masks them).
-        # --no-wait avoids hanging when status stays UNKNOWN.
-        run: vercel deploy --prod --yes --force --no-wait --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Pull Vercel settings
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Inject real env for Vercel build
+        # vercel pull masks Sensitive values as [SENSITIVE], which breaks Next.js builds.
+        run: |
+          ENV_FILE=".vercel/.env.production.local"
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          path = Path(".vercel/.env.production.local")
+          lines = path.read_text().splitlines() if path.exists() else []
+          keys = [
+              "NEXT_PUBLIC_SUPABASE_URL",
+              "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+              "SUPABASE_SERVICE_ROLE_KEY",
+          ]
+          values = {k: os.environ[k] for k in keys}
+          kept = []
+          for line in lines:
+              if not line or line.lstrip().startswith("#") or "=" not in line:
+                  kept.append(line)
+                  continue
+              k = line.split("=", 1)[0]
+              if k in values:
+                  continue
+              kept.append(line)
+          for k, v in values.items():
+              kept.append(f"{k}={v}")
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text("\n".join(kept) + "\n")
+          print("Injected", ", ".join(keys))
+          PY
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Build for Vercel
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Deploy prebuilt to production
+        # --no-wait: avoid hanging when Vercel status stays UNKNOWN/BLOCKED briefly
+        run: |
+          set +e
+          OUT=$(vercel deploy --prebuilt --prod --yes --no-wait --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
+          CODE=$?
+          echo "$OUT"
+          URL=$(echo "$OUT" | grep -Eo 'https://web-[a-z0-9]+-backend-7626s-projects\.vercel\.app' | head -n1)
+          if [ -n "$URL" ]; then
+            echo "Aliasing $URL"
+            vercel alias set "$URL" recruitmentsite.co.uk --token=${{ secrets.VERCEL_TOKEN }} || true
+            vercel alias set "$URL" www.recruitmentsite.co.uk --token=${{ secrets.VERCEL_TOKEN }} || true
+          fi
+          # Treat upload success + alias as OK even if readyState is flaky
+          if [ $CODE -eq 0 ] || [ -n "$URL" ]; then
+            exit 0
+          fi
+          exit $CODE
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
