@@ -89,7 +89,7 @@ Run `pnpm ops:readiness` before launch. Required:
 - [x] Resend domain verified (SPF/DKIM)
 - [ ] `OPENAI_API_KEY` for matching
 - [x] Google Search Console verification support (meta tag + HTML file)
-- [ ] Google Search Console property verified as rbee.mehmood@gmail.com + sitemap submitted (property created; click Verify after deploy, then Sitemaps → `https://recruitmentsite.co.uk/sitemap.xml`)
+- [x] Google Search Console property verified as rbee.mehmood@gmail.com + sitemap submitted (`sitemap.xml`)
 - [ ] Indeed organic feed (optional, post-launch)
 
 ---
