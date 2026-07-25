@@ -11,6 +11,9 @@ importers:
       '@placeuk/shared':
         specifier: workspace:*
         version: link:packages/shared
+      '@supabase/supabase-js':
+        specifier: ^2.49.1
+        version: 2.110.8
       next:
         specifier: ^15.2.3
         version: 15.5.21(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
