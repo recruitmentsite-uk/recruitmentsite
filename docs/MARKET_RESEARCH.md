@@ -113,7 +113,7 @@ Sources: ONS Labour Market Overview (Mar 2026), Get Staffed Q1 2026 Report, Appc
 
 - [x] Require salary on all posts (already in product)
 - [x] JobPosting JSON-LD on job pages
-- [ ] Register Adzuna API key for job backfill (`node scripts/setup-adzuna.mjs APP_ID APP_KEY`)
+- [x] Register Adzuna API key for job backfill (keys on Vercel + GitHub; run `pnpm jobs:sync` to pull)
 - [x] Verify Search Console as rbee.mehmood@gmail.com and submit `https://recruitmentsite.co.uk/sitemap.xml`
 - [ ] Register on GOV.UK Find a Job as employer partner
 - [ ] Build healthcare prospect list (CQC care homes by region)

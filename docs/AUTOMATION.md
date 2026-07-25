@@ -87,7 +87,7 @@ Run `pnpm ops:readiness` before launch. Required:
 - [x] Supabase project + schema pushed
 - [ ] Stripe products created (test → live) — test products done; live onboarding still open
 - [x] Resend domain verified (SPF/DKIM)
-- [ ] `OPENAI_API_KEY` for matching
+- [x] `OPENAI_API_KEY` for matching (Vercel + GitHub secrets)
 - [x] Google Search Console verification support (meta tag + HTML file)
 - [x] Google Search Console property verified as rbee.mehmood@gmail.com + sitemap submitted (`sitemap.xml`)
 - [ ] Indeed organic feed (optional, post-launch)
