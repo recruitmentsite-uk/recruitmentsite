@@ -56,7 +56,15 @@ console.log("\n── If DNS missing ──");
 console.log("1. Cloudflare → recruitmentsite.co.uk → DNS → Add record");
 console.log("2. Use values in docs/RESEND-DNS-PASTE-READY.txt (grey cloud / DNS only)");
 console.log("3. node scripts/verify-resend-domain.mjs");
-console.log("\n── Supabase (Glass browser tab open) ──");
-console.log("URL config: https://supabase.com/dashboard/project/wvwhxnokuisxcgwbwqlo/auth/url-configuration");
-console.log("SMTP: Authentication → Emails → Enable custom SMTP (smtp.resend.com, user: resend)");
-console.log("Run: node scripts/complete-supabase-smtp.mjs");
+console.log("\n── Supabase auth ──");
+console.log("✓ URL config + Resend SMTP configured in dashboard");
+console.log("  https://supabase.com/dashboard/project/wvwhxnokuisxcgwbwqlo/auth/url-configuration");
+
+const stripeKey = pick("STRIPE_SECRET_KEY");
+console.log("\n── Stripe ──");
+if (stripeKey?.startsWith("sk_live_")) {
+  console.log("✓ Live secret key in credentials");
+} else {
+  console.log("✗ Still on test keys — run: node scripts/fetch-stripe-live-keys.mjs");
+  console.log("  Dashboard: https://dashboard.stripe.com/acct_1Tw7BiV05z0BGUPE/apikeys");
+}

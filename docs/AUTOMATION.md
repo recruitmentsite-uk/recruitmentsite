@@ -84,12 +84,12 @@ Target: **200 emails/week** → 2–5% conversion → 4–10 new employers/week.
 
 Run `pnpm ops:readiness` before launch. Required:
 
-- [ ] Supabase project + schema pushed
-- [ ] Stripe products created (test → live)
-- [ ] Resend domain verified (SPF/DKIM)
+- [x] Supabase project + schema pushed
+- [ ] Stripe products created (test → live) — test products done; live onboarding still open
+- [x] Resend domain verified (SPF/DKIM)
 - [ ] `OPENAI_API_KEY` for matching
-- [x] Google Search Console verification support (`NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`)
-- [ ] Google Search Console property verified as rbee.mehmood@gmail.com + sitemap submitted (`pnpm` / `node scripts/submit-sitemap-hint.mjs`)
+- [x] Google Search Console verification support (meta tag + HTML file)
+- [ ] Google Search Console property verified as rbee.mehmood@gmail.com + sitemap submitted (`node scripts/submit-sitemap-hint.mjs`)
 - [ ] Indeed organic feed (optional, post-launch)
 
 ---

@@ -37,10 +37,12 @@
     "ops:verify-admin-emails": "node scripts/verify-admin-emails.mjs",
     "ops:seed-jobs": "node scripts/seed-demo-jobs.mjs",
     "jobs:seed": "node scripts/bulk-seed-jobs.mjs",
-    "jobs:polish": "node scripts/polish-job-descriptions.mjs"
+    "jobs:polish": "node scripts/polish-job-descriptions.mjs",
+    "ops:openai": "node scripts/setup-openai.mjs"
   },
   "devDependencies": {
     "@placeuk/shared": "workspace:*",
+    "@supabase/supabase-js": "^2.49.1",
     "next": "^15.2.3",
     "stripe": "^17.7.0",
     "typescript": "^5.8.2"

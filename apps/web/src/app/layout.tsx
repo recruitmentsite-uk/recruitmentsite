@@ -9,7 +9,10 @@ import { DEFAULT_SITE_URL, getSiteUrl } from "@/lib/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
-const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
+/** Public GSC HTML-tag token for https://recruitmentsite.co.uk/ (rbee.mehmood@gmail.com). */
+const googleVerification =
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() ||
+  "CrM01OiQJtFNiEG1CGWSxCjf2haL9lg1gNyqPQgE5sM";
 
 export const metadata: Metadata = {
   title: {
