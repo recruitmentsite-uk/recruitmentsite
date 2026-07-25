@@ -6,6 +6,9 @@ import { JobAlertSignup } from "@/components/JobAlertSignup";
 import { JobSearchForm } from "@/components/JobSearchForm";
 import { buildPageMetadata } from "@/lib/seo";
 
+/** Runtime fetch — build-time Vercel pull masks service-role secrets as [Encrypted]. */
+export const dynamic = "force-dynamic";
+
 interface JobsPageProps {
   searchParams: Promise<{ vertical?: string; city?: string; q?: string }>;
 }

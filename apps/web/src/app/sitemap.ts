@@ -10,6 +10,9 @@ import {
 } from "@placeuk/shared";
 import { getJobs, getSiteUrl } from "@/lib/jobs";
 
+/** Runtime fetch — build-time Vercel pull masks service-role secrets as [Encrypted]. */
+export const dynamic = "force-dynamic";
+
 function safeDate(value: string | undefined | null): Date {
   if (!value) return new Date();
   const ms = Date.parse(value);

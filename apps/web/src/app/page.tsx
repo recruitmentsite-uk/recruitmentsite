@@ -23,6 +23,9 @@ import { UnsplashImage } from "@/components/UnsplashImage";
 import { NhsBandLookup } from "@/components/NhsBandLookup";
 import { buildPageMetadata } from "@/lib/seo";
 
+/** Runtime fetch — build-time Vercel pull masks service-role secrets as [Encrypted]. */
+export const dynamic = "force-dynamic";
+
 export const metadata = buildPageMetadata({
   title: "Find UK Jobs with Salary Shown Upfront",
   description: SITE_TAGLINE,

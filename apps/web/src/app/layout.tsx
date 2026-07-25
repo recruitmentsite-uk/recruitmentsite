@@ -9,6 +9,13 @@ import { DEFAULT_SITE_URL, getSiteUrl } from "@/lib/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
+/**
+ * Job inventory must load at request time. `vercel build` in CI pulls masked
+ * `[Encrypted]` placeholders for SUPABASE_SERVICE_ROLE_KEY, so static generation
+ * would bake empty listings into production.
+ */
+export const dynamic = "force-dynamic";
+
 /** Public GSC HTML-tag token for https://recruitmentsite.co.uk/ (rbee.mehmood@gmail.com). */
 const googleVerification =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() ||
