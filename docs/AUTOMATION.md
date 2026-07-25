@@ -6,7 +6,7 @@ Goal: **< 5 hours/week** of human ops once live.
 
 | Job | Script / trigger | What it does |
 |-----|------------------|--------------|
-| Job feed sync | `pnpm jobs:sync` (cron 06:00) | Pull from ATS webhooks, RSS, career page scrapers |
+| Job feed sync | `pnpm jobs:sync` (cron 06:00) | Adzuna + Reed + Jooble (optional) + Greenhouse/Lever/Workable boards (`data/ats-boards.json`) |
 | AI enrichment | `pnpm jobs:enrich` (after sync) | Normalise titles, extract skills, salary bands, location |
 | Candidate matching | `pnpm match:run` (hourly) | Score new applicants vs open roles, send alerts |
 | Alert digests | `pnpm alerts:digest` (cron 09:00) | Daily matching jobs emailed to alert subscribers |
@@ -99,6 +99,9 @@ Run `pnpm ops:readiness` before launch. Required:
 - [ ] Optional: set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER` for SMS alerts (`node scripts/setup-twilio.mjs …`)
 - [x] `REED_API_KEY` set (Vercel production + GitHub secrets + local credentials)
 - [x] Reed inbound sync live (`pnpm jobs:sync` + daily Actions cron with `REED_API_KEY`)
+- [x] Adzuna volume expanded (multi-query × multi-page per vertical)
+- [x] ATS career boards: Greenhouse / Lever / Workable via `data/ats-boards.json` (no API key)
+- [ ] Optional: set `JOOBLE_API_KEY` (`node scripts/setup-jooble.mjs …` — https://jooble.org/api/about)
 
 ---
 
