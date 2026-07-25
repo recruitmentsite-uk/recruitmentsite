@@ -44,9 +44,6 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.49.1
         version: 2.110.8
-      mammoth:
-        specifier: ^1.12.0
-        version: 1.12.0
       next:
         specifier: ^15.2.3
         version: 15.5.21(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -59,9 +56,6 @@ importers:
       stripe:
         specifier: ^17.7.0
         version: 17.7.0
-      unpdf:
-        specifier: ^1.8.0
-        version: 1.8.0
     devDependencies:
       '@tailwindcss/typography':
         specifier: ^0.5.20
