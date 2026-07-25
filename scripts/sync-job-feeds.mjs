@@ -1,17 +1,19 @@
 #!/usr/bin/env node
 /**
- * Sync jobs from Adzuna API (UK) into Supabase for SEO backfill + affiliate revenue.
- * Register at developer.adzuna.com for app_id and app_key.
+ * Sync jobs from Adzuna + Reed APIs into Supabase for SEO backfill + affiliate revenue.
+ * Adzuna: developer.adzuna.com — REED: reed.co.uk/developers (REED_API_KEY).
  */
 import { getSupabaseAdmin } from "./lib/supabase-admin.mjs";
+import { isReedConfigured, normalizeReedJob, searchReedJobs } from "./lib/reed-client.mjs";
 
 const APP_ID = process.env.ADZUNA_APP_ID;
 const APP_KEY = process.env.ADZUNA_APP_KEY;
+const FEED_EMPLOYER_ID = "00000000-0000-0000-0000-000000000001";
 
 const VERTICAL_KEYWORDS = {
-  healthcare: "nurse care assistant HCA",
-  trades: "electrician plumber builder",
-  tech: "software developer engineer",
+  healthcare: "nurse",
+  trades: "electrician",
+  tech: "software developer",
 };
 
 async function fetchAdzunaJobs(what, where = "uk", page = 1) {
@@ -30,13 +32,16 @@ async function fetchAdzunaJobs(what, where = "uk", page = 1) {
 }
 
 async function main() {
-  console.log("Recruitment Site job sync — Adzuna + internal feeds\n");
+  console.log("Recruitment Site job sync — Adzuna + Reed + internal feeds\n");
 
   if (!APP_ID || !APP_KEY) {
     console.log("⚠  Set ADZUNA_APP_ID and ADZUNA_APP_KEY to sync from Adzuna");
     console.log("   Register free at https://developer.adzuna.com/");
-    console.log("   Continuing with internal employer dashboard feed only...\n");
   }
+  if (!isReedConfigured()) {
+    console.log("⚠  Set REED_API_KEY to sync from Reed (https://www.reed.co.uk/developers)");
+  }
+  console.log("");
 
   const supabase = getSupabaseAdmin();
   let synced = 0;
@@ -53,7 +58,7 @@ async function main() {
       if (supabase) {
         const { error } = await supabase.from("jobs").upsert(
           {
-            employer_id: "00000000-0000-0000-0000-000000000001",
+            employer_id: FEED_EMPLOYER_ID,
             slug,
             title: ad.title,
             description: ad.description?.slice(0, 2000) ?? ad.title,
@@ -68,21 +73,59 @@ async function main() {
             status: "active",
             published_at: ad.created ?? new Date().toISOString(),
             expires_at: new Date(Date.now() + 30 * 86400000).toISOString(),
-            // Store affiliate redirect — outbound clicks earn revenue
-            // redirect_url stored in compliance jsonb for syndicated jobs
+            external_source: "adzuna",
+            external_id: ad.id ? String(ad.id) : null,
             compliance: { source: "adzuna", redirect_url: ad.redirect_url },
           },
           { onConflict: "slug", ignoreDuplicates: true },
         );
         if (!error) synced++;
       } else {
-        console.log(`  [dry-run] ${ad.title} — ${ad.location?.display_name} (${vertical})`);
+        console.log(`  [dry-run] adzuna: ${ad.title} — ${ad.location?.display_name} (${vertical})`);
         synced++;
       }
     }
   }
 
-  console.log(`\n✓ Synced ${synced} jobs`);
+  let reedSynced = 0;
+  if (isReedConfigured()) {
+    console.log("Reed: pulling healthcare / trades / tech…");
+    for (const [vertical, keywords] of Object.entries(VERTICAL_KEYWORDS)) {
+      try {
+        const data = await searchReedJobs({
+          keywords,
+          locationName: "UK",
+          resultsToTake: 25,
+          resultsToSkip: 0,
+        });
+        const results = data?.results ?? [];
+        console.log(`  Reed ${vertical}: ${results.length} results (total=${data?.totalResults ?? "?"})`);
+        for (const job of results) {
+          const row = normalizeReedJob(job, vertical);
+          if (supabase) {
+            const { error } = await supabase.from("jobs").upsert(
+              { employer_id: FEED_EMPLOYER_ID, ...row },
+              { onConflict: "slug", ignoreDuplicates: true },
+            );
+            if (error) {
+              console.error(`  Reed upsert failed (${row.slug}):`, error.message);
+            } else {
+              synced++;
+              reedSynced++;
+            }
+          } else {
+            console.log(`  [dry-run] reed: ${row.title} — ${row.city} (${vertical})`);
+            synced++;
+            reedSynced++;
+          }
+        }
+      } catch (err) {
+        console.error(`  Reed sync failed (${vertical}):`, err.message);
+      }
+    }
+  }
+
+  console.log(`\n✓ Synced ${synced} jobs (${reedSynced} from Reed)`);
   console.log("Schedule: daily 06:00 UTC via .github/workflows/automation.yml");
 }
 

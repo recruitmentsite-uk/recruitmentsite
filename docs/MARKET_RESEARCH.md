@@ -85,7 +85,7 @@ Sources: ONS Labour Market Overview (Mar 2026), Get Staffed Q1 2026 Report, Appc
 2. **GOV.UK Find a Job** — Free; register as employer feed provider
 3. **Indeed organic** — Free tier + XML feed
 4. **Adzuna** — Free API for backfill + affiliate revenue on outbound clicks
-5. **Reed** — Paid later; use in outreach ("you're on Reed for £100 — try us for £249 unlimited")
+5. **Reed** — Jobseeker API inbound sync live (`REED_API_KEY` + `pnpm jobs:sync`); use paid Reed listings in outreach ("you're on Reed for £100 — try us for £249 unlimited")
 
 ## 12-month revenue scenario (healthcare wedge)
 
@@ -115,6 +115,8 @@ Sources: ONS Labour Market Overview (Mar 2026), Get Staffed Q1 2026 Report, Appc
 - [x] JobPosting JSON-LD on job pages
 - [x] Register Adzuna API key for job backfill (keys on Vercel + GitHub; run `pnpm jobs:sync` to pull)
 - [x] Verify Search Console as rbee.mehmood@gmail.com and submit `https://recruitmentsite.co.uk/sitemap.xml`
-- [ ] Register on GOV.UK Find a Job as employer partner
-- [ ] Build healthcare prospect list (CQC care homes by region)
-- [ ] Mobile-optimised apply flow (<5 min)
+- [x] Register on GOV.UK Find a Job as employer partner (account live; bulk upload access requested)
+- [x] Build healthcare prospect list — `pnpm prospects:build` → 30,184 CQC care homes/homecare in `data/employer-prospects.json`
+- [x] Mobile-optimised apply flow (<5 min) — larger tap targets, sticky submit, talent-pool opt-in
+- [x] Indeed XML feed live — `https://recruitmentsite.co.uk/feeds/indeed.xml` (submit in Indeed Employer/Partner Console)
+- [x] LinkedIn Limited Listings request emailed to LL-BD@linkedin.com (`pnpm ops:partner-feeds`)

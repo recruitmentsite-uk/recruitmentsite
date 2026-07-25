@@ -9,15 +9,15 @@ Goal: **< 5 hours/week** of human ops once live.
 | Job feed sync | `pnpm jobs:sync` (cron 06:00) | Pull from ATS webhooks, RSS, career page scrapers |
 | AI enrichment | `pnpm jobs:enrich` (after sync) | Normalise titles, extract skills, salary bands, location |
 | Candidate matching | `pnpm match:run` (hourly) | Score new applicants vs open roles, send alerts |
-| Alert digests | Supabase cron / Inngest | Daily "3 jobs for you" emails to candidates |
+| Alert digests | `pnpm alerts:digest` (cron 09:00) | Daily matching jobs emailed to alert subscribers |
 | Stripe webhooks | Edge function | Activate/suspend employer accounts on payment events |
-| Expired jobs | DB cron | Archive posts past 30 days, nudge employer to renew |
+| Expired jobs | `pnpm jobs:expire` (cron 07:00) | Archive posts past `expires_at`, email employer to renew |
 
 ## Weekly (automated)
 
 | Job | Script | What it does |
 |-----|--------|--------------|
-| Employer outreach | `pnpm campaign:employers` | Cold email SMEs in target vertical with open roles on other boards |
+| Employer outreach | `pnpm campaign:employers` (Tue 10:00) | Cold email SMEs; open/click tracked via `/api/t/*`; skips unsubscribed |
 | SEO sitemap | Next.js `sitemap.ts` | Regenerate `/jobs/*` URLs for Google |
 | Analytics report | `scripts/weekly-metrics.mjs` | Slack/email summary: MRR, applications, top jobs |
 | Stale applicant nudge | cron | "Still looking?" re-engagement for candidates |
@@ -58,8 +58,8 @@ Extract: skills, years exp, certs, right-to-work hints
 Match score vs job requirements (0–100)
        │
        ├── Score ≥ 70 → instant email to employer "Strong match"
-       ├── Score 40–69 → weekly digest
-       └── Score < 40 → polite auto-decline template (optional, Growth+)
+       ├── Score 40–69 → stays in employer dashboard for review
+       └── Score < 40 → polite auto-decline email to candidate + status rejected
 ```
 
 Prompt templates live in `scripts/prompts/` — keep audit log for bias review.
@@ -73,8 +73,8 @@ Prompt templates live in `scripts/prompts/` — keep audit log for bias review.
 1. Load prospects from `data/employer-prospects.json` (built by `scripts/build-employer-prospects.mjs`)
 2. Check if they have jobs on Indeed/Reed (scrape or API)
 3. Send personalised email: "You're hiring for X — post free for 30 days on Recruitment Site"
-4. Track opens/clicks in Supabase `campaign_events`
-5. Auto-suppress on unsubscribe (GDPR)
+4. Track opens/clicks via `/api/t/open` + `/api/t/click` → `campaign_events`
+5. Auto-suppress on unsubscribe + already-sent (GDPR)
 
 Target: **200 emails/week** → 2–5% conversion → 4–10 new employers/week.
 
@@ -85,12 +85,20 @@ Target: **200 emails/week** → 2–5% conversion → 4–10 new employers/week.
 Run `pnpm ops:readiness` before launch. Required:
 
 - [x] Supabase project + schema pushed
-- [ ] Stripe products created (test → live) — test products done; live onboarding still open
+- [x] Stripe test products + test webhook live on site
+- [ ] Stripe live cutover blocked on business verification doc upload (payments/payouts paused) — then reveal `sk_live` / `pk_live`, create live webhook, `node scripts/setup-stripe-live.mjs`, `pnpm stripe:setup`, redeploy
 - [x] Resend domain verified (SPF/DKIM)
 - [x] `OPENAI_API_KEY` for matching (Vercel + GitHub secrets)
 - [x] Google Search Console verification support (meta tag + HTML file)
 - [x] Google Search Console property verified as rbee.mehmood@gmail.com + sitemap submitted (`sitemap.xml`)
-- [ ] Indeed organic feed (optional, post-launch)
+- [x] Indeed XML feed live at `https://recruitmentsite.co.uk/feeds/indeed.xml` (241 jobs) — submit via Indeed Partner / Employer Console
+- [x] LinkedIn XML feed live at `https://recruitmentsite.co.uk/feeds/linkedin.xml` (241 jobs) — BD email sent to LL-BD@linkedin.com
+- [x] Schema migrations 007+008 applied in Supabase SQL editor (alerts, views, talent_profiles)
+- [x] Schema migration `009_product_features.sql` applied in Supabase SQL editor (candidate SMS/profile, screening credits, video screening, equality monitoring, Reed provenance)
+- [x] Storage bucket `video-screenings` created (private; app falls back to `cvs` if missing)
+- [ ] Optional: set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER` for SMS alerts (`node scripts/setup-twilio.mjs …`)
+- [x] `REED_API_KEY` set (Vercel production + GitHub secrets + local credentials)
+- [x] Reed inbound sync live (`pnpm jobs:sync` + daily Actions cron with `REED_API_KEY`)
 
 ---
 
