@@ -1,6 +1,18 @@
 export type JobType = "permanent" | "contract" | "temporary" | "part_time";
 export type JobStatus = "draft" | "active" | "paused" | "expired" | "filled";
-export type Vertical = "healthcare" | "trades" | "tech" | "general";
+export type Vertical =
+  | "healthcare"
+  | "trades"
+  | "tech"
+  | "education"
+  | "hospitality"
+  | "logistics"
+  | "finance"
+  | "retail"
+  | "legal"
+  | "marketing"
+  | "engineering"
+  | "general";
 export type PlanTier = "starter" | "growth" | "scale" | "payg";
 
 export interface SalaryBand {
