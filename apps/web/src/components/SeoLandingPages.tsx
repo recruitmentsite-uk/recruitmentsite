@@ -98,6 +98,8 @@ const ROLE_HIRE_SLUG: Record<string, string> = {
   "support-worker-jobs": "care-assistants",
   "rmn-jobs": "nurses",
   "physiotherapist-jobs": "nurses",
+  "occupational-therapist-jobs": "nurses",
+  "practice-nurse-jobs": "practice-nurses",
   "electrician-jobs": "electricians",
   "plumber-jobs": "electricians",
   "site-manager-jobs": "electricians",

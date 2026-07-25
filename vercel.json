@@ -7,8 +7,8 @@
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "recruitmentsite.co.uk" }],
-      "destination": "https://www.recruitmentsite.co.uk/:path*",
+      "has": [{ "type": "host", "value": "www.recruitmentsite.co.uk" }],
+      "destination": "https://recruitmentsite.co.uk/:path*",
       "permanent": true
     }
   ]

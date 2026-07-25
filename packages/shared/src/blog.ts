@@ -108,6 +108,38 @@ export const BLOG_POSTS: BlogPost[] = [
       "After publish, Google Jobs picks up structured data automatically. Review AI-scored applications in your dashboard — shortlist above 80, review 60–79, and auto-archive below 40 if you're volume hiring.",
     ],
   },
+  {
+    slug: "gp-practice-nurse-jobs-uk-guide",
+    title: "GP practice nurse jobs UK: salary, clinics and how to apply",
+    excerpt:
+      "What Band 5–7 practice nurses earn, which clinics PCNs recruit for, and how to find roles with pay shown upfront.",
+    category: "healthcare",
+    publishedAt: "2026-07-22",
+    readMinutes: 7,
+    author: "Recruitment Site Team",
+    content: [
+      "Practice nurses are central to UK primary care — immunisations, smear clinics, chronic disease management and triage. Demand stays high as PCNs expand services beyond the GP appointment.",
+      "Typical pay sits in NHS Band 5–7 territory depending on sessions, prescribing qualifications and leadership responsibility. Always check the listing shows salary or hourly rate before applying.",
+      "Employers on Recruitment Site must disclose pay and can flag NMC registration. That filters out vague 'competitive salary' ads common on larger boards.",
+      "Browse practice nurse roles by city, set a job alert for 'practice nurse', and apply free in under five minutes with your CV and NMC pin ready.",
+    ],
+  },
+  {
+    slug: "occupational-therapist-nhs-jobs-guide",
+    title: "Occupational therapist NHS jobs: Band pay and where to look",
+    excerpt:
+      "HCPC-registered OT roles in acute, community and social care — with Band 5–7 salary context for UK jobseekers.",
+    category: "healthcare",
+    publishedAt: "2026-07-23",
+    readMinutes: 6,
+    author: "Recruitment Site Team",
+    content: [
+      "Occupational therapists support discharge planning, rehabilitation and independent living across NHS trusts, community teams and social care. HCPC registration is non-negotiable for clinical roles.",
+      "Band 5 newly qualified OTs through Band 6–7 specialists see structured Agenda for Change pay. Private and locum markets vary — insist on the figure before interview.",
+      "Long-tail searches like 'occupational therapist jobs Manchester' convert when landing pages and JobPosting schema are in place. Recruitment Site publishes city and role pages with salary transparency.",
+      "Employers hiring OTs avoid agency markups with flat-fee unlimited posts, while candidates apply free against verified listings.",
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {

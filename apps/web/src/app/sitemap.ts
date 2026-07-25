@@ -15,25 +15,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const jobs = await getJobs();
   const blogSlugs = getBlogSlugs();
 
+  const now = new Date();
   const staticPages: MetadataRoute.Sitemap = [
-    { url: base, changeFrequency: "weekly", priority: 1 },
-    { url: `${base}/jobs`, changeFrequency: "daily", priority: 0.9 },
-    { url: `${base}/healthcare`, changeFrequency: "daily", priority: 0.9 },
-    { url: `${base}/trades`, changeFrequency: "daily", priority: 0.9 },
-    { url: `${base}/tech`, changeFrequency: "daily", priority: 0.9 },
-    { url: `${base}/pricing`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/compare`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/for-employers`, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${base}/job-alerts`, changeFrequency: "monthly", priority: 0.75 },
-    { url: `${base}/salary-transparency`, changeFrequency: "monthly", priority: 0.75 },
-    { url: `${base}/nhs-band-salary-guide`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/employer-compliance`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/blog`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/about`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/faq`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/feeds/indeed.xml`, changeFrequency: "daily", priority: 0.7 },
-    { url: `${base}/privacy`, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${base}/terms`, changeFrequency: "yearly", priority: 0.3 },
+    { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    { url: `${base}/jobs`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/healthcare`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/trades`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/tech`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/compare`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/for-employers`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${base}/job-alerts`, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${base}/salary-transparency`, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${base}/nhs-band-salary-guide`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/employer-compliance`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/faq`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const cityPages = POPULAR_CITIES.map((city) => ({

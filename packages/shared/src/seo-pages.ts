@@ -114,6 +114,32 @@ export const SEO_ROLE_PAGES: readonly SeoRolePage[] = [
     employerGuide: "Post physio roles with HCPC and NHS Band fields. AI ranks applicants 0–100.",
   },
   {
+    slug: "occupational-therapist-jobs",
+    title: "Occupational Therapist Jobs UK",
+    headline: "Occupational therapist (OT) jobs — NHS & community",
+    description:
+      "HCPC-registered OT roles with Band 5–7 pay shown upfront. Acute, community and social care settings.",
+    vertical: "healthcare",
+    searchQuery: "occupational therapist",
+    salaryMin: 28407,
+    salaryMax: 52809,
+    tags: ["HCPC registration", "Band 5–7", "Community OT", "Discharge planning"],
+    employerGuide: "Post OT roles with HCPC and NHS Band fields. Flat-fee hiring from £249/mo.",
+  },
+  {
+    slug: "practice-nurse-jobs",
+    title: "GP Practice Nurse Jobs UK",
+    headline: "Practice nurse jobs in GP surgeries & primary care",
+    description:
+      "GP practice nurse roles with Band 5–7 salaries, immunisation and chronic disease management. Salary shown upfront.",
+    vertical: "healthcare",
+    searchQuery: "practice nurse",
+    salaryMin: 28407,
+    salaryMax: 52809,
+    tags: ["NMC registration", "Primary care", "Immunisations", "Chronic disease"],
+    employerGuide: "Hire practice nurses for PCNs and GP surgeries without agency fees.",
+  },
+  {
     slug: "electrician-jobs",
     title: "Electrician Jobs UK",
     headline: "Electrician jobs — JIB, NICEIC & domestic/commercial",
@@ -244,6 +270,28 @@ export const HIRE_GUIDE_PAGES: readonly HireGuidePage[] = [
       "Bulk upload multiple roles if hiring across several homes",
     ],
     costComparison: "Reed charges £100+ per listing. Three care assistant roles = £300+. Recruitment Site Growth covers unlimited posts for £249/mo.",
+  },
+  {
+    slug: "practice-nurses",
+    role: "Practice Nurses",
+    title: "How to Hire Practice Nurses in the UK",
+    headline: "Hire GP practice nurses without locum agency fees",
+    description:
+      "Primary care and PCN guide to recruiting Band 5–7 practice nurses with NMC and immunisation skills.",
+    vertical: "healthcare",
+    steps: [
+      "Define clinic mix — immunisations, chronic disease, smear clinics, triage",
+      "Post with NMC, Band and sessions-per-week shown on the listing",
+      "Review AI-scored applicants with primary care experience highlighted",
+      "Interview and hire — no locum agency markup on permanent staff",
+    ],
+    tips: [
+      "State QOF and chronic disease experience if required",
+      "Show salary or hourly rate — practice nurses skip vague ads",
+      "Mention training budget and study leave to compete with NHS trusts",
+      "Use city landing pages to attract nurses relocating into your area",
+    ],
+    costComparison: "Locum practice nurse cover often costs £30–£45/hour. A permanent hire via Recruitment Site Growth is £249/mo with unlimited posts.",
   },
   {
     slug: "electricians",

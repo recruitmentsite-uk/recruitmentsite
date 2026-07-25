@@ -60,6 +60,10 @@ export const POPULAR_CITIES = [
   "Glasgow",
   "Liverpool",
   "Sheffield",
+  "Edinburgh",
+  "Newcastle",
+  "Nottingham",
+  "Cardiff",
 ] as const;
 
 /** Factual trust signals — no inflated job counts */

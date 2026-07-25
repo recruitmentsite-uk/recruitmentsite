@@ -88,7 +88,8 @@ Run `pnpm ops:readiness` before launch. Required:
 - [ ] Stripe products created (test → live)
 - [ ] Resend domain verified (SPF/DKIM)
 - [ ] `OPENAI_API_KEY` for matching
-- [ ] Google Search Console + sitemap submitted
+- [x] Google Search Console verification support (`NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`)
+- [ ] Google Search Console property verified as rbee.mehmood@gmail.com + sitemap submitted (`pnpm` / `node scripts/submit-sitemap-hint.mjs`)
 - [ ] Indeed organic feed (optional, post-launch)
 
 ---

@@ -114,7 +114,7 @@ Sources: ONS Labour Market Overview (Mar 2026), Get Staffed Q1 2026 Report, Appc
 - [x] Require salary on all posts (already in product)
 - [x] JobPosting JSON-LD on job pages
 - [ ] Register Adzuna API key for job backfill
-- [ ] Submit sitemap to Google Search Console
+- [x] Verify Search Console as rbee.mehmood@gmail.com and submit `https://recruitmentsite.co.uk/sitemap.xml` (in progress — property + HTML verification wired)
 - [ ] Register on GOV.UK Find a Job as employer partner
 - [ ] Build healthcare prospect list (CQC care homes by region)
 - [ ] Mobile-optimised apply flow (<5 min)

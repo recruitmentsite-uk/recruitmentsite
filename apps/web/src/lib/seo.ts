@@ -4,7 +4,6 @@ import {
   SITE_TAGLINE,
   COMPANY_LEGAL_NAME,
   COMPANY_NUMBER,
-  COMPANY_REGISTERED_ADDRESS,
 } from "@placeuk/shared";
 import { getSiteUrl } from "./site";
 
@@ -15,6 +14,7 @@ export function buildPageMetadata(opts: {
   description: string;
   path?: string;
   ogImage?: string;
+  noIndex?: boolean;
 }): Metadata {
   const url = opts.path ? `${getSiteUrl()}${opts.path}` : getSiteUrl();
   const image = opts.ogImage ?? DEFAULT_OG_IMAGE;
@@ -23,6 +23,9 @@ export function buildPageMetadata(opts: {
     title: opts.title,
     description: opts.description,
     alternates: { canonical: url },
+    robots: opts.noIndex
+      ? { index: false, follow: false, googleBot: { index: false, follow: false } }
+      : { index: true, follow: true },
     openGraph: {
       title: opts.title,
       description: opts.description,
@@ -40,6 +43,15 @@ export function buildPageMetadata(opts: {
     },
   };
 }
+
+/** Shared noindex metadata for auth, admin, and employer app surfaces. */
+export const noIndexMetadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
+};
 
 export function organizationJsonLd() {
   const url = getSiteUrl();
@@ -63,6 +75,13 @@ export function organizationJsonLd() {
       postalCode: "NW10 1ED",
       addressCountry: "GB",
     },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: "hello@recruitmentsite.co.uk",
+      areaServed: "GB",
+      availableLanguage: "English",
+    },
     areaServed: { "@type": "Country", name: "United Kingdom" },
   };
 }
@@ -74,9 +93,13 @@ export function websiteJsonLd() {
     "@type": "WebSite",
     name: SITE_NAME,
     url,
+    inLanguage: "en-GB",
     potentialAction: {
       "@type": "SearchAction",
-      target: `${url}/jobs?q={search_term_string}`,
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${url}/jobs?q={search_term_string}`,
+      },
       "query-input": "required name=search_term_string",
     },
   };

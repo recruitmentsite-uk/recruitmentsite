@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { getEmployerContext } from "@/lib/employer";
 import { DashboardSidebar } from "@/components/DashboardShell";
+import { noIndexMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  ...noIndexMetadata,
+  title: "Dashboard",
+};
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const ctx = await getEmployerContext();
