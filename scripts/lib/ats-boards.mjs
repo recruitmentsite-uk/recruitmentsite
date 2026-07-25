@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { expiresInDays, inferVertical, slugify, stripHtml } from "./job-normalize.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DEFAULT_BOARDS = join(__dirname, "../../data/ats-boards.json");
+const DEFAULT_BOARDS = join(__dirname, "../config/ats-boards.json");
 
 export function loadAtsBoards(path = process.env.ATS_BOARDS_PATH || DEFAULT_BOARDS) {
   if (!existsSync(path)) return { greenhouse: [], lever: [], workable: [] };

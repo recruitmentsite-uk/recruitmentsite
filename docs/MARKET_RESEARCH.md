@@ -86,7 +86,7 @@ Sources: ONS Labour Market Overview (Mar 2026), Get Staffed Q1 2026 Report, Appc
 3. **Indeed organic** — Free tier + XML feed
 4. **Adzuna** — Free API backfill (multi-query × multi-page) + affiliate revenue on outbound clicks
 5. **Reed** — Jobseeker API inbound sync live (`REED_API_KEY` + `pnpm jobs:sync`); use paid Reed listings in outreach ("you're on Reed for £100 — try us for £249 unlimited")
-6. **ATS career boards** — Greenhouse / Lever public boards via `data/ats-boards.json` (no API key)
+6. **ATS career boards** — Greenhouse / Lever public boards via `scripts/config/ats-boards.json` (no API key)
 7. **Jooble** — Optional aggregator inbound (`JOOBLE_API_KEY` → `node scripts/setup-jooble.mjs`)
 
 ## 12-month revenue scenario (healthcare wedge)

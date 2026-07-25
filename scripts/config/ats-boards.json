@@ -1,0 +1,20 @@
+{
+  "greenhouse": [
+    { "token": "monzo", "name": "Monzo", "vertical": "tech" },
+    { "token": "gocardless", "name": "GoCardless", "vertical": "finance" },
+    { "token": "tide", "name": "Tide", "vertical": "finance" },
+    { "token": "n26", "name": "N26", "vertical": "finance" },
+    { "token": "stripe", "name": "Stripe", "vertical": "tech" },
+    { "token": "cloudflare", "name": "Cloudflare", "vertical": "tech" },
+    { "token": "datadog", "name": "Datadog", "vertical": "tech" },
+    { "token": "elastic", "name": "Elastic", "vertical": "tech" },
+    { "token": "gitlab", "name": "GitLab", "vertical": "tech" },
+    { "token": "intercom", "name": "Intercom", "vertical": "tech" },
+    { "token": "deepmind", "name": "Google DeepMind", "vertical": "tech" },
+    { "token": "anthropic", "name": "Anthropic", "vertical": "tech" }
+  ],
+  "lever": [
+    { "token": "spotify", "name": "Spotify", "vertical": "tech" }
+  ],
+  "workable": []
+}
