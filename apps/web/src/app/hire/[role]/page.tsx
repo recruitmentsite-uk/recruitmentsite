@@ -112,8 +112,8 @@ export default async function HireGuidePage({ params }: PageProps) {
               <CheckoutButton tier="growth" className="mt-6 w-full rounded-xl bg-brand py-3 text-sm font-semibold text-white hover:bg-brand-dark">
                 Start free trial
               </CheckoutButton>
-              <Link href="/compare" className="mt-3 block text-center text-sm font-semibold text-brand hover:underline">
-                Compare vs Reed →
+              <Link href="/for-employers" className="mt-3 block text-center text-sm font-semibold text-brand hover:underline">
+                See all features →
               </Link>
             </div>
           </aside>

@@ -1,6 +1,5 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
-import { SAMPLE_JOBS } from "@placeuk/shared";
 import { scoreApplication } from "@/lib/matching";
 import { getEmployerAtsWebhook, notifyAtsWebhook } from "@/lib/ats";
 import { sendEmail } from "@/lib/email";
@@ -30,12 +29,10 @@ export async function POST(request: Request) {
     const supabase = getSupabaseAdmin();
 
     if (!supabase) {
-      const job = SAMPLE_JOBS.find((j) => j.id === jobId);
-      if (!job) {
-        return NextResponse.json({ error: "Job not found" }, { status: 404 });
-      }
-      console.log(`[demo] Application: ${fullName} <${email}> for ${job.title}`);
-      return NextResponse.json({ success: true, mode: "demo", matchScore: 72 });
+      return NextResponse.json(
+        { error: "Applications are temporarily unavailable. Please try again later." },
+        { status: 503 },
+      );
     }
 
     const { data: job } = await supabase
@@ -105,7 +102,7 @@ export async function POST(request: Request) {
     if (process.env.RESEND_API_KEY) {
       const subject =
         match.score >= 70
-          ? `Strong match (${match.score}/100): ${fullName} → ${job.title}`
+          ? `Strong match (${match.score}/100): ${fullName} ÔåÆ ${job.title}`
           : `New application: ${fullName}`;
 
       await sendEmail({

@@ -6,7 +6,7 @@ import { faqJsonLd, buildPageMetadata } from "@/lib/seo";
 export const metadata = buildPageMetadata({
   title: "Frequently Asked Questions",
   description:
-    "Answers about Recruitment Site pricing, AI scoring, GDPR, ATS integration, and how we compare to Reed and Indeed.",
+    "Answers about Recruitment Site pricing, AI scoring, GDPR, ATS integration, and employer features.",
   path: "/faq",
 });
 
@@ -30,10 +30,10 @@ export default function FaqPage() {
 
       <aside className="mt-12 rounded-2xl bg-teal-50 border border-teal-200 p-6 text-center">
         <p className="font-semibold text-brand">Still have questions?</p>
-        <p className="mt-2 text-sm text-slate-600">Read our guides or compare Recruitment Site to your current provider.</p>
+        <p className="mt-2 text-sm text-slate-600">Read our guides or explore employer features and pricing.</p>
         <div className="mt-4 flex flex-wrap justify-center gap-3">
           <Link href="/blog" className="text-sm font-semibold text-brand underline">Hiring guides</Link>
-          <Link href="/compare" className="text-sm font-semibold text-brand underline">Compare vs Reed</Link>
+          <Link href="/for-employers" className="text-sm font-semibold text-brand underline">Employer features</Link>
           <Link href="/privacy" className="text-sm font-semibold text-brand underline">Privacy policy</Link>
         </div>
       </aside>

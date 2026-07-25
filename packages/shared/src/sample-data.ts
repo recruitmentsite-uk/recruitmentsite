@@ -1,5 +1,9 @@
 import type { JobListing } from "./types.js";
 
+/**
+ * Local/fixture data only — not served on the public site.
+ * Live inventory comes from Supabase (employer posts + feed sync).
+ */
 export const SAMPLE_JOBS: JobListing[] = [
   {
     id: "1",

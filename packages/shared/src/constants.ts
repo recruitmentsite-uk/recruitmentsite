@@ -19,6 +19,14 @@ export const VERTICAL_LABELS: Record<Vertical, string> = {
   healthcare: "Healthcare & Care",
   trades: "Trades & Construction",
   tech: "Technology",
+  education: "Education & Teaching",
+  hospitality: "Hospitality & Catering",
+  logistics: "Logistics & Driving",
+  finance: "Finance & Accounting",
+  retail: "Retail & Customer Service",
+  legal: "Legal & Compliance",
+  marketing: "Marketing & Creative",
+  engineering: "Engineering & Manufacturing",
   general: "All sectors",
 };
 
@@ -44,10 +52,12 @@ export const COMPANY_LEGAL_NOTICE = `${SITE_NAME} is a trading name of ${COMPANY
 export const POPULAR_SEARCHES = [
   { label: "Registered Nurse", query: "nurse" },
   { label: "Care Assistant", query: "care assistant" },
-  { label: "Healthcare Assistant", query: "hca" },
-  { label: "Support Worker", query: "support worker" },
   { label: "Electrician", query: "electrician" },
   { label: "Software Developer", query: "developer" },
+  { label: "Teacher", query: "teacher" },
+  { label: "HGV Driver", query: "hgv" },
+  { label: "Accountant", query: "accountant" },
+  { label: "Chef", query: "chef" },
 ] as const;
 
 /** High-intent UK cities for homepage browse links */
@@ -71,5 +81,5 @@ export const TRUST_SIGNALS = [
   { stat: "100%", label: "Listings show salary" },
   { stat: "£0", label: "Cost to apply" },
   { stat: "5 min", label: "Average apply time" },
-  { stat: "£249/mo", label: "Unlimited posts for employers" },
+  { stat: "Free", label: "Daily job alerts" },
 ] as const;

@@ -82,7 +82,18 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
               ))}
             </div>
             {jobs.length === 0 && (
-              <p className="mt-10 text-center text-slate-500">No jobs in this category yet.</p>
+              <div className="mt-10 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-12 text-center">
+                <p className="text-lg font-semibold text-slate-900">No matching roles right now</p>
+                <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+                  Try another sector or city, or set up an alert and we&apos;ll notify you when new jobs are posted.
+                </p>
+                <a
+                  href="#alerts"
+                  className="mt-6 inline-flex rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
+                >
+                  Get job alerts
+                </a>
+              </div>
             )}
           </div>
           <aside id="alerts" className="lg:w-80 shrink-0">

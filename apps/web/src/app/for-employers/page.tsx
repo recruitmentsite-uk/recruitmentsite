@@ -5,7 +5,6 @@ import {
   PRICING_PLANS,
   formatGbp,
   HIRE_GUIDE_PAGES,
-  COMPETITOR_SEO_PAGES,
   SEO_ROLE_PAGES,
 } from "@placeuk/shared";
 import { Hero } from "@/components/Hero";
@@ -51,12 +50,12 @@ export default function ForEmployersPage() {
 
       <section className="bg-slate-50 border-y border-slate-200 py-16">
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="text-2xl font-bold text-slate-900">Why employers switch to Recruitment Site</h2>
+          <h2 className="text-2xl font-bold text-slate-900">What you get with Recruitment Site</h2>
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             {[
               {
                 title: "Predictable pricing",
-                body: "Reed charges £100+ per listing. Indeed PPC spirals at £1.50–£3 per click. Hays takes 15–25% commission. We charge a flat monthly fee.",
+                body: "Flat monthly fee on Growth with unlimited posts. No placement commission — ever. Budget hiring without per-listing surprises.",
               },
               {
                 title: "AI-ranked applicants",
@@ -64,7 +63,7 @@ export default function ForEmployersPage() {
               },
               {
                 title: "Healthcare compliance built in",
-                body: "NMC, HCPC, DBS and NHS Band fields out of the box — something Reed and Indeed don't offer for care home and NHS hiring.",
+                body: "NMC, HCPC, DBS and NHS Band fields out of the box for care home and NHS hiring — ready when you post regulated roles.",
               },
               {
                 title: "Google Jobs included",
@@ -97,22 +96,7 @@ export default function ForEmployersPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-16">
-        <h2 className="text-2xl font-bold text-slate-900">Compare vs competitors</h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {COMPETITOR_SEO_PAGES.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/compare/${c.slug}`}
-              className="rounded-xl border border-slate-200 bg-white p-4 text-center hover:border-brand transition-colors"
-            >
-              <p className="font-semibold text-brand">vs {c.name}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-slate-900 py-16">
+      <section className="bg-ink py-16">
         <div className="mx-auto max-w-6xl px-4">
           <CompetitorCards />
         </div>

@@ -65,8 +65,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <Link href="/pricing" className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark">
             View pricing
           </Link>
-          <Link href="/compare" className="rounded-xl border border-brand px-5 py-2.5 text-sm font-semibold text-brand hover:bg-white">
-            Compare vs Reed
+          <Link href="/for-employers" className="rounded-xl border border-brand px-5 py-2.5 text-sm font-semibold text-brand hover:bg-white">
+            Employer features
           </Link>
         </div>
       </aside>

@@ -7,8 +7,8 @@ import { CheckoutButton } from "@/components/CheckoutButton";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
-  title: "Compare Recruitment Site vs Reed, Indeed, Hays",
-  description: "See how Recruitment Site compares to Reed, Indeed, Hays and Totaljobs on pricing, AI matching, and features.",
+  title: "Recruitment Site Features & Pricing Comparison",
+  description: "Flat monthly fee, AI match scores, salary on every job, and Google Jobs included — see Recruitment Site features and pricing side by side.",
   path: "/compare",
 });
 
@@ -17,11 +17,11 @@ export default function ComparePage() {
     <>
       <Hero
         image={UNSPLASH.hero.team}
-        badge="Competitor comparison"
-        title="Same reach. Better economics."
-        subtitle="See exactly how Recruitment Site stacks up against Reed, Indeed, Hays and Totaljobs — and where we win."
+        badge="Features & pricing"
+        title="What you get with Recruitment Site"
+        subtitle="Flat monthly fee, AI match scores, salary on every job, and Google Jobs included — see how that compares on price and features."
         primaryCta={{ label: "Start free trial", href: "/pricing" }}
-        secondaryCta={{ label: "View dashboard demo", href: "/dashboard" }}
+        secondaryCta={{ label: "For employers", href: "/for-employers" }}
         align="left"
       />
 
@@ -68,7 +68,7 @@ export default function ComparePage() {
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="text-2xl font-bold text-slate-900 text-center">Feature-by-feature</h2>
           <p className="mt-2 text-center text-slate-500 mb-10">
-            Recruitment Site includes on Growth ({formatGbp(PRICING_PLANS[1].priceMonthly)}/mo) what others charge extra for
+            Everything below is included on Growth ({formatGbp(PRICING_PLANS[1].priceMonthly)}/mo)
           </p>
           <CompetitorComparison />
         </div>
@@ -77,19 +77,27 @@ export default function ComparePage() {
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="grid gap-12 lg:grid-cols-2 items-center">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">The maths on a £35k hire</h2>
+            <h2 className="text-2xl font-bold text-slate-900">What Growth costs for a busy quarter</h2>
             <div className="mt-6 space-y-4">
               {[
-                { provider: "Hays (18% fee)", cost: "£6,300", bad: true },
-                { provider: "Reed (agency tier)", cost: "£4,000+", bad: true },
-                { provider: "Indeed PPC (3 months)", cost: "£1,200+", bad: true },
-                { provider: "Recruitment Site Growth (3 months)", cost: "£747", bad: false },
+                { label: "Unlimited job posts", included: true },
+                { label: "AI match scores on every applicant", included: true },
+                { label: "Salary transparency enforced", included: true },
+                { label: "Google Jobs syndication", included: true },
+                { label: "3 months of Growth", cost: "£747" },
               ].map((row) => (
-                <div key={row.provider} className={`flex justify-between rounded-xl p-4 ${
-                  row.bad ? "bg-red-50" : "bg-teal-50 border-2 border-brand"
-                }`}>
-                  <span className={row.bad ? "text-slate-600" : "font-semibold text-brand"}>{row.provider}</span>
-                  <span className={`font-bold ${row.bad ? "text-red-500 line-through" : "text-brand"}`}>{row.cost}</span>
+                <div
+                  key={row.label}
+                  className={`flex justify-between rounded-xl p-4 ${
+                    "cost" in row ? "bg-teal-50 border-2 border-brand" : "bg-slate-50"
+                  }`}
+                >
+                  <span className={"cost" in row ? "font-semibold text-brand" : "text-slate-600"}>
+                    {row.label}
+                  </span>
+                  <span className={`font-bold ${"cost" in row ? "text-brand" : "text-brand"}`}>
+                    {"cost" in row ? row.cost : "✓"}
+                  </span>
                 </div>
               ))}
             </div>
@@ -101,7 +109,7 @@ export default function ComparePage() {
       </section>
 
       <section className="bg-brand py-16 text-center text-white">
-        <h2 className="text-2xl font-bold">Ready to switch from Reed?</h2>
+        <h2 className="text-2xl font-bold">Ready to hire on Recruitment Site?</h2>
         <p className="mt-3 text-teal-100">30-day free trial on Growth. No placement fees. Cancel anytime.</p>
         <Link href="/pricing" className="mt-8 inline-block rounded-xl bg-white px-8 py-3 font-semibold text-brand hover:bg-teal-50">
           View pricing

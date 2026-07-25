@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import {
   COMPETITOR_SEO_PAGES,
   getCompetitorSeoPage,
-  COMPETITORS,
   UNSPLASH,
   PRICING_PLANS,
   formatGbp,
@@ -41,7 +40,6 @@ export default async function CompareCompetitorPage({ params }: PageProps) {
   const page = getCompetitorSeoPage(slug);
   if (!page) notFound();
 
-  const competitor = COMPETITORS.find((c) => c.name.toLowerCase().includes(slug));
   const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: "Compare", url: "/compare" },
@@ -66,29 +64,17 @@ export default async function CompareCompetitorPage({ params }: PageProps) {
 
       <Hero
         image={UNSPLASH.hero.team}
-        badge={`vs ${page.name}`}
+        badge="Feature comparison"
         title={page.headline}
         subtitle={page.description}
         primaryCta={{ label: "Start free trial", href: "/onboarding" }}
-        secondaryCta={{ label: "Full comparison", href: "/compare" }}
+        secondaryCta={{ label: "See all features", href: "/for-employers" }}
         align="left"
       />
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-bold text-slate-900">{page.name}</h2>
-            <p className="mt-2 text-2xl font-bold text-red-500">{page.theirPrice}</p>
-            <ul className="mt-4 space-y-2">
-              {page.painPoints.map((point) => (
-                <li key={point} className="flex gap-2 text-sm text-slate-600">
-                  <span className="text-red-400">✗</span>
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-2xl border-2 border-brand bg-teal-50 p-6 shadow-lg">
+          <div className="rounded-2xl border-2 border-brand bg-teal-50 p-6 shadow-lg md:order-2">
             <h2 className="text-lg font-bold text-brand">Recruitment Site</h2>
             <p className="mt-2 text-2xl font-bold text-brand">{page.ourAdvantage}</p>
             <ul className="mt-4 space-y-2">
@@ -105,8 +91,20 @@ export default async function CompareCompetitorPage({ params }: PageProps) {
               ))}
             </ul>
             <CheckoutButton tier="growth" className="mt-6 w-full rounded-xl bg-brand py-3 text-sm font-semibold text-white hover:bg-brand-dark">
-              Switch from {competitor?.logo ?? page.slug}
+              Start free trial
             </CheckoutButton>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:order-1">
+            <h2 className="text-lg font-bold text-slate-900">{page.name}</h2>
+            <p className="mt-2 text-lg font-semibold text-slate-700">{page.theirPrice}</p>
+            <ul className="mt-4 space-y-2">
+              {page.theirModel.map((point) => (
+                <li key={point} className="flex gap-2 text-sm text-slate-600">
+                  <span className="text-slate-300">•</span>
+                  {point}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
@@ -115,14 +113,14 @@ export default async function CompareCompetitorPage({ params }: PageProps) {
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="text-2xl font-bold text-slate-900 text-center">Full feature comparison</h2>
           <p className="mt-2 text-center text-slate-500 mb-10">
-            Recruitment Site Growth ({formatGbp(PRICING_PLANS[1].priceMonthly)}/mo) vs {page.name}
+            Recruitment Site Growth ({formatGbp(PRICING_PLANS[1].priceMonthly)}/mo) alongside {page.name}
           </p>
           <CompetitorComparison />
         </div>
       </section>
 
       <section className="bg-brand py-16 text-center text-white">
-        <h2 className="text-2xl font-bold">Ready to leave {page.name}?</h2>
+        <h2 className="text-2xl font-bold">Ready to try Recruitment Site?</h2>
         <p className="mt-3 text-teal-100">30-day free trial. No placement fees. Cancel anytime.</p>
         <Link href="/pricing" className="mt-8 inline-block rounded-xl bg-white px-8 py-3 font-semibold text-brand hover:bg-teal-50">
           View pricing

@@ -85,7 +85,7 @@ export const SEO_ROLE_PAGES: readonly SeoRolePage[] = [
     salaryMin: 22000,
     salaryMax: 30000,
     tags: ["Learning disabilities", "Community care", "Personal care", "DBS enhanced"],
-    employerGuide: "Reach support workers without Reed per-listing fees. Unlimited posts on Growth.",
+    employerGuide: "Reach support workers with unlimited posts on Growth and AI-scored applicants.",
   },
   {
     slug: "rmn-jobs",
@@ -98,7 +98,7 @@ export const SEO_ROLE_PAGES: readonly SeoRolePage[] = [
     salaryMin: 35392,
     salaryMax: 42618,
     tags: ["NMC registration", "Mental Health Act", "Band 6", "Risk assessment"],
-    employerGuide: "Target RMNs with compliance fields Reed doesn't offer. Flat monthly fee.",
+    employerGuide: "Target RMNs with NMC, DBS and Band fields built in. Flat monthly fee.",
   },
   {
     slug: "physiotherapist-jobs",
@@ -150,7 +150,7 @@ export const SEO_ROLE_PAGES: readonly SeoRolePage[] = [
     salaryMin: 32000,
     salaryMax: 45000,
     tags: ["18th Edition", "JIB/NICEIC", "Testing & inspection", "CSCS"],
-    employerGuide: "Hire electricians without Hays placement fees. Post unlimited roles from £249/mo.",
+    employerGuide: "Hire electricians with unlimited posts from £249/mo and AI-scored applicants.",
   },
   {
     slug: "plumber-jobs",
@@ -163,7 +163,7 @@ export const SEO_ROLE_PAGES: readonly SeoRolePage[] = [
     salaryMin: 30000,
     salaryMax: 42000,
     tags: ["Gas Safe", "Boiler install", "Maintenance", "Commercial"],
-    employerGuide: "Reach qualified plumbers with flat-fee hiring. No per-click Indeed costs.",
+    employerGuide: "Reach qualified plumbers with flat-fee hiring and salary shown on every ad.",
   },
   {
     slug: "site-manager-jobs",
@@ -204,6 +204,116 @@ export const SEO_ROLE_PAGES: readonly SeoRolePage[] = [
     tags: ["AWS/GCP", "Terraform", "CI/CD", "Kubernetes"],
     employerGuide: "Post DevOps roles with unlimited listings. Google Jobs syndication included.",
   },
+  {
+    slug: "teacher-jobs",
+    title: "Teacher Jobs UK",
+    headline: "Teacher jobs across the UK",
+    description: "Primary and secondary teacher roles with salary scales shown upfront. QTS roles. Apply free.",
+    vertical: "education",
+    searchQuery: "teacher",
+    salaryMin: 31000,
+    salaryMax: 48000,
+    tags: ["QTS", "Primary", "Secondary", "Safeguarding"],
+  },
+  {
+    slug: "teaching-assistant-jobs",
+    title: "Teaching Assistant Jobs UK",
+    headline: "Teaching assistant jobs",
+    description: "TA and classroom support roles with pay shown upfront. Term-time and SEND. Apply free.",
+    vertical: "education",
+    searchQuery: "teaching assistant",
+    salaryMin: 20000,
+    salaryMax: 28000,
+    tags: ["Classroom support", "SEND", "Term-time"],
+  },
+  {
+    slug: "chef-jobs",
+    title: "Chef Jobs UK",
+    headline: "Chef and kitchen jobs",
+    description: "Chef de partie, sous chef and kitchen roles with pay rates shown upfront. Apply free.",
+    vertical: "hospitality",
+    searchQuery: "chef",
+    salaryMin: 26000,
+    salaryMax: 40000,
+    tags: ["Kitchen", "HACCP", "Hotels & restaurants"],
+  },
+  {
+    slug: "warehouse-jobs",
+    title: "Warehouse Jobs UK",
+    headline: "Warehouse operative jobs",
+    description: "Warehouse and logistics roles with shift pay shown upfront. Apply free.",
+    vertical: "logistics",
+    searchQuery: "warehouse",
+    salaryMin: 23000,
+    salaryMax: 30000,
+    tags: ["Picking", "Packing", "Shifts"],
+  },
+  {
+    slug: "hgv-driver-jobs",
+    title: "HGV Driver Jobs UK",
+    headline: "HGV and LGV driver jobs",
+    description: "Class 1 and Class 2 driver roles with salary shown upfront. Apply free.",
+    vertical: "logistics",
+    searchQuery: "hgv",
+    salaryMin: 34000,
+    salaryMax: 48000,
+    tags: ["C+E", "Class 2", "Nights"],
+  },
+  {
+    slug: "accountant-jobs",
+    title: "Accountant Jobs UK",
+    headline: "Accountant and finance jobs",
+    description: "Management accountant and practice roles with salary shown upfront. Apply free.",
+    vertical: "finance",
+    searchQuery: "accountant",
+    salaryMin: 35000,
+    salaryMax: 55000,
+    tags: ["ACCA", "CIMA", "Practice & industry"],
+  },
+  {
+    slug: "retail-assistant-jobs",
+    title: "Retail Assistant Jobs UK",
+    headline: "Retail assistant jobs",
+    description: "Store and customer service roles with pay shown upfront. Apply free.",
+    vertical: "retail",
+    searchQuery: "retail assistant",
+    salaryMin: 22000,
+    salaryMax: 28000,
+    tags: ["Customer service", "Till", "Flexible hours"],
+  },
+  {
+    slug: "solicitor-jobs",
+    title: "Solicitor Jobs UK",
+    headline: "Solicitor jobs across the UK",
+    description: "Private practice and in-house solicitor roles with PQE and salary shown. Apply free.",
+    vertical: "legal",
+    searchQuery: "solicitor",
+    salaryMin: 45000,
+    salaryMax: 70000,
+    tags: ["PQE", "SRA", "Private practice"],
+  },
+  {
+    slug: "marketing-executive-jobs",
+    title: "Marketing Executive Jobs UK",
+    headline: "Marketing executive jobs",
+    description: "Marketing and digital roles with salary shown upfront. Apply free.",
+    vertical: "marketing",
+    searchQuery: "marketing",
+    salaryMin: 28000,
+    salaryMax: 45000,
+    tags: ["Campaigns", "Digital", "CRM"],
+  },
+  {
+    slug: "mechanical-engineer-jobs",
+    title: "Mechanical Engineer Jobs UK",
+    headline: "Mechanical engineer jobs",
+    description: "Mechanical design and manufacturing engineer roles with salary shown. Apply free.",
+    vertical: "engineering",
+    searchQuery: "mechanical engineer",
+    salaryMin: 35000,
+    salaryMax: 50000,
+    tags: ["CAD", "SolidWorks", "DFM"],
+  },
 ] as const;
 
 export function getRolePage(slug: string): SeoRolePage | undefined {
@@ -233,7 +343,7 @@ export const HIRE_GUIDE_PAGES: readonly HireGuidePage[] = [
     title: "How to Hire Nurses in the UK",
     headline: "Hire registered nurses without agency fees",
     description:
-      "Guide for care homes, NHS trusts and private providers hiring Band 5–7 nurses. Flat-fee alternative to Hays and Reed.",
+      "Guide for care homes, NHS trusts and private providers hiring Band 5–7 nurses with flat-fee posting and AI matching.",
     vertical: "healthcare",
     steps: [
       "Define the role — Band, setting (ward, community, RMN), NMC and DBS requirements",
@@ -247,7 +357,7 @@ export const HIRE_GUIDE_PAGES: readonly HireGuidePage[] = [
       "Use DBS enhanced level field for regulated activity roles",
       "Syndicate to Google Jobs automatically — included on Growth plan",
     ],
-    costComparison: "Hays charges 15–25% of first-year salary (£5,250–£8,750 on a £35k Band 5 nurse). Recruitment Site Growth is £249/mo unlimited.",
+    costComparison: "Recruitment Site Growth is £249/mo with unlimited nurse posts, AI scoring and zero placement commission.",
   },
   {
     slug: "care-assistants",
@@ -255,7 +365,7 @@ export const HIRE_GUIDE_PAGES: readonly HireGuidePage[] = [
     title: "How to Hire Care Assistants in the UK",
     headline: "Hire care assistants for care homes & domiciliary care",
     description:
-      "Recruit care assistants without per-listing Reed fees. DBS, compliance and AI matching included.",
+      "Recruit care assistants with DBS fields, AI matching and unlimited posts on Growth.",
     vertical: "healthcare",
     steps: [
       "Write a clear job ad with hourly rate, shift pattern and care setting",
@@ -269,7 +379,7 @@ export const HIRE_GUIDE_PAGES: readonly HireGuidePage[] = [
       "Use job alerts to reach passive candidates in your city",
       "Bulk upload multiple roles if hiring across several homes",
     ],
-    costComparison: "Reed charges £100+ per listing. Three care assistant roles = £300+. Recruitment Site Growth covers unlimited posts for £249/mo.",
+    costComparison: "Growth covers unlimited care assistant posts for £249/mo — AI scores every applicant.",
   },
   {
     slug: "practice-nurses",
@@ -313,13 +423,13 @@ export const HIRE_GUIDE_PAGES: readonly HireGuidePage[] = [
       "Post in multiple cities if you operate regionally",
       "Use featured boost (£49) for urgent contract starts",
     ],
-    costComparison: "Indeed PPC costs £1.50–£3 per click. A £35k electrician hire via Hays costs ~£6,300 in commission. Recruitment Site: £249/mo flat.",
+    costComparison: "Recruitment Site Growth is £249/mo flat — unlimited electrician posts with AI scoring and no placement fees.",
   },
   {
     slug: "software-developers",
     role: "Software Developers",
     title: "How to Hire Software Developers in the UK",
-    headline: "Hire developers without agency fees or Indeed PPC",
+    headline: "Hire developers with AI matching and clear salary bands",
     description:
       "Tech scale-ups and SMEs: hire full stack, backend and DevOps engineers with AI-matched candidates.",
     vertical: "tech",
@@ -333,9 +443,9 @@ export const HIRE_GUIDE_PAGES: readonly HireGuidePage[] = [
       "Show salary — developers ignore roles without pay transparency",
       "State remote policy clearly — hybrid vs remote affects applicant pool significantly",
       "Include equity/benefits if competitive with London market rates",
-      "Branded careers page on Growth helps employer brand vs generic Indeed posts",
+      "Branded careers page on Growth helps candidates apply under your brand",
     ],
-    costComparison: "Tech recruiters charge 20–25% (£9,000–£15,000 on a £60k hire). Recruitment Site Scale at £499/mo includes ATS integration.",
+    costComparison: "Scale at £499/mo includes ATS integration, unlimited posts and AI scoring — no placement commission.",
   },
 ] as const;
 
@@ -351,72 +461,73 @@ export interface CompetitorSeoPage {
   description: string;
   theirPrice: string;
   ourAdvantage: string;
-  painPoints: readonly string[];
+  /** Neutral pricing/model notes — not attack lines */
+  theirModel: readonly string[];
 }
 
 export const COMPETITOR_SEO_PAGES: readonly CompetitorSeoPage[] = [
   {
     slug: "reed",
     name: "Reed.co.uk",
-    title: "Recruitment Site vs Reed — Compare Pricing & Features",
-    headline: "A flat-fee alternative to Reed.co.uk",
+    title: "Recruitment Site vs Reed — Pricing & Features",
+    headline: "Flat-fee hiring with AI scoring built in",
     description:
-      "Compare Recruitment Site vs Reed on pricing, AI matching, salary transparency and healthcare compliance. Save vs £100+ per listing.",
-    theirPrice: "£100+ per job listing, agency tier 15–20% commission",
+      "See how Recruitment Site’s flat monthly pricing, AI match scores, salary transparency and healthcare fields compare with Reed.co.uk.",
+    theirPrice: "Typically priced per listing; agency services available separately",
     ourAdvantage: "£249/mo unlimited posts with AI scoring, salary required, and Google Jobs included",
-    painPoints: [
-      "Per-listing fees add up fast for SMEs hiring multiple roles",
-      "No built-in NHS Band, NMC or DBS fields for healthcare",
-      "Agency commission on permanent hires through Reed Recruitment",
-      "No AI applicant scoring — manual CV review for every application",
+    theirModel: [
+      "Per-listing and package pricing for job ads",
+      "Broad UK job board reach",
+      "Agency recruitment services available",
+      "CV search on higher tiers",
     ],
   },
   {
     slug: "indeed",
     name: "Indeed",
-    title: "Recruitment Site vs Indeed — Flat Fee vs Pay-Per-Click",
-    headline: "Stop paying Indeed £1.50–£3 per click",
+    title: "Recruitment Site vs Indeed — Pricing & Features",
+    headline: "Predictable monthly hiring — not pay-per-click",
     description:
-      "Indeed PPC costs spiral for competitive roles. Recruitment Site offers flat monthly pricing with salary required on every job.",
-    theirPrice: "Free to post, but sponsored jobs cost £1.50–£3 per click",
-    ourAdvantage: "Predictable £249/mo with unlimited posts — no surprise PPC bills",
-    painPoints: [
-      "PPC costs are unpredictable and rise in competitive markets",
-      "Ghost jobs and duplicate listings frustrate candidates",
-      "Salary often missing — candidates skip unclear listings",
-      "No healthcare compliance fields (NMC, DBS, NHS Band)",
+      "Compare Recruitment Site’s flat monthly fee, salary-required listings and AI applicant scoring with Indeed’s marketplace model.",
+    theirPrice: "Organic posts available; sponsored visibility often charged per click",
+    ourAdvantage: "Predictable £249/mo with unlimited posts on Growth",
+    theirModel: [
+      "Large global candidate marketplace",
+      "Sponsored jobs available to boost visibility",
+      "Broad role coverage across industries",
+      "Employer tools vary by campaign and market",
     ],
   },
   {
     slug: "hays",
     name: "Hays",
-    title: "Recruitment Site vs Hays — No Placement Commission",
-    headline: "Replace Hays agency fees with flat-fee hiring",
+    title: "Recruitment Site vs Hays — Pricing & Features",
+    headline: "Hire on a flat fee — keep every placement",
     description:
-      "Hays charges 15–25% of first-year salary. Recruitment Site charges £249/mo with unlimited posts and AI matching.",
-    theirPrice: "15–25% of first-year salary per permanent hire",
-    ourAdvantage: "£747 for 3 months unlimited — vs £6,300+ on a single £35k Hays placement",
-    painPoints: [
-      "£6,000–£15,000 commission on a single hire",
-      "Long exclusivity periods before you see candidates",
-      "No direct control over job ad content or branding",
-      "Healthcare locum rates even higher at 20–30%",
+      "Compare Recruitment Site’s £249/mo Growth plan and AI matching with traditional agency placement fees.",
+    theirPrice: "Typically 15–25% of first-year salary per permanent placement",
+    ourAdvantage: "£249/mo unlimited posts — zero placement commission",
+    theirModel: [
+      "Full-service agency recruitment",
+      "Consultant-led candidate search",
+      "Placement fees on successful hires",
+      "Strong brand recognition with employers",
     ],
   },
   {
     slug: "totaljobs",
     name: "Totaljobs",
     title: "Recruitment Site vs Totaljobs — Feature Comparison",
-    headline: "More features than Totaljobs at a predictable price",
+    headline: "Unlimited posts, AI scoring, healthcare-ready fields",
     description:
       "Compare Recruitment Site vs Totaljobs on AI matching, healthcare fields, and flat-fee pricing for UK SMEs.",
-    theirPrice: "£199+/mo packages with limited posts",
+    theirPrice: "Package pricing with listing allowances",
     ourAdvantage: "£249/mo Growth with unlimited posts, AI scoring, and healthcare compliance",
-    painPoints: [
-      "Package limits on number of active listings",
-      "No AI applicant scoring included",
-      "Healthcare compliance fields not built in",
-      "Branded careers page requires higher tier",
+    theirModel: [
+      "Established UK job board packages",
+      "Listing allowances by tier",
+      "Broad multi-sector coverage",
+      "Employer branding options on higher plans",
     ],
   },
 ] as const;
@@ -425,7 +536,19 @@ export function getCompetitorSeoPage(slug: string): CompetitorSeoPage | undefine
   return COMPETITOR_SEO_PAGES.find((p) => p.slug === slug);
 }
 
-export const VERTICAL_CITY_PATHS = ["healthcare", "trades", "tech"] as const;
+export const VERTICAL_CITY_PATHS = [
+  "healthcare",
+  "trades",
+  "tech",
+  "education",
+  "hospitality",
+  "logistics",
+  "finance",
+  "retail",
+  "legal",
+  "marketing",
+  "engineering",
+] as const;
 export type VerticalCityPath = (typeof VERTICAL_CITY_PATHS)[number];
 
 export function getCitySeoTitle(city: string): string {
@@ -433,25 +556,43 @@ export function getCitySeoTitle(city: string): string {
 }
 
 export function getCitySeoDescription(city: string): string {
-  return `Browse jobs in ${city} with salary shown on every listing. Healthcare, trades and tech roles. Apply free in under 5 minutes.`;
+  return `Browse jobs in ${city} with salary shown on every listing. Healthcare, trades, tech, education, logistics and more. Apply free in under 5 minutes.`;
 }
 
+const VERTICAL_CITY_SHORT: Record<Vertical, string> = {
+  healthcare: "Healthcare",
+  trades: "Trades & Construction",
+  tech: "Technology",
+  education: "Education",
+  hospitality: "Hospitality",
+  logistics: "Logistics & Driving",
+  finance: "Finance",
+  retail: "Retail",
+  legal: "Legal",
+  marketing: "Marketing",
+  engineering: "Engineering",
+  general: "All",
+};
+
+const VERTICAL_CITY_BLURB: Record<Vertical, string> = {
+  healthcare: "NHS, care home and clinical roles",
+  trades: "Electrician, plumber and construction roles",
+  tech: "Developer, DevOps and tech roles",
+  education: "Teacher, TA and school support roles",
+  hospitality: "Chef, hotel and restaurant roles",
+  logistics: "Warehouse, HGV and supply-chain roles",
+  finance: "Accounting, bookkeeping and analyst roles",
+  retail: "Store and customer service roles",
+  legal: "Solicitor, paralegal and compliance roles",
+  marketing: "Marketing, content and creative roles",
+  engineering: "Mechanical, electrical and manufacturing roles",
+  general: "Jobs",
+};
+
 export function getVerticalCitySeoTitle(vertical: Vertical, city: string): string {
-  const labels: Record<Vertical, string> = {
-    healthcare: "Healthcare",
-    trades: "Trades & Construction",
-    tech: "Technology",
-    general: "All",
-  };
-  return `${labels[vertical]} Jobs in ${city}`;
+  return `${VERTICAL_CITY_SHORT[vertical]} Jobs in ${city}`;
 }
 
 export function getVerticalCitySeoDescription(vertical: Vertical, city: string): string {
-  const labels: Record<Vertical, string> = {
-    healthcare: "NHS, care home and clinical roles",
-    trades: "Electrician, plumber and construction roles",
-    tech: "Developer, DevOps and tech roles",
-    general: "Jobs",
-  };
-  return `Find ${labels[vertical].toLowerCase()} in ${city} with salary shown upfront. Verified UK employers. Apply free.`;
+  return `Find ${VERTICAL_CITY_BLURB[vertical].toLowerCase()} in ${city} with salary shown upfront. Verified UK employers. Apply free.`;
 }

@@ -32,7 +32,7 @@ export default async function HealthcarePage() {
         image={UNSPLASH.hero.healthcare}
         badge="UK's #1 hiring vertical"
         title="Healthcare jobs across the UK"
-        subtitle="NHS Band pay, CQC-registered employers, NMC/HCPC verified roles. Reed can't match our healthcare depth."
+        subtitle="NHS Band pay, CQC-registered employers, NMC/HCPC verified roles — salary shown on every listing."
         primaryCta={{ label: `Browse ${jobs.length} jobs`, href: "/jobs?vertical=healthcare" }}
         secondaryCta={{ label: "Hire staff", href: "/pricing" }}
         align="left"
@@ -117,7 +117,6 @@ export default async function HealthcarePage() {
 
       <section className="bg-slate-900 py-16">
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="text-xl font-bold text-white text-center mb-8">Why care homes choose Recruitment Site over Reed</h2>
           <CompetitorCards />
         </div>
       </section>

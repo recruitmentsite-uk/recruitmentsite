@@ -20,7 +20,7 @@ export default function AboutPage() {
         title={`${SITE_NAME} — UK hiring, automated`}
         subtitle={EMPLOYER_TAGLINE}
         primaryCta={{ label: "View pricing", href: "/pricing" }}
-        secondaryCta={{ label: "Compare vs Reed", href: "/compare" }}
+        secondaryCta={{ label: "See features", href: "/for-employers" }}
         align="left"
       />
 
@@ -29,9 +29,9 @@ export default function AboutPage() {
           <div>
             <h2 className="text-2xl font-bold text-slate-900">Why we built Recruitment Site</h2>
             <p className="mt-4 text-slate-600 leading-relaxed">
-              UK SMEs shouldn&apos;t pay 15–25% agency fees or £100+ per job listing. Reed, Indeed, and Hays
-              built models for a different era — we built automation-first hiring with flat monthly pricing,
-              AI applicant scoring, and salary transparency on every role.
+              UK SMEs deserve predictable hiring costs and modern tools. We built Recruitment Site for
+              flat monthly pricing, AI applicant scoring, and salary transparency on every role —
+              so you spend less time screening and more time hiring.
             </p>
             <p className="mt-4 text-slate-600 leading-relaxed">
               We launch deepest in healthcare — where staff shortages are acute and compliance matters —

@@ -13,8 +13,8 @@ const FAQ = [
     a: "At minimum, a salary range (min–max) in GBP per year, hour, or day. Healthcare roles should include NHS Band where applicable.",
   },
   {
-    q: "How does this compare to Reed and Indeed?",
-    a: "Reed and Indeed allow jobs without salary — leading to ghost listings and frustrated candidates. Recruitment Site rejects posts without clear pay.",
+    q: "What if an employer wants to post without salary?",
+    a: "We don’t publish listings without clear pay. Vague phrases like “competitive salary” are rejected so candidates always know the range before they apply.",
   },
   {
     q: "Can employers post 'competitive salary'?",
@@ -25,7 +25,7 @@ const FAQ = [
 export const metadata = buildPageMetadata({
   title: "Salary Transparency — Every Job Shows Pay Upfront",
   description:
-    "Recruitment Site requires salary on every UK job listing. No 'competitive salary' or missing pay. Compare with Reed and Indeed.",
+    "Recruitment Site requires salary on every UK job listing. No 'competitive salary' or missing pay — clear compensation before you apply.",
   path: "/salary-transparency",
 });
 
@@ -52,8 +52,8 @@ export default function SalaryTransparencyPage() {
             <h2 className="text-2xl font-bold text-slate-900">Why salary transparency matters</h2>
             <p className="mt-4 text-slate-600 leading-relaxed">
               Over 60% of UK job seekers say they won&apos;t apply to roles without salary information.
-              Platforms like Indeed and Reed still allow vague listings — &ldquo;competitive salary&rdquo;,
-              &ldquo;DOE&rdquo;, or no pay at all. That wastes everyone&apos;s time.
+              That&apos;s why we require a clear range on every listing — no &ldquo;competitive salary&rdquo;,
+              no &ldquo;DOE&rdquo;, no missing pay.
             </p>
             <ul className="mt-6 space-y-3 text-slate-600">
               <li className="flex gap-2"><span className="text-brand font-bold">✓</span> Candidates apply only to roles within their expectations</li>
@@ -87,7 +87,7 @@ export default function SalaryTransparencyPage() {
         <div className="mx-auto max-w-6xl px-4 text-center">
           <h2 className="text-2xl font-bold text-slate-900">100% of listings show salary</h2>
           <p className="mt-3 text-slate-600 max-w-2xl mx-auto">
-            Unlike Reed and Indeed where pay is optional, every role on Recruitment Site displays clear compensation before you click apply.
+            Every role on Recruitment Site displays clear compensation before you click apply — no exceptions.
           </p>
           <Link href="/jobs" className="mt-8 inline-block rounded-xl bg-brand px-8 py-3 font-semibold text-white hover:bg-brand-dark">
             Browse transparent jobs

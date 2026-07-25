@@ -7,7 +7,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata = buildPageMetadata({
   title: "UK Hiring Guides & Insights",
   description:
-    "Practical guides on flat-fee hiring, NHS recruitment, trades staffing, and how Recruitment Site compares to Reed, Indeed, and Hays.",
+    "Practical guides on flat-fee hiring, NHS recruitment, trades staffing, and salary-transparent UK job boards.",
   path: "/blog",
 });
 
@@ -32,7 +32,7 @@ export default function BlogPage() {
         title="UK recruitment guides"
         subtitle="Flat-fee economics, healthcare hiring, and competitor comparisons — written for UK SME employers."
         primaryCta={{ label: "Browse jobs", href: "/jobs" }}
-        secondaryCta={{ label: "Compare vs Reed", href: "/compare" }}
+        secondaryCta={{ label: "For employers", href: "/for-employers" }}
         align="left"
       />
 

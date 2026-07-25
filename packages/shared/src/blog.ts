@@ -14,18 +14,18 @@ export interface BlogPost {
 export const BLOG_POSTS: BlogPost[] = [
   {
     slug: "flat-fee-vs-reed-agency-fees",
-    title: "Flat-fee hiring vs Reed: what UK SMEs actually pay",
+    title: "Flat-fee hiring for UK SMEs: what Growth actually covers",
     excerpt:
-      "Reed charges per listing and agencies take 15–25%. Here's how flat-fee platforms change the maths for a £35k hire.",
+      "Unlimited posts, AI scoring and zero placement commission — how a predictable monthly fee changes the maths for a £35k hire.",
     category: "comparison",
     publishedAt: "2026-07-10",
     readMinutes: 6,
     author: "Recruitment Site Team",
     content: [
-      "UK SMEs posting on Reed often pay £100+ per listing, with featured placement costing extra. Add agency fees of 15–25% on salary and a single £35,000 hire can cost £6,000 or more before you've counted your time.",
-      "Flat-fee platforms like Recruitment Site charge a predictable monthly subscription — unlimited job posts on Growth, AI applicant scoring included, and no placement commission when you hire.",
-      "The break-even is simple: if you hire more than once a year, or post more than two roles simultaneously, flat fee wins. Reed and Indeed still make sense for one-off brand campaigns, but they're expensive as your default channel.",
-      "Salary transparency is another hidden cost saver. Listings with disclosed pay get 25–30% more applications on average, which means fewer paid boosts and less time chasing candidates.",
+      "When hiring costs sit on a per-listing or placement-fee model, a single £35,000 hire can quietly run into thousands before you’ve counted your team’s time.",
+      "Recruitment Site Growth is a predictable monthly subscription — unlimited job posts, AI applicant scoring included, and no placement commission when you hire.",
+      "If you hire more than once a year, or post more than two roles at once, flat fee usually wins on total cost. Keep specialised campaigns for one-off brand pushes; use Growth as your default channel.",
+      "Salary transparency is another cost saver. Listings with disclosed pay get 25–30% more applications on average, which means fewer boosts and less time chasing candidates.",
     ],
   },
   {
@@ -41,7 +41,7 @@ export const BLOG_POSTS: BlogPost[] = [
       "Healthcare remains the UK's tightest hiring market. Care homes and NHS trusts compete with locum agencies charging premium day rates — yet many roles can be filled directly if compliance is handled upfront.",
       "Start with role clarity: Band level, NMC pin requirement, DBS level (enhanced for patient-facing roles), and salary band shown on the listing. Candidates filter heavily on pay — hiding salary wastes everyone's time.",
       "Generic job boards treat a nurse like any other role. Healthcare-specific fields — NMC, HCPC, NHS Band, CQC employer flag — reduce unqualified applications and speed up shortlisting.",
-      "AI scoring against your job spec saves hours of CV screening. Instead of keyword searches (Reed's model) or PPC volume (Indeed's model), you review ranked applicants with match summaries.",
+      "AI scoring against your job spec saves hours of CV screening. You review ranked applicants with match summaries — not an unsorted inbox of keyword hits.",
     ],
   },
   {
@@ -56,7 +56,7 @@ export const BLOG_POSTS: BlogPost[] = [
     content: [
       "Since 2023, Google Jobs has increasingly favoured listings with structured salary data. UK candidates, meanwhile, overwhelmingly skip roles without pay shown — especially in healthcare and trades.",
       "Recruitment Site requires salary on every employer post. That isn't bureaucracy — it's a conversion and SEO lever. Listings with min/max GBP and period (year, hour, day) syndicate cleanly to Google Jobs JSON-LD.",
-      "Competitors like Indeed partially enforce salary in some markets but allow 'competitive' placeholders. Reed often lets employers omit pay entirely. The result: ghost listings and wasted applies.",
+      "Vague placeholders like “competitive salary” waste applies. We require a clear range so candidates self-select and employers get serious shortlists.",
       "If you're migrating from another board, audit your live roles. Adding salary typically lifts apply rate within the first fortnight without increasing spend.",
     ],
   },
@@ -78,18 +78,18 @@ export const BLOG_POSTS: BlogPost[] = [
   },
   {
     slug: "indeed-ppc-vs-unlimited-job-posts",
-    title: "Indeed PPC vs unlimited posts: when pay-per-click stops making sense",
+    title: "Unlimited posts vs pay-per-click: when flat fee wins",
     excerpt:
-      "At £1.50–£3 per click, sponsored Indeed campaigns add up fast. Compare the economics for SMEs hiring year-round.",
+      "Sponsored clicks add up fast for year-round hiring. Here’s when a flat monthly plan with unlimited posts makes more sense for UK SMEs.",
     category: "comparison",
     publishedAt: "2026-06-12",
     readMinutes: 6,
     author: "Recruitment Site Team",
     content: [
-      "Indeed's model works for employers with strong employer brand and high conversion on apply. For most UK SMEs, PPC becomes a treadmill: pay for clicks, fight ghost applicants, repeat.",
-      "A Growth plan at flat monthly fee with unlimited posts flips the incentive. You're not penalised for posting another role when a project expands — common in trades and healthcare.",
-      "Indeed still delivers volume. The smart approach: organic listings via Google Jobs syndication plus targeted alerts, and reserve PPC for hard-to-fill single roles.",
-      "Track cost per hire, not cost per click. Agency fees and PPC often hide the true number until after you've signed.",
+      "Pay-per-click can work when you have a strong employer brand and high apply conversion. For most UK SMEs hiring year-round, click costs become a treadmill — especially on competitive roles.",
+      "A Growth plan at a flat monthly fee with unlimited posts flips the incentive. You're not penalised for posting another role when a project expands — common in trades and healthcare.",
+      "The smart stack: organic reach via Google Jobs syndication plus targeted alerts on Recruitment Site, and reserve paid boosts for hard-to-fill single roles.",
+      "Track cost per hire, not cost per click. Placement fees and sponsored campaigns often hide the true number until after you've signed.",
     ],
   },
   {

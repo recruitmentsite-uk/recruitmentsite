@@ -1,23 +1,18 @@
-import { SAMPLE_JOBS, type JobListing, type Vertical } from "@placeuk/shared";
+import type { JobListing, Vertical } from "@placeuk/shared";
 import { fetchJobBySlug, fetchJobsFromDb } from "./supabase";
 
+/**
+ * Public job inventory comes from Supabase only.
+ * Hardcoded SAMPLE_JOBS are never shown on the live site.
+ */
 export async function getJobs(filters?: {
   vertical?: string;
   city?: string;
   q?: string;
 }): Promise<JobListing[]> {
   const dbJobs = await fetchJobsFromDb(filters);
-  if (dbJobs && dbJobs.length > 0) return filterByQuery(dbJobs, filters?.q);
-
-  let jobs = SAMPLE_JOBS.filter((j) => j.status === "active");
-  if (filters?.vertical) {
-    jobs = jobs.filter((j) => j.vertical === filters.vertical);
-  }
-  if (filters?.city) {
-    const city = filters.city.toLowerCase();
-    jobs = jobs.filter((j) => j.city.toLowerCase().includes(city));
-  }
-  return filterByQuery(jobs, filters?.q);
+  if (!dbJobs) return [];
+  return filterByQuery(dbJobs, filters?.q);
 }
 
 function filterByQuery(jobs: JobListing[], q?: string): JobListing[] {
@@ -34,8 +29,7 @@ function filterByQuery(jobs: JobListing[], q?: string): JobListing[] {
 
 export async function getJobBySlug(slug: string): Promise<JobListing | undefined> {
   const dbJob = await fetchJobBySlug(slug);
-  if (dbJob) return dbJob;
-  return SAMPLE_JOBS.find((j) => j.slug === slug && j.status === "active");
+  return dbJob ?? undefined;
 }
 
 export async function getJobsByVertical(vertical: Vertical): Promise<JobListing[]> {

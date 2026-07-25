@@ -1,23 +1,20 @@
+import Link from "next/link";
 import { COMPETITORS, COMPETITOR_FEATURES } from "@placeuk/shared";
 
 function FeatureCell({ value }: { value: string }) {
   if (value === "yes") {
     return (
-      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-teal-100 text-brand text-sm font-bold">
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-teal-100 text-sm font-bold text-brand">
         ✓
       </span>
     );
   }
   if (value === "no") {
-    return (
-      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-red-50 text-red-400 text-sm">
-        ✕
-      </span>
-    );
+    return <span className="text-xs text-slate-400">—</span>;
   }
   if (value === "partial") {
     return (
-      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-50 text-amber-600 text-xs font-semibold">
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-mist text-xs font-semibold text-ink/50">
         ~
       </span>
     );
@@ -25,13 +22,14 @@ function FeatureCell({ value }: { value: string }) {
   return <span className="text-xs text-slate-500">{value}</span>;
 }
 
+/** Feature matrix for dedicated /compare pages only — neutral cells, no trash-talk. */
 export function CompetitorComparison({ highlight = "Recruitment Site" }: { highlight?: string }) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
       <table className="w-full min-w-[800px] text-sm">
         <thead>
           <tr className="border-b border-slate-100">
-            <th className="p-4 text-left font-medium text-slate-500 w-48">Feature</th>
+            <th className="w-48 p-4 text-left font-medium text-slate-500">Feature</th>
             {COMPETITORS.map((c) => (
               <th
                 key={c.name}
@@ -49,7 +47,6 @@ export function CompetitorComparison({ highlight = "Recruitment Site" }: { highl
                 <p className={`mt-2 font-semibold ${c.name === highlight ? "text-brand" : "text-slate-900"}`}>
                   {c.name}
                 </p>
-                <p className="mt-0.5 text-xs text-slate-400">{c.priceExample}</p>
               </th>
             ))}
           </tr>
@@ -74,40 +71,88 @@ export function CompetitorComparison({ highlight = "Recruitment Site" }: { highl
   );
 }
 
-export function CompetitorCards() {
-  const ours = COMPETITORS[0];
-  const others = COMPETITORS.slice(1, 3);
+const EMPLOYER_FEATURES = [
+  {
+    title: "Salary on every listing",
+    body: "Candidates see pay before they apply — clearer shortlists and fewer wasted conversations.",
+  },
+  {
+    title: "AI match scores",
+    body: "Every applicant is scored 0–100 against your role so you review the best fits first.",
+  },
+  {
+    title: "Flat monthly pricing",
+    body: "Unlimited posts on Growth. No placement commission. Predictable hiring cost for UK teams.",
+  },
+  {
+    title: "Google Jobs included",
+    body: "Structured JobPosting syndication goes out with every live role — no extra setup.",
+  },
+  {
+    title: "Healthcare-ready fields",
+    body: "NMC, DBS and NHS Band fields built in when you hire regulated clinical roles.",
+  },
+  {
+    title: "Branded careers page",
+    body: "Candidates apply under your brand on Growth — not lost in a generic feed.",
+  },
+] as const;
 
+/** Feature-led employer sell — use on marketing pages instead of competitor trash-talk. */
+export function EmployerFeatureGrid({
+  tone = "light",
+}: {
+  tone?: "light" | "dark";
+}) {
+  const dark = tone === "dark";
   return (
-    <div className="grid gap-6 md:grid-cols-3">
-      <div className="rounded-2xl border-2 border-brand bg-gradient-to-br from-teal-50 to-white p-6 shadow-lg md:col-span-1">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand text-white text-lg font-bold">
-          {ours.logo}
-        </div>
-        <h3 className="mt-4 text-xl font-bold text-brand">{ours.name}</h3>
-        <p className="mt-1 text-sm text-slate-600">{ours.tagline}</p>
-        <p className="mt-4 text-2xl font-bold text-slate-900">{ours.priceExample}</p>
-        <ul className="mt-4 space-y-2 text-sm text-slate-600">
-          <li className="flex gap-2"><span className="text-brand">✓</span> AI match scores on every applicant</li>
-          <li className="flex gap-2"><span className="text-brand">✓</span> Unlimited posts on Growth</li>
-          <li className="flex gap-2"><span className="text-brand">✓</span> Zero placement commission</li>
-        </ul>
+    <div>
+      <div className="mx-auto max-w-2xl text-center">
+        <h2
+          className={`font-display text-2xl font-medium tracking-tight sm:text-3xl ${
+            dark ? "text-white" : "text-ink"
+          }`}
+        >
+          Built for serious UK hiring
+        </h2>
+        <p className={`mt-3 text-sm leading-relaxed sm:text-base ${dark ? "text-white/60" : "text-ink/55"}`}>
+          Flat monthly fee. Salary required on every job. AI match scores included. No agency commission.
+        </p>
       </div>
-      {others.map((c) => (
-        <div key={c.name} className="rounded-2xl border border-slate-200 bg-white p-6 opacity-90">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 text-lg font-bold">
-            {c.logo}
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {EMPLOYER_FEATURES.map((f) => (
+          <div
+            key={f.title}
+            className={`rounded-2xl border p-6 ${
+              dark
+                ? "border-white/10 bg-white/5"
+                : "border-ink/8 bg-white shadow-sm"
+            }`}
+          >
+            <p className={`font-semibold ${dark ? "text-white" : "text-ink"}`}>{f.title}</p>
+            <p className={`mt-2 text-sm leading-relaxed ${dark ? "text-white/55" : "text-ink/55"}`}>
+              {f.body}
+            </p>
           </div>
-          <h3 className="mt-4 text-xl font-bold text-slate-700">{c.name}</h3>
-          <p className="mt-1 text-sm text-slate-500">{c.tagline}</p>
-          <p className="mt-4 text-lg font-semibold text-slate-600">{c.priceExample}</p>
-          <ul className="mt-4 space-y-2 text-sm text-slate-400">
-            <li>✕ No AI scoring included</li>
-            <li>✕ Per-listing or PPC costs</li>
-            <li>✕ Generic, not vertical-focused</li>
-          </ul>
-        </div>
-      ))}
+        ))}
+      </div>
+      <div className="mt-8 text-center">
+        <Link
+          href="/onboarding"
+          className={`inline-flex rounded-full px-6 py-3 text-sm font-semibold transition ${
+            dark
+              ? "bg-white text-ink hover:bg-mist"
+              : "bg-brand text-white hover:bg-brand-dark"
+          }`}
+        >
+          Start hiring
+        </Link>
+      </div>
     </div>
   );
+}
+
+/** @deprecated Use EmployerFeatureGrid — kept as alias so existing imports keep working. */
+export function CompetitorCards() {
+  return <EmployerFeatureGrid tone="dark" />;
 }

@@ -10,18 +10,33 @@ import {
 } from "@placeuk/shared";
 import { getJobs, getSiteUrl } from "@/lib/jobs";
 
+function safeDate(value: string | undefined | null): Date {
+  if (!value) return new Date();
+  const ms = Date.parse(value);
+  return Number.isFinite(ms) ? new Date(ms) : new Date();
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getSiteUrl();
-  const jobs = await getJobs();
+  const now = new Date();
+
+  let jobs: Awaited<ReturnType<typeof getJobs>> = [];
+  try {
+    jobs = await getJobs();
+  } catch {
+    // Sitemap must still return static SEO URLs if job fetch fails.
+    jobs = [];
+  }
+
   const blogSlugs = getBlogSlugs();
 
-  const now = new Date();
   const staticPages: MetadataRoute.Sitemap = [
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/jobs`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/healthcare`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/trades`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/tech`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/sectors`, lastModified: now, changeFrequency: "weekly", priority: 0.85 },
     { url: `${base}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/compare`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/for-employers`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
@@ -38,6 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const cityPages = POPULAR_CITIES.map((city) => ({
     url: `${base}/jobs/${cityToSlug(city)}`,
+    lastModified: now,
     changeFrequency: "daily" as const,
     priority: 0.85,
   }));
@@ -45,6 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const verticalCityPages = VERTICAL_CITY_PATHS.flatMap((vertical) =>
     POPULAR_CITIES.map((city) => ({
       url: `${base}/${vertical}/jobs/${cityToSlug(city)}`,
+      lastModified: now,
       changeFrequency: "daily" as const,
       priority: 0.8,
     })),
@@ -52,31 +69,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const rolePages = SEO_ROLE_PAGES.map((role) => ({
     url: `${base}/${role.vertical}/${role.slug}`,
+    lastModified: now,
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
 
   const hirePages = HIRE_GUIDE_PAGES.map((guide) => ({
     url: `${base}/hire/${guide.slug}`,
+    lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.75,
   }));
 
   const comparePages = COMPETITOR_SEO_PAGES.map((c) => ({
     url: `${base}/compare/${c.slug}`,
+    lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.75,
   }));
 
-  const jobPages = jobs.map((job) => ({
-    url: `${base}/jobs/${job.slug}`,
-    lastModified: new Date(job.publishedAt),
-    changeFrequency: "daily" as const,
-    priority: 0.8,
-  }));
+  const jobPages = jobs.flatMap((job) => {
+    if (!job.slug?.trim()) return [];
+    return [
+      {
+        url: `${base}/jobs/${encodeURIComponent(job.slug)}`,
+        lastModified: safeDate(job.publishedAt),
+        changeFrequency: "daily" as const,
+        priority: 0.8,
+      },
+    ];
+  });
 
   const blogPages = blogSlugs.map((slug) => ({
     url: `${base}/blog/${slug}`,
+    lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));

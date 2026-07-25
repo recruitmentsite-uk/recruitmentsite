@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PRICING_PLANS, formatGbp, PAYG_JOB_POST_PRICE, UNSPLASH, EMPLOYER_TAGLINE, COMPANY_LEGAL_NOTICE } from "@placeuk/shared";
 import { Hero } from "@/components/Hero";
 import { PaygCheckoutButton, PricingCards } from "@/components/CheckoutButton";
-import { CompetitorComparison } from "@/components/CompetitorComparison";
+import { EmployerFeatureGrid } from "@/components/CompetitorComparison";
 import { UnsplashImage } from "@/components/UnsplashImage";
 import { buildPageMetadata } from "@/lib/seo";
 
@@ -21,7 +21,7 @@ export default function PricingPage() {
         title="Simple, flat-fee pricing"
         subtitle={EMPLOYER_TAGLINE}
         primaryCta={{ label: "Start free trial", href: "#plans" }}
-        secondaryCta={{ label: "Compare vs Reed", href: "/compare" }}
+        secondaryCta={{ label: "For employers", href: "/for-employers" }}
       />
 
       <div id="plans" className="mx-auto max-w-6xl px-4 py-16">
@@ -39,10 +39,7 @@ export default function PricingPage() {
 
       <section className="bg-slate-50 border-y border-slate-200 py-16">
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="text-xl font-bold text-slate-900 text-center">Included vs Reed & Indeed</h2>
-          <div className="mt-8">
-            <CompetitorComparison />
-          </div>
+          <EmployerFeatureGrid />
         </div>
       </section>
 
@@ -76,9 +73,9 @@ export default function PricingPage() {
       </section>
 
       <section className="bg-slate-900 py-16 text-center text-white">
-        <h2 className="text-2xl font-bold">The maths on hiring</h2>
+        <h2 className="text-2xl font-bold">Predictable hiring cost</h2>
         <p className="mx-auto mt-4 max-w-xl text-slate-300">
-          A £35k hire through Hays costs {formatGbp(6300)}. Recruitment Site Growth is {formatGbp(PRICING_PLANS[1].priceMonthly)}/month — unlimited hires.
+          Growth is {formatGbp(PRICING_PLANS[1].priceMonthly)}/month with unlimited posts, AI scoring and zero placement commission — hire as often as you need.
         </p>
         <Link
           href="/dashboard"

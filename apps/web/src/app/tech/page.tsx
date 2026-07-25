@@ -89,7 +89,6 @@ export default async function TechPage() {
 
       <section className="bg-slate-900 py-16">
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="text-xl font-bold text-white text-center mb-8">Why tech teams choose Recruitment Site</h2>
           <CompetitorCards />
         </div>
       </section>

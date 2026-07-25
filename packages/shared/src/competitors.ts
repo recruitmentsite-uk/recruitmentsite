@@ -11,6 +11,14 @@ export const UNSPLASH = {
     healthcare: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=80",
     trades: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80",
     tech: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
+    education: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80",
+    hospitality: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
+    logistics: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
+    finance: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
+    retail: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
+    legal: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80",
+    marketing: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80",
+    engineering: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
     general: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=80",
   },
   sections: {
@@ -84,8 +92,8 @@ export const COMPETITORS: CompetitorFeature[] = [
   {
     name: "Reed.co.uk",
     logo: "R",
-    tagline: "Legacy UK job board",
-    priceExample: "£100+ per listing",
+    tagline: "UK job board",
+    priceExample: "Per listing",
     features: {
       "Unlimited job posts": "no",
       "AI applicant scoring": "no",
@@ -104,8 +112,8 @@ export const COMPETITORS: CompetitorFeature[] = [
   {
     name: "Indeed",
     logo: "I",
-    tagline: "Global PPC job aggregator",
-    priceExample: "£1.50–£3/click sponsored",
+    tagline: "Job search marketplace",
+    priceExample: "Sponsored listings",
     features: {
       "Unlimited job posts": "partial",
       "AI applicant scoring": "partial",

@@ -12,6 +12,9 @@
     "jobs:sync": "node scripts/sync-job-feeds.mjs",
     "jobs:enrich": "node scripts/enrich-job-listings.mjs",
     "match:run": "node scripts/run-candidate-matching.mjs",
+    "alerts:digest": "node scripts/send-job-alert-digests.mjs",
+    "jobs:expire": "node scripts/expire-old-jobs.mjs",
+    "jobs:deactivate-seed": "node scripts/deactivate-seed-jobs.mjs",
     "campaign:employers": "node scripts/outreach-employer-campaign.mjs",
     "stripe:setup": "node scripts/setup-stripe-products.mjs",
     "prospects:build": "node scripts/build-employer-prospects.mjs",
@@ -33,6 +36,10 @@
     "ops:resend-dns": "node scripts/add-resend-dns-cloudflare.mjs",
     "ops:resend-verify": "node scripts/verify-resend-domain.mjs",
     "ops:smoke": "node scripts/smoke-test-go-live.mjs",
+    "test:unit": "node scripts/test-feeds-and-limits.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "ops:partner-feeds": "node scripts/submit-partner-feeds.mjs",
     "ops:apply-templates": "node scripts/apply-supabase-email-templates.mjs",
     "ops:verify-admin-emails": "node scripts/verify-admin-emails.mjs",
     "ops:seed-jobs": "node scripts/seed-demo-jobs.mjs",
@@ -43,9 +50,12 @@
   "devDependencies": {
     "@placeuk/shared": "workspace:*",
     "@supabase/supabase-js": "^2.49.1",
+    "mammoth": "^1.12.0",
     "next": "^15.2.3",
     "stripe": "^17.7.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "unpdf": "^1.8.0",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=20"
