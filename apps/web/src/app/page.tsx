@@ -40,7 +40,6 @@ export default async function HomePage() {
   return (
     <>
       <Hero
-        showBrand
         image={UNSPLASH.hero.ukCity}
         title="UK roles with salary shown upfront"
         subtitle={SITE_TAGLINE}
