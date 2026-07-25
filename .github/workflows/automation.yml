@@ -1,18 +1,81 @@
 name: Recruitment Site Automation
 
+# Cloud departments — run on GitHub even when local machines are off.
 on:
   schedule:
-    - cron: "0 6 * * *"   # Job sync daily 06:00 UTC
-    - cron: "0 7 * * *"   # Enrichment + expire daily 07:00 UTC
-    - cron: "0 9 * * *"   # Alert digests daily 09:00 UTC
+    - cron: "0 5 * * *"   # Expand prospect list + partner feeds + CS + daily report (05:00 UTC)
+    - cron: "0 6 * * *"   # Job sync (06:00 UTC)
+    - cron: "0 7 * * *"   # Enrichment + expire (07:00 UTC)
+    - cron: "0 9 * * *"   # Alert digests (09:00 UTC)
+    - cron: "0 10 * * *"  # Employer sales outreach daily (10:00 UTC)
     - cron: "0 * * * *"   # Matching hourly
     - cron: "0 8 * * 1"   # Weekly metrics Monday 08:00 UTC
-    - cron: "0 10 * * 2"  # Employer outreach Tuesday 10:00 UTC
   workflow_dispatch:
+    inputs:
+      department:
+        description: "Run one department or all"
+        required: false
+        default: "all"
+        type: choice
+        options:
+          - all
+          - expand-and-ops
+          - sync-jobs
+          - enrich-and-expire
+          - alert-digests
+          - employer-outreach
+          - match-candidates
+          - weekly-metrics
+
+env:
+  NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
 
 jobs:
+  expand-and-ops:
+    if: >
+      github.event.schedule == '0 5 * * *' ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'expand-and-ops'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm --filter @placeuk/shared build
+      - name: Expand employer prospect list
+        run: pnpm prospects:expand
+        continue-on-error: true
+      - name: Partner feed health (no outbound spam)
+        run: pnpm ops:partner-feeds
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          PARTNER_FEEDS_DRY: "1"
+      - name: Customer service inbox triage
+        run: pnpm ops:cs-triage
+        continue-on-error: true
+        env:
+          HELLO_IMAP_PASS: ${{ secrets.HELLO_IMAP_PASS }}
+          ADMIN_IMAP_PASS: ${{ secrets.ADMIN_IMAP_PASS }}
+          BILLING_IMAP_PASS: ${{ secrets.BILLING_IMAP_PASS }}
+          PRIVACY_IMAP_PASS: ${{ secrets.PRIVACY_IMAP_PASS }}
+          LEGAL_IMAP_PASS: ${{ secrets.LEGAL_IMAP_PASS }}
+          NOTIFICATIONS_IMAP_PASS: ${{ secrets.NOTIFICATIONS_IMAP_PASS }}
+          GHMAIL_IMAP_PASS: ${{ secrets.GHMAIL_IMAP_PASS }}
+          JOBS_IMAP_PASS: ${{ secrets.JOBS_IMAP_PASS }}
+      - name: Daily HTML ops report to hello@
+        run: pnpm ops:daily-report
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
   sync-jobs:
-    if: github.event.schedule == '0 6 * * *' || github.event_name == 'workflow_dispatch'
+    if: >
+      github.event.schedule == '0 6 * * *' ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'sync-jobs'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +97,9 @@ jobs:
           ATS_MAX_PER_BOARD: "40"
 
   enrich-and-expire:
-    if: github.event.schedule == '0 7 * * *' || github.event_name == 'workflow_dispatch'
+    if: >
+      github.event.schedule == '0 7 * * *' ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'enrich-and-expire'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +109,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install
+      - run: pnpm --filter @placeuk/shared build
       - run: pnpm jobs:enrich
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -56,7 +122,9 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
   alert-digests:
-    if: github.event.schedule == '0 9 * * *' || github.event_name == 'workflow_dispatch'
+    if: >
+      github.event.schedule == '0 9 * * *' ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'alert-digests'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -66,6 +134,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install
+      - run: pnpm --filter @placeuk/shared build
       - run: pnpm alerts:digest
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
@@ -73,8 +142,10 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
 
-  match-candidates:
-    if: github.event.schedule == '0 * * * *' || github.event_name == 'workflow_dispatch'
+  employer-outreach:
+    if: >
+      github.event.schedule == '0 10 * * *' ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'employer-outreach'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -84,6 +155,32 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install
+      - run: pnpm --filter @placeuk/shared build
+      - name: Refresh prospects then send HTML outreach batch
+        run: |
+          pnpm prospects:expand || true
+          pnpm campaign:employers
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OUTREACH_LIMIT: "50"
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+
+  match-candidates:
+    if: >
+      github.event.schedule == '0 * * * *' ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'match-candidates'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm --filter @placeuk/shared build
       - run: pnpm match:run
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -92,7 +189,9 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
   weekly-metrics:
-    if: github.event.schedule == '0 8 * * 1' || github.event_name == 'workflow_dispatch'
+    if: >
+      github.event.schedule == '0 8 * * 1' ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'weekly-metrics'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -107,22 +206,3 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  employer-outreach:
-    if: github.event.schedule == '0 10 * * 2' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm campaign:employers
-        env:
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          OUTREACH_LIMIT: "200"
-          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk

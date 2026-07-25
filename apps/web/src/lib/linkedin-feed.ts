@@ -10,39 +10,38 @@ function escapeXml(text: string): string {
     .replace(/'/g, "&apos;");
 }
 
-export function buildIndeedFeed(jobs: JobListing[]): string {
+/** LinkedIn Limited Listings–style XML job feed (partner registration required). */
+export function buildLinkedInFeed(jobs: JobListing[]): string {
   const siteUrl = getSiteUrl();
-  const publisher = "Recruitment Site";
-  const publisherUrl = siteUrl;
 
   const jobNodes = jobs.map((job) => {
-    const url = `${siteUrl}/jobs/${job.slug}?src=indeed`;
+    const url = `${siteUrl}/jobs/${job.slug}?src=linkedin`;
     const salary = job.salary.disclosed
       ? `<salary>${job.salary.min} - ${job.salary.max} ${job.salary.currency}/${job.salary.period}</salary>`
       : "";
 
     return `
     <job>
-      <title>${escapeXml(job.title)}</title>
-      <date>${new Date(job.publishedAt).toUTCString()}</date>
-      <referencenumber>${escapeXml(job.id)}</referencenumber>
-      <url>${escapeXml(url)}</url>
+      <partnerJobId>${escapeXml(job.id)}</partnerJobId>
       <company>${escapeXml(job.employerName)}</company>
-      <city>${escapeXml(job.city)}</city>
-      <state>${escapeXml(job.region)}</state>
-      <country>GB</country>
+      <title>${escapeXml(job.title)}</title>
       <description><![CDATA[${job.description}]]></description>
-      ${salary}
+      <applyUrl>${escapeXml(url)}</applyUrl>
+      <companyId>${escapeXml(job.employerId)}</companyId>
+      <location>${escapeXml(`${job.city}, ${job.region}, United Kingdom`)}</location>
+      <city>${escapeXml(job.city)}</city>
+      <country>GB</country>
       <jobtype>${escapeXml(job.jobType)}</jobtype>
-      <category>${escapeXml(job.vertical)}</category>
+      <posterEmail>jobs@recruitmentsite.co.uk</posterEmail>
+      ${salary}
     </job>`;
   });
 
   return `<?xml version="1.0" encoding="utf-8"?>
 <source>
-  <publisher>${escapeXml(publisher)}</publisher>
-  <publisherurl>${escapeXml(publisherUrl)}</publisherurl>
   <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+  <publisherUrl>${escapeXml(siteUrl)}</publisherUrl>
+  <publisher>Recruitment Site</publisher>
   ${jobNodes.join("\n")}
 </source>`;
 }

@@ -4,14 +4,21 @@ Goal: **< 5 hours/week** of human ops once live.
 
 ## Daily (automated — zero human)
 
+Runs on **GitHub Actions** (`.github/workflows/automation.yml`) — continues when your PC is off.
+
 | Job | Script / trigger | What it does |
 |-----|------------------|--------------|
-| Job feed sync | `pnpm jobs:sync` (cron 06:00) | Adzuna + Reed + Jooble (optional) + Greenhouse/Lever/Workable boards (`scripts/config/ats-boards.json`) |
-| AI enrichment | `pnpm jobs:enrich` (after sync) | Normalise titles, extract skills, salary bands, location |
+| Expand prospects + CS + ops report | `05:00 UTC` | Rebuild/enrich employer list, triage inboxes, HTML daily report to hello@ |
+| Job feed sync | `pnpm jobs:sync` (06:00) | Adzuna + Reed + Jooble (optional) + Greenhouse/Lever/Workable boards |
+| AI enrichment | `pnpm jobs:enrich` (07:00) | Normalise titles, extract skills, salary bands, location |
+| Expired jobs | `pnpm jobs:expire` (07:00) | Archive posts past `expires_at`, email employer to renew |
+| Alert digests | `pnpm alerts:digest` (09:00) | HTML digests with Unsplash heroes to alert subscribers |
+| Employer outreach | `pnpm campaign:employers` (10:00 daily) | Up to 50 HTML + Unsplash sales emails/day |
 | Candidate matching | `pnpm match:run` (hourly) | Score new applicants vs open roles, send alerts |
-| Alert digests | `pnpm alerts:digest` (cron 09:00) | Daily matching jobs emailed to alert subscribers |
+| Partner feed health | `ops:partner-feeds` (05:00, dry) | Verify Indeed/LinkedIn XML feeds stay live |
 | Stripe webhooks | Edge function | Activate/suspend employer accounts on payment events |
-| Expired jobs | `pnpm jobs:expire` (cron 07:00) | Archive posts past `expires_at`, email employer to renew |
+
+Outbound emails use branded HTML layouts + curated Unsplash hero images (`buildBrandedEmailHtml`).
 
 ## Weekly (automated)
 

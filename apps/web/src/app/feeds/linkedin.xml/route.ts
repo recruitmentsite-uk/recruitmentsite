@@ -1,11 +1,11 @@
 import { getJobs } from "@/lib/jobs";
-import { buildIndeedFeed } from "@/lib/indeed-feed";
+import { buildLinkedInFeed } from "@/lib/linkedin-feed";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const jobs = await getJobs();
-  const xml = buildIndeedFeed(jobs);
+  const xml = buildLinkedInFeed(jobs);
 
   return new Response(xml, {
     headers: {
