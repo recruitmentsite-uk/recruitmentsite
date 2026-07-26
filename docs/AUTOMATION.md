@@ -101,7 +101,7 @@ Run `pnpm ops:readiness` before launch. Required:
 - [x] Google Search Console verification support (meta tag + HTML file)
 - [x] Google Search Console property verified as rbee.mehmood@gmail.com + sitemap submitted (`sitemap.xml`)
 - [x] IndexNow key live (`/{key}.txt`) + daily `ops:indexnow` cron after job sync
-- [ ] Optional: add Google service account as GSC Owner + `GOOGLE_SERVICE_ACCOUNT_JSON` secret for Indexing API (`pnpm ops:gsc -- --api`)
+- [x] Google service account `gsc-indexing@recruitmentsite-seo.iam.gserviceaccount.com` is GSC Owner on `https://recruitmentsite.co.uk/` + GitHub secret `GOOGLE_SERVICE_ACCOUNT_JSON` (local path `.secrets/gsc-indexing.json`) for Indexing API (`pnpm ops:gsc -- --api`)
 - [x] Indeed XML feed live at `https://recruitmentsite.co.uk/feeds/indeed.xml` (~4500+ jobs) — partner/employer registration submitted (2026-07-26); await Indeed ingestion review
 - [x] LinkedIn XML feed live at `https://recruitmentsite.co.uk/feeds/linkedin.xml` (241 jobs) — BD email sent to LL-BD@linkedin.com
 - [x] Schema migrations 007+008 applied in Supabase SQL editor (alerts, views, talent_profiles)
