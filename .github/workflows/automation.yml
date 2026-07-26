@@ -5,6 +5,7 @@ on:
   schedule:
     - cron: "0 5 * * *"   # Expand prospect list + partner feeds + CS + daily report (05:00 UTC)
     - cron: "0 6 * * *"   # Job sync (06:00 UTC)
+    - cron: "30 6 * * *"  # IndexNow / SEO URL ping after sync (06:30 UTC)
     - cron: "0 7 * * *"   # Enrichment + expire (07:00 UTC)
     - cron: "0 9 * * *"   # Alert digests (09:00 UTC)
     - cron: "0 10 * * *"  # Employer sales outreach daily (10:00 UTC)
@@ -21,6 +22,7 @@ on:
           - all
           - expand-and-ops
           - sync-jobs
+          - index-seo
           - enrich-and-expire
           - alert-digests
           - employer-outreach
@@ -95,6 +97,44 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ADZUNA_SYNC_PAGES: "2"
           ATS_MAX_PER_BOARD: "40"
+          REED_SYNC_PAGES: "3"
+          REED_SYNC_PER_PAGE: "100"
+
+  index-seo:
+    if: >
+      github.event.schedule == '30 6 * * *' ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'index-seo'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm --filter @placeuk/shared build
+      - name: Submit fresh URLs to IndexNow (Bing/Yandex)
+        run: pnpm ops:indexnow
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+          INDEXNOW_LIMIT: "3000"
+      - name: Google Indexing API or GSC checklist
+        run: |
+          if [ -n "${GOOGLE_SERVICE_ACCOUNT_JSON}" ]; then
+            pnpm ops:gsc -- --api
+          else
+            pnpm ops:gsc
+          fi
+        continue-on-error: true
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+          GOOGLE_INDEXING_LIMIT: "100"
 
   enrich-and-expire:
     if: >

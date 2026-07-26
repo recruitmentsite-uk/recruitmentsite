@@ -120,5 +120,5 @@ Sources: ONS Labour Market Overview (Mar 2026), Get Staffed Q1 2026 Report, Appc
 - [x] Register on GOV.UK Find a Job as employer partner (account live; bulk upload access requested)
 - [x] Build healthcare prospect list — `pnpm prospects:build` → 30,184 CQC care homes/homecare in `data/employer-prospects.json`
 - [x] Mobile-optimised apply flow (<5 min) — larger tap targets, sticky submit, talent-pool opt-in
-- [x] Indeed XML feed live — `https://recruitmentsite.co.uk/feeds/indeed.xml` (submit in Indeed Employer/Partner Console)
+- [x] Indeed XML feed live — `https://recruitmentsite.co.uk/feeds/indeed.xml` (~4500+ jobs); partner registration submitted 2026-07-26
 - [x] LinkedIn Limited Listings request emailed to LL-BD@linkedin.com (`pnpm ops:partner-feeds`)

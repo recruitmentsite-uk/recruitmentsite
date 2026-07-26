@@ -59,35 +59,60 @@ async function syncAdzuna(supabase, counts) {
   console.log(`  Adzuna upserted: ${counts.adzuna}`);
 }
 
+const REED_PER_PAGE = Number(process.env.REED_SYNC_PER_PAGE || 100);
+const REED_PAGES = Number(process.env.REED_SYNC_PAGES || 3);
+const REED_DELAY_MS = Number(process.env.REED_SYNC_DELAY_MS || 200);
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 async function syncReed(supabase, counts) {
   if (!isReedConfigured()) {
     console.log("⚠  Set REED_API_KEY to sync from Reed");
     return;
   }
-  console.log("Reed: pulling by vertical keywords…");
+  const seen = new Set();
+  console.log(
+    `Reed: ${Object.keys(ADZUNA_QUERIES).length} verticals × all keywords × up to ${REED_PAGES} pages (${REED_PER_PAGE}/page)…`,
+  );
   for (const [vertical, queries] of Object.entries(ADZUNA_QUERIES)) {
-    const keywords = queries[0];
-    try {
-      const data = await searchReedJobs({
-        keywords,
-        locationName: "UK",
-        resultsToTake: 25,
-        resultsToSkip: 0,
-      });
-      const results = data?.results ?? [];
-      console.log(`  Reed ${vertical}: ${results.length} (total=${data?.totalResults ?? "?"})`);
-      for (const job of results) {
-        const row = normalizeReedJob(job, vertical);
-        if (await upsertJob(supabase, row)) {
-          counts.total++;
-          counts.reed++;
+    for (const keywords of queries) {
+      for (let page = 0; page < REED_PAGES; page++) {
+        try {
+          const data = await searchReedJobs({
+            keywords,
+            locationName: "UK",
+            resultsToTake: REED_PER_PAGE,
+            resultsToSkip: page * REED_PER_PAGE,
+          });
+          const results = data?.results ?? [];
+          if (page === 0) {
+            console.log(
+              `  Reed ${vertical}/${keywords}: page1=${results.length} (total=${data?.totalResults ?? "?"})`,
+            );
+          }
+          if (!results.length) break;
+          for (const job of results) {
+            const id = String(job.jobId);
+            if (seen.has(id)) continue;
+            seen.add(id);
+            const row = normalizeReedJob(job, vertical);
+            if (await upsertJob(supabase, row)) {
+              counts.total++;
+              counts.reed++;
+            }
+          }
+          if (results.length < REED_PER_PAGE) break;
+          if (REED_DELAY_MS > 0) await sleep(REED_DELAY_MS);
+        } catch (err) {
+          console.error(`  Reed sync failed (${vertical}/${keywords} p${page}):`, err.message);
+          break;
         }
       }
-    } catch (err) {
-      console.error(`  Reed sync failed (${vertical}):`, err.message);
     }
   }
-  console.log(`  Reed upserted: ${counts.reed}`);
+  console.log(`  Reed upserted: ${counts.reed} (unique ids seen=${seen.size})`);
 }
 
 async function syncJooble(supabase, counts) {
@@ -184,17 +209,24 @@ async function syncAts(supabase, counts) {
 }
 
 async function main() {
-  console.log("Recruitment Site job sync — Adzuna + Reed + Jooble + ATS boards\n");
+  const reedOnly = process.argv.includes("--reed-only");
+  console.log(
+    reedOnly
+      ? "Recruitment Site job sync — Reed only\n"
+      : "Recruitment Site job sync — Adzuna + Reed + Jooble + ATS boards\n",
+  );
 
   const supabase = getSupabaseAdmin();
   if (!supabase) console.log("⚠  No Supabase admin client — dry-run mode\n");
 
   const counts = { total: 0, adzuna: 0, reed: 0, jooble: 0, ats: 0 };
 
-  await syncAdzuna(supabase, counts);
+  if (!reedOnly) await syncAdzuna(supabase, counts);
   await syncReed(supabase, counts);
-  await syncJooble(supabase, counts);
-  await syncAts(supabase, counts);
+  if (!reedOnly) {
+    await syncJooble(supabase, counts);
+    await syncAts(supabase, counts);
+  }
 
   console.log(
     `\n✓ Synced ${counts.total} jobs (adzuna=${counts.adzuna}, reed=${counts.reed}, jooble=${counts.jooble}, ats=${counts.ats})`,

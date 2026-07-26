@@ -109,8 +109,8 @@ function isPublicJob(row: DbJobRow): boolean {
 }
 
 const PAGE_SIZE = 1000;
-/** Cap for public listings / sitemap — enough for SEO without blowing response size. */
-const MAX_PUBLIC_JOBS = 5000;
+/** Cap for public listings / sitemap (Google allows 50k URLs per sitemap). */
+const MAX_PUBLIC_JOBS = 25000;
 
 export async function fetchJobsFromDb(filters?: {
   vertical?: string;
@@ -135,6 +135,10 @@ export async function fetchJobsFromDb(filters?: {
 
     if (filters?.vertical) query = query.eq("vertical", filters.vertical);
     if (filters?.city) query = query.ilike("city", `%${filters.city}%`);
+    if (filters?.q?.trim()) {
+      const q = filters.q.trim().replace(/[%_,]/g, " ");
+      query = query.or(`title.ilike.%${q}%,location.ilike.%${q}%,city.ilike.%${q}%`);
+    }
 
     const { data, error } = await query;
     if (error) {

@@ -1,18 +1,35 @@
 import type { JobListing, Vertical } from "@placeuk/shared";
 import { fetchJobBySlug, fetchJobsFromDb } from "./supabase";
 
+export interface JobSearchFilters {
+  vertical?: string;
+  city?: string;
+  q?: string;
+  remote?: string;
+  jobType?: string;
+}
+
 /**
  * Public job inventory comes from Supabase only.
  * Hardcoded SAMPLE_JOBS are never shown on the live site.
  */
-export async function getJobs(filters?: {
-  vertical?: string;
-  city?: string;
-  q?: string;
-}): Promise<JobListing[]> {
+export async function getJobs(filters?: JobSearchFilters): Promise<JobListing[]> {
   const dbJobs = await fetchJobsFromDb(filters);
   if (!dbJobs) return [];
-  return filterByQuery(dbJobs, filters?.q);
+  return applyClientFilters(dbJobs, filters);
+}
+
+function applyClientFilters(jobs: JobListing[], filters?: JobSearchFilters): JobListing[] {
+  let result = filterByQuery(jobs, filters?.q);
+  if (filters?.remote) {
+    const remote = filters.remote.toLowerCase();
+    result = result.filter((j) => j.remote.toLowerCase() === remote);
+  }
+  if (filters?.jobType) {
+    const jobType = filters.jobType.toLowerCase();
+    result = result.filter((j) => j.jobType.toLowerCase() === jobType);
+  }
+  return result;
 }
 
 function filterByQuery(jobs: JobListing[], q?: string): JobListing[] {
@@ -23,7 +40,8 @@ function filterByQuery(jobs: JobListing[], q?: string): JobListing[] {
       j.title.toLowerCase().includes(needle) ||
       j.description.toLowerCase().includes(needle) ||
       j.employerName.toLowerCase().includes(needle) ||
-      j.skills.some((s) => s.toLowerCase().includes(needle))
+      j.skills.some((s) => s.toLowerCase().includes(needle)) ||
+      j.city.toLowerCase().includes(needle),
   );
 }
 

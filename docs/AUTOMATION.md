@@ -16,6 +16,8 @@ Runs on **GitHub Actions** (`.github/workflows/automation.yml`) — continues wh
 | Employer outreach | `pnpm campaign:employers` (10:00 daily) | Up to 50 HTML + Unsplash sales emails/day |
 | Candidate matching | `pnpm match:run` (hourly) | Score new applicants vs open roles, send alerts |
 | Partner feed health | `ops:partner-feeds` (05:00, dry) | Verify Indeed/LinkedIn XML feeds stay live |
+| SEO IndexNow | `pnpm ops:indexnow` (06:30) | Ping Bing/Yandex with hubs + ~3k newest job URLs |
+| Google indexing | `pnpm ops:gsc` (+ optional Indexing API) | GSC checklist; API when `GOOGLE_SERVICE_ACCOUNT_JSON` set |
 | Stripe webhooks | Edge function | Activate/suspend employer accounts on payment events |
 
 Outbound emails use branded HTML layouts + curated Unsplash hero images (`buildBrandedEmailHtml`).
@@ -98,14 +100,16 @@ Run `pnpm ops:readiness` before launch. Required:
 - [x] `OPENAI_API_KEY` for matching (Vercel + GitHub secrets)
 - [x] Google Search Console verification support (meta tag + HTML file)
 - [x] Google Search Console property verified as rbee.mehmood@gmail.com + sitemap submitted (`sitemap.xml`)
-- [x] Indeed XML feed live at `https://recruitmentsite.co.uk/feeds/indeed.xml` (241 jobs) — submit via Indeed Partner / Employer Console
+- [x] IndexNow key live (`/{key}.txt`) + daily `ops:indexnow` cron after job sync
+- [ ] Optional: add Google service account as GSC Owner + `GOOGLE_SERVICE_ACCOUNT_JSON` secret for Indexing API (`pnpm ops:gsc -- --api`)
+- [x] Indeed XML feed live at `https://recruitmentsite.co.uk/feeds/indeed.xml` (~4500+ jobs) — partner/employer registration submitted (2026-07-26); await Indeed ingestion review
 - [x] LinkedIn XML feed live at `https://recruitmentsite.co.uk/feeds/linkedin.xml` (241 jobs) — BD email sent to LL-BD@linkedin.com
 - [x] Schema migrations 007+008 applied in Supabase SQL editor (alerts, views, talent_profiles)
 - [x] Schema migration `009_product_features.sql` applied in Supabase SQL editor (candidate SMS/profile, screening credits, video screening, equality monitoring, Reed provenance)
 - [x] Storage bucket `video-screenings` created (private; app falls back to `cvs` if missing)
 - [ ] Optional: set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER` for SMS alerts (`node scripts/setup-twilio.mjs …`)
 - [x] `REED_API_KEY` set (Vercel production + GitHub secrets + local credentials)
-- [x] Reed inbound sync live (`pnpm jobs:sync` + daily Actions cron with `REED_API_KEY`)
+- [x] Reed inbound sync live (`pnpm jobs:sync` / `pnpm jobs:sync:reed` + daily Actions cron with `REED_API_KEY`) — all vertical keywords × up to 3 pages × 100 results
 - [x] Adzuna volume expanded (multi-query × multi-page per vertical)
 - [x] ATS career boards: Greenhouse / Lever / Workable via `scripts/config/ats-boards.json` (no API key)
 - [ ] Optional: set `JOOBLE_API_KEY` (`node scripts/setup-jooble.mjs …` — https://jooble.org/api/about)

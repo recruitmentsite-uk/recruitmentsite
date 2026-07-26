@@ -74,6 +74,7 @@ export function normalizeReedJob(job, vertical = "general") {
       source: "reed",
       redirect_url: job.jobUrl || null,
       employer_name: job.employerName || null,
+      employer_display: job.employerName || null,
     },
   };
 }
