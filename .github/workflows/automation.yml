@@ -79,6 +79,7 @@ jobs:
       github.event.schedule == '0 6 * * *' ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'sync-jobs'))
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -116,20 +117,13 @@ jobs:
       - run: pnpm --filter @placeuk/shared build
       - name: Submit fresh URLs to IndexNow (Bing/Yandex)
         run: pnpm ops:indexnow
-        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
           INDEXNOW_LIMIT: "3000"
-      - name: Google Indexing API or GSC checklist
-        run: |
-          if [ -n "${GOOGLE_SERVICE_ACCOUNT_JSON}" ]; then
-            pnpm ops:gsc -- --api
-          else
-            pnpm ops:gsc
-          fi
-        continue-on-error: true
+      - name: Google Indexing API
+        run: pnpm ops:gsc -- --api
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -242,8 +236,16 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install
+      - run: pnpm --filter @placeuk/shared build
       - run: pnpm metrics:weekly
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Email Monday ≤1hr ops brief to hello@
+        run: pnpm ops:weekly-brief
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk

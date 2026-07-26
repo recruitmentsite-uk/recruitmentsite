@@ -44,6 +44,7 @@
     "ops:indexnow": "node scripts/submit-indexnow.mjs",
     "ops:gsc": "node scripts/submit-gsc-priority.mjs",
     "ops:daily-report": "node scripts/daily-ops-report.mjs",
+    "ops:weekly-brief": "node scripts/weekly-ops-brief.mjs",
     "ops:cs-triage": "node scripts/cs-triage-and-mark.mjs",
     "ops:cs-check": "node scripts/cs-check-inboxes.mjs",
     "prospects:expand": "node scripts/build-employer-prospects.mjs && node scripts/enrich-prospect-emails.mjs",

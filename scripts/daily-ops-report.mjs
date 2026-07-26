@@ -54,8 +54,8 @@ async function main() {
       ${row("Marketing", checks.marketing === 200)}
       ${row("Pricing", checks.pricing === 200)}
     </table>
-    <p style="margin:0 0 8px;color:#64748b;font-size:14px">Departments scheduled in GitHub Actions (runs even when your PC is off): job sync, enrich, expire, matching, alerts, prospect expand, employer outreach, partner feeds, CS triage.</p>
-    <p style="margin:0;color:#64748b;font-size:14px">Stripe live cutover is intentionally paused until you upload verification docs.</p>
+    <p style="margin:0 0 8px;color:#64748b;font-size:14px">Cloud departments (PC off): sync, enrich, expire, matching, alerts, outreach, prospects, CS triage, IndexNow, Google Indexing API. Human ops target: ≤1 hour/week via Monday brief.</p>
+    <p style="margin:0;color:#64748b;font-size:14px">Stripe live cutover stays paused until verification docs are uploaded.</p>
   `;
 
   const html = buildBrandedEmailHtml({

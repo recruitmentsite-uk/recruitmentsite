@@ -1,41 +1,42 @@
 # Automation runbook — Recruitment Site
 
-Goal: **< 5 hours/week** of human ops once live.
+Goal: **≤ 1 hour/week** of human ops. Everything else runs in **GitHub Actions cloud** (PC off).
 
-## Daily (automated — zero human)
+## Cloud departments (zero human)
 
-Runs on **GitHub Actions** (`.github/workflows/automation.yml`) — continues when your PC is off.
+Workflow: `.github/workflows/automation.yml` — also runnable manually with `department=all`.
 
-| Job | Script / trigger | What it does |
-|-----|------------------|--------------|
-| Expand prospects + CS + ops report | `05:00 UTC` | Rebuild/enrich employer list, triage inboxes, HTML daily report to hello@ |
-| Job feed sync | `pnpm jobs:sync` (06:00) | Adzuna + Reed + Jooble (optional) + Greenhouse/Lever/Workable boards |
-| AI enrichment | `pnpm jobs:enrich` (07:00) | Normalise titles, extract skills, salary bands, location |
-| Expired jobs | `pnpm jobs:expire` (07:00) | Archive posts past `expires_at`, email employer to renew |
-| Alert digests | `pnpm alerts:digest` (09:00) | HTML digests with Unsplash heroes to alert subscribers |
-| Employer outreach | `pnpm campaign:employers` (10:00 daily) | Up to 50 HTML + Unsplash sales emails/day |
-| Candidate matching | `pnpm match:run` (hourly) | Score new applicants vs open roles, send alerts |
-| Partner feed health | `ops:partner-feeds` (05:00, dry) | Verify Indeed/LinkedIn XML feeds stay live |
-| SEO IndexNow | `pnpm ops:indexnow` (06:30) | Ping Bing/Yandex with hubs + ~3k newest job URLs |
-| Google indexing | `pnpm ops:gsc` (+ optional Indexing API) | GSC checklist; API when `GOOGLE_SERVICE_ACCOUNT_JSON` set |
-| Stripe webhooks | Edge function | Activate/suspend employer accounts on payment events |
+| UTC schedule | Department | What it does |
+|--------------|------------|--------------|
+| 05:00 daily | `expand-and-ops` | Prospects, partner feed health, CS inbox triage, daily report → hello@ |
+| 06:00 daily | `sync-jobs` | Adzuna + Reed + ATS boards (90 min timeout) |
+| 06:30 daily | `index-seo` | IndexNow (Bing/Yandex) + Google Indexing API |
+| 07:00 daily | `enrich-and-expire` | AI enrich listings + expire old jobs + renew nudges |
+| 09:00 daily | `alert-digests` | Candidate job-alert emails |
+| 10:00 daily | `employer-outreach` | Up to 50 employer sales emails/day |
+| Hourly | `match-candidates` | Score applicants vs roles, notify employers |
+| Mon 08:00 | `weekly-metrics` | Metrics + **Monday ≤1hr ops brief → hello@** |
 
-Outbound emails use branded HTML layouts + curated Unsplash hero images (`buildBrandedEmailHtml`).
+Stripe webhooks stay on the edge runtime (payments). Prod deploys use `Deploy Production` on `master` push.
 
-## Weekly (automated)
+## Your ≤1 hour/week (Monday)
 
-| Job | Script | What it does |
-|-----|--------|--------------|
-| Employer outreach | `pnpm campaign:employers` (Tue 10:00) | Cold email SMEs; open/click tracked via `/api/t/*`; skips unsubscribed |
-| SEO sitemap | Next.js `sitemap.ts` | Regenerate `/jobs/*` URLs for Google |
-| Analytics report | `scripts/weekly-metrics.mjs` | Slack/email summary: MRR, applications, top jobs |
-| Stale applicant nudge | cron | "Still looking?" re-engagement for candidates |
+Triggered by email: **Weekly ops brief** to `hello@`.
 
-## Human-only (edge cases)
+1. Skim brief + [Actions](https://github.com/rbeemehmood-arch/recruitmentsite/actions/workflows/automation.yml) for red runs (~10 min)
+2. Admin: fraud / spam jobs (~10 min)
+3. Stripe: refunds or verification docs if waiting (~10–20 min)
+4. Partner mail: Indeed / LinkedIn replies in hello@ (~10 min)
+5. Optional GSC glance — skip if feeds/IndexNow green (~10 min)
 
-- **Fraud / spam jobs** — flag queue in admin (expect < 5/week)
-- **Refund requests** — Stripe dashboard
-- **Enterprise inbound** — optional Cal.com link for Scale tier only
+Do **not** run departments locally unless Actions is red.
+
+## Human-only edge cases (rare)
+
+- Fraud / spam jobs beyond the Monday pass
+- Refund requests
+- Enterprise inbound / Scale sales calls
+- Stripe live verification docs (one-time until unlocked)
 
 ---
 
