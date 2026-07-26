@@ -52,7 +52,8 @@ jobs:
         run: pnpm prospects:expand
         continue-on-error: true
       - name: "Sales — competitor board signals"
-        run: pnpm prospects:competitors
+        # Bound scrape so a hung board never blocks CS daily report
+        run: timeout 8m pnpm prospects:competitors || true
         continue-on-error: true
       - name: "Marketing — partner feed health (dry, no BD spam)"
         run: pnpm ops:partner-feeds
