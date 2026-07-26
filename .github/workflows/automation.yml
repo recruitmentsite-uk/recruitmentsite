@@ -116,6 +116,7 @@ jobs:
       - run: pnpm --filter @placeuk/shared build
       - name: Submit fresh URLs to IndexNow (Bing/Yandex)
         run: pnpm ops:indexnow
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
