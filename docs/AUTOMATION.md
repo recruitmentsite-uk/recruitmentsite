@@ -2,32 +2,39 @@
 
 Goal: **≤ 1 hour/week** of human ops. Everything else runs in **GitHub Actions cloud** (PC off).
 
-## Cloud departments (zero human)
+## Business departments (cloud)
 
-Workflow: `.github/workflows/automation.yml` — also runnable manually with `department=all`.
+| Department | Cloud coverage | Schedule |
+|------------|----------------|----------|
+| **Site** | Deploy on `master` + post-deploy `ops:site-smoke`; daily HTTP health in ops email; manual `site-smoke` | Push + 05:00 daily |
+| **Sales** | Prospect expand + competitor boards; employer outreach ≤50/day | 05:00 + 10:00 daily |
+| **Marketing** | Partner feed health; IndexNow + Google Indexing API; candidate digests; marketing hub check | 05:00 / 06:30 / 09:00 |
+| **Customer service / email** | IMAP triage (hello/admin/billing/privacy/legal/github/jobs/notifications): mark vendor noise Seen, surface actionable items in daily email. **No auto-replies** (human still replies) | 05:00 daily |
 
-| UTC schedule | Department | What it does |
-|--------------|------------|--------------|
-| 05:00 daily | `expand-and-ops` | Prospects, partner feed health, CS inbox triage, daily report → hello@ |
+Workflow: `.github/workflows/automation.yml` — run manually with `department=all`.
+
+| UTC schedule | Job | What it does |
+|--------------|-----|--------------|
+| 05:00 daily | `expand-and-ops` | Sales prospects + competitor signals, marketing feed health, **site/sales/marketing/CS daily report → hello@** (includes inbox triage) |
 | 06:00 daily | `sync-jobs` | Adzuna + Reed + ATS boards (90 min timeout) |
-| 06:30 daily | `index-seo` | IndexNow (Bing/Yandex) + Google Indexing API |
+| 06:30 daily | `index-seo` | Marketing SEO: IndexNow + Google Indexing API |
 | 07:00 daily | `enrich-and-expire` | AI enrich listings + expire old jobs + renew nudges |
-| 09:00 daily | `alert-digests` | Candidate job-alert emails |
-| 10:00 daily | `employer-outreach` | Up to 50 employer sales emails/day |
-| Hourly | `match-candidates` | Score applicants vs roles, notify employers |
+| 09:00 daily | `alert-digests` | Marketing: candidate job-alert emails |
+| 10:00 daily | `employer-outreach` | Sales: up to 50 employer emails/day |
+| Hourly | `match-candidates` | Product: score applicants vs roles |
 | Mon 08:00 | `weekly-metrics` | Metrics + **Monday ≤1hr ops brief → hello@** |
 
-Stripe webhooks stay on the edge runtime (payments). Prod deploys use `Deploy Production` on `master` push.
+Stripe webhooks stay on the edge runtime. Prod deploys: `.github/workflows/deploy.yml` (+ site smoke).
 
 ## Your ≤1 hour/week (Monday)
 
 Triggered by email: **Weekly ops brief** to `hello@`.
 
-1. Skim brief + [Actions](https://github.com/rbeemehmood-arch/recruitmentsite/actions/workflows/automation.yml) for red runs (~10 min)
-2. Admin: fraud / spam jobs (~10 min)
-3. Stripe: refunds or verification docs if waiting (~10–20 min)
-4. Partner mail: Indeed / LinkedIn replies in hello@ (~10 min)
-5. Optional GSC glance — skip if feeds/IndexNow green (~10 min)
+1. Skim brief + daily ops emails + [Actions](https://github.com/rbeemehmood-arch/recruitmentsite/actions/workflows/automation.yml) (~10 min)
+2. **CS:** reply to any ACTION items listed in daily ops (~15–20 min)
+3. Admin: fraud / spam jobs (~10 min)
+4. Stripe: refunds or verification docs if waiting (~10 min)
+5. Sales/marketing: partner (Indeed/LinkedIn) replies only if flagged (~10 min)
 
 Do **not** run departments locally unless Actions is red.
 

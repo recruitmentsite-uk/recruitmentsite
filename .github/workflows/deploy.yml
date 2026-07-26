@@ -100,3 +100,10 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: "Site — post-deploy smoke"
+        run: |
+          sleep 20
+          pnpm ops:site-smoke
+        env:
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk

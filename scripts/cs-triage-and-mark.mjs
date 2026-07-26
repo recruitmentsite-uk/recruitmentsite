@@ -6,7 +6,7 @@
 import tls from "node:tls";
 import { readFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
@@ -154,29 +154,53 @@ async function triageMailbox(local) {
 }
 
 const locals = ["hello", "admin", "billing", "privacy", "legal", "github", "jobs", "notifications"];
-console.log("CS triage — mark vendor noise Seen; surface actionable items\n");
 
-const summary = [];
-for (const local of locals) {
-  const r = await triageMailbox(local);
-  summary.push(r);
-  console.log(`=== ${r.user} ===`);
-  if (r.error) {
-    console.log(`  ERROR: ${r.error}\n`);
-    continue;
+export async function runCsTriage({ quiet = false } = {}) {
+  if (!quiet) console.log("CS triage — mark vendor noise Seen; surface actionable items\n");
+
+  const summary = [];
+  for (const local of locals) {
+    const r = await triageMailbox(local);
+    summary.push(r);
+    if (quiet) continue;
+    console.log(`=== ${r.user} ===`);
+    if (r.error) {
+      console.log(`  ERROR: ${r.error}\n`);
+      continue;
+    }
+    console.log(
+      `  marked_seen=${r.markedSeen} actionable=${r.actionable.length} customer_replies=${r.customerRepliesNeeded}`,
+    );
+    for (const a of r.actionable) {
+      console.log(`  ACTION: ${a.subject}`);
+      console.log(`          from=${a.from}`);
+      console.log(`          ${a.preview.slice(0, 280)}`);
+    }
+    console.log("");
   }
-  console.log(`  marked_seen=${r.markedSeen} actionable=${r.actionable.length} customer_replies=${r.customerRepliesNeeded}`);
-  for (const a of r.actionable) {
-    console.log(`  ACTION: ${a.subject}`);
-    console.log(`          from=${a.from}`);
-    console.log(`          ${a.preview.slice(0, 280)}`);
+
+  const totalAction = summary.reduce((n, r) => n + (r.actionable?.length || 0), 0);
+  const totalSeen = summary.reduce((n, r) => n + (r.markedSeen || 0), 0);
+  const actions = summary.flatMap((r) =>
+    (r.actionable || []).map((a) => ({ mailbox: r.user, ...a })),
+  );
+  const errors = summary.filter((r) => r.error).map((r) => `${r.user}: ${r.error}`);
+
+  if (!quiet) {
+    console.log(`── Summary ──`);
+    console.log(`Marked ${totalSeen} messages as read`);
+    console.log(`Actionable ops items: ${totalAction}`);
+    console.log(`External customer enquiries requiring reply: 0`);
   }
-  console.log("");
+
+  return { totalAction, totalSeen, actions, errors, summary };
 }
 
-const totalAction = summary.reduce((n, r) => n + (r.actionable?.length || 0), 0);
-const totalSeen = summary.reduce((n, r) => n + (r.markedSeen || 0), 0);
-console.log(`── Summary ──`);
-console.log(`Marked ${totalSeen} messages as read`);
-console.log(`Actionable ops items: ${totalAction}`);
-console.log(`External customer enquiries requiring reply: 0`);
+const isMain =
+  Boolean(process.argv[1]) && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) {
+  runCsTriage().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

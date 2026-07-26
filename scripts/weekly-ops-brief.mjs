@@ -75,14 +75,14 @@ async function main() {
 
     <p style="margin:0 0 8px;font-weight:600">Human checklist (≤60 min)</p>
     <ol style="margin:0 0 20px;padding-left:20px;color:#334155;font-size:14px;line-height:1.6">
-      <li>Skim this email + <a href="${ACTIONS}">Actions</a> for any red department runs</li>
-      <li>Admin: spam / fraud jobs (&lt;5 expected)</li>
-      <li>Stripe: refunds / verification docs if anything is waiting</li>
-      <li>Partner mail: Indeed / LinkedIn replies in hello@</li>
-      <li>Optional: GSC Pages glance (indexing trend) — skip if green</li>
+      <li><strong>Site / cloud:</strong> skim this email + <a href="${ACTIONS}">Actions</a> for red runs</li>
+      <li><strong>CS email:</strong> reply to ACTION items from daily ops (hello/admin/billing…)</li>
+      <li><strong>Sales:</strong> only if outreach/partner replies need a human</li>
+      <li><strong>Marketing:</strong> Indeed/LinkedIn partner mail + optional GSC glance</li>
+      <li>Admin spam/fraud + Stripe refunds/verification if waiting</li>
     </ol>
 
-    <p style="margin:0;color:#64748b;font-size:13px">Cloud already handles: job sync, enrich, expire, matching, alerts, outreach, CS triage, daily report, IndexNow, Google Indexing API, weekly metrics.</p>
+    <p style="margin:0;color:#64748b;font-size:13px">Cloud already handles site smoke (on deploy), sales outreach, marketing SEO/digests/feeds, CS inbox triage (noise → Seen), job sync/enrich/expire/matching.</p>
   `;
 
   const html = buildBrandedEmailHtml({

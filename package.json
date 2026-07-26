@@ -37,6 +37,7 @@
     "ops:resend-dns": "node scripts/add-resend-dns-cloudflare.mjs",
     "ops:resend-verify": "node scripts/verify-resend-domain.mjs",
     "ops:smoke": "node scripts/smoke-test-go-live.mjs",
+    "ops:site-smoke": "node scripts/cloud-site-smoke.mjs",
     "test:unit": "node scripts/test-feeds-and-limits.mjs",
     "test": "vitest run",
     "test:watch": "vitest",

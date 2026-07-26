@@ -28,6 +28,7 @@ on:
           - employer-outreach
           - match-candidates
           - weekly-metrics
+          - site-smoke
 
 env:
   NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
@@ -47,18 +48,23 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm --filter @placeuk/shared build
-      - name: Expand employer prospect list
+      - name: "Sales — expand employer prospect list"
         run: pnpm prospects:expand
         continue-on-error: true
-      - name: Partner feed health (no outbound spam)
+      - name: "Sales — competitor board signals"
+        run: pnpm prospects:competitors
+        continue-on-error: true
+      - name: "Marketing — partner feed health (dry, no BD spam)"
         run: pnpm ops:partner-feeds
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           PARTNER_FEEDS_DRY: "1"
-      - name: Customer service inbox triage
-        run: pnpm ops:cs-triage
-        continue-on-error: true
+      - name: "Site + Sales + Marketing + CS — daily report & inbox triage"
+        run: pnpm ops:daily-report
         env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           HELLO_IMAP_PASS: ${{ secrets.HELLO_IMAP_PASS }}
           ADMIN_IMAP_PASS: ${{ secrets.ADMIN_IMAP_PASS }}
           BILLING_IMAP_PASS: ${{ secrets.BILLING_IMAP_PASS }}
@@ -67,12 +73,6 @@ jobs:
           NOTIFICATIONS_IMAP_PASS: ${{ secrets.NOTIFICATIONS_IMAP_PASS }}
           GHMAIL_IMAP_PASS: ${{ secrets.GHMAIL_IMAP_PASS }}
           JOBS_IMAP_PASS: ${{ secrets.JOBS_IMAP_PASS }}
-      - name: Daily HTML ops report to hello@
-        run: pnpm ops:daily-report
-        env:
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
   sync-jobs:
     if: >
@@ -115,14 +115,14 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm --filter @placeuk/shared build
-      - name: Submit fresh URLs to IndexNow (Bing/Yandex)
+      - name: "Marketing — IndexNow (Bing/Yandex)"
         run: pnpm ops:indexnow
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
           INDEXNOW_LIMIT: "3000"
-      - name: Google Indexing API
+      - name: "Marketing — Google Indexing API"
         run: pnpm ops:gsc -- --api
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
@@ -191,7 +191,7 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm --filter @placeuk/shared build
-      - name: Refresh prospects then send HTML outreach batch
+      - name: "Sales — refresh prospects then send HTML outreach batch"
         run: |
           pnpm prospects:expand || true
           pnpm campaign:employers
@@ -222,6 +222,23 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+  site-smoke:
+    if: >
+      github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'site-smoke')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - name: "Site — live HTTP smoke"
+        run: pnpm ops:site-smoke
+        env:
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
 
   weekly-metrics:
     if: >
