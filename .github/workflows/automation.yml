@@ -192,15 +192,29 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm --filter @placeuk/shared build
+      - name: Restore prospect email cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/employer-prospects.json
+            data/scrape-progress.json
+            data/cqc-care-directory.csv
+          key: employer-prospects-${{ github.run_id }}
+          restore-keys: |
+            employer-prospects-
       - name: "Sales — refresh prospects then send HTML outreach batch"
         run: |
           pnpm prospects:expand || true
+          # Grow scraped/public emails over time (best deliverability)
+          SCRAPE_LIMIT=40 pnpm prospects:scrape || true
           pnpm campaign:employers
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           OUTREACH_LIMIT: "50"
+          # CI starts without scraped cache; guessed emails from public domains until scrape fills
+          OUTREACH_INCLUDE_GUESSED: "1"
           NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
 
   match-candidates:
