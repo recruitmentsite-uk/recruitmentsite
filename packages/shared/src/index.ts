@@ -9,3 +9,4 @@ export * from "./blog.js";
 export * from "./verticals.js";
 export * from "./email.js";
 export * from "./seo-pages.js";
+export * from "./social.js";
