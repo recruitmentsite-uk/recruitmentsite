@@ -80,23 +80,18 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
       - name: Deploy prebuilt to production
-        # --no-wait: avoid hanging when Vercel status stays UNKNOWN/BLOCKED briefly
         run: |
-          set +e
-          OUT=$(vercel deploy --prebuilt --prod --yes --no-wait --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
-          CODE=$?
+          set -euo pipefail
+          OUT=$(vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
           echo "$OUT"
           URL=$(echo "$OUT" | grep -Eo 'https://web-[a-z0-9]+-backend-7626s-projects\.vercel\.app' | head -n1)
-          if [ -n "$URL" ]; then
-            echo "Aliasing $URL"
-            vercel alias set "$URL" recruitmentsite.co.uk --token=${{ secrets.VERCEL_TOKEN }} || true
-            vercel alias set "$URL" www.recruitmentsite.co.uk --token=${{ secrets.VERCEL_TOKEN }} || true
+          if [ -z "$URL" ]; then
+            echo "No production deployment URL found"
+            exit 1
           fi
-          # Treat upload success + alias as OK even if readyState is flaky
-          if [ $CODE -eq 0 ] || [ -n "$URL" ]; then
-            exit 0
-          fi
-          exit $CODE
+          echo "Aliasing $URL"
+          vercel alias set "$URL" recruitmentsite.co.uk --token=${{ secrets.VERCEL_TOKEN }}
+          vercel alias set "$URL" www.recruitmentsite.co.uk --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
