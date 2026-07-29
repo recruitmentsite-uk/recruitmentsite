@@ -7,18 +7,21 @@ Goal: **≤ 1 hour/week** of human ops. Everything else runs in **GitHub Actions
 | Department | Cloud coverage | Schedule |
 |------------|----------------|----------|
 | **Site** | Deploy on `master` + post-deploy `ops:site-smoke`; daily HTTP health in ops email; manual `site-smoke` | Push + 05:00 daily |
-| **Sales** | Prospect expand + competitor boards; employer outreach ≤50/day | 05:00 + 10:00 daily |
+| **Sales** | UK multi-sector prospect grow + scrape; employer outreach ≤50/day | 05:00 + 10:00 daily |
 | **Marketing** | Partner feed health; IndexNow + Google Indexing API; candidate digests; marketing hub check | 05:00 / 06:30 / 09:00 |
 | **Customer service / email** | IMAP triage (hello/admin/billing/privacy/legal/github/jobs/notifications): mark vendor noise Seen, surface actionable items in daily email. **No auto-replies** (human still replies) | 05:00 daily |
+| **Community** | Same as PropOS: **Cursor Automation** (`docs/department-cloud-ops.md`) + `node scripts/community-engage-facebook.mjs` | Daily 08:00 + every 4h |
 
-Workflow: `.github/workflows/automation.yml` — run manually with `department=all`.
+Workflow: `.github/workflows/automation.yml` — run manually with `department=all`.  
+Community cloud departments: **`docs/department-cloud-ops.md`** (Cursor Automations — PropOS pattern).
 
 | UTC schedule | Job | What it does |
 |--------------|-----|--------------|
-| 05:00 daily | `expand-and-ops` | Sales prospects + competitor signals, marketing feed health, **site/sales/marketing/CS daily report → hello@** (includes inbox triage) |
+| 05:00 daily | `expand-and-ops` | Sales: CQC expand + UK board discovery (~60 searches) + ingest + scrape 250 emails; marketing feed health; **CS daily report → hello@** |
 | 06:00 daily | `sync-jobs` | Adzuna + Reed + ATS boards (90 min timeout) |
 | 06:30 daily | `index-seo` | Marketing SEO: IndexNow + Google Indexing API |
 | 07:00 daily | `enrich-and-expire` | AI enrich listings + expire old jobs + renew nudges |
+| 08:00 + every 4h | Community (Cursor) | Facebook UK groups + inbox — see `docs/department-cloud-ops.md` |
 | 09:00 daily | `alert-digests` | Marketing: candidate job-alert emails |
 | 10:00 daily | `employer-outreach` | Sales: up to 50 employer emails/day |
 | Hourly | `match-candidates` | Product: score applicants vs roles |
@@ -43,7 +46,7 @@ Do **not** run departments locally unless Actions is red.
 - Fraud / spam jobs beyond the Monday pass
 - Refund requests
 - Enterprise inbound / Scale sales calls
-- Stripe live verification docs (one-time until unlocked)
+- Stripe live verification docs (done — charges/payouts enabled)
 
 ---
 
@@ -95,6 +98,19 @@ Prompt templates live in `scripts/prompts/` — keep audit log for bias review.
 
 Target: **200 emails/week** → 2–5% conversion → 4–10 new employers/week.
 
+### Continuous UK prospect growth
+
+The list grows every day beyond England CQC care:
+
+| Step | When | What |
+|------|------|------|
+| `prospects:expand` | 05:00 UTC | Refresh CQC CSV + guess emails |
+| `prospects:competitors` | 05:00 UTC | ~60 Reed/Adzuna searches/day across UK sectors (care, hospitality, trades, retail, logistics, education, office) + Scotland/Wales/NI locations |
+| `prospects:ingest` | after competitors | Upsert unmatched board employers as `source: board_discovery` |
+| `prospects:scrape` | 05:00 (250) + 10:00 (100) | Scrape websites for real emails |
+
+State is cached in Actions across runs (`employer-prospects.json`, scrape + competitor progress). Local: `pnpm prospects:grow`. Caps: `COMPETITOR_LIMIT`, `SCRAPE_LIMIT`.
+
 ---
 
 ## Environment checklist
@@ -103,7 +119,7 @@ Run `pnpm ops:readiness` before launch. Required:
 
 - [x] Supabase project + schema pushed
 - [x] Stripe test products + test webhook live on site
-- [ ] Stripe live cutover blocked on business verification doc upload (payments/payouts paused) — then reveal `sk_live` / `pk_live`, create live webhook, `node scripts/setup-stripe-live.mjs`, `pnpm stripe:setup`, redeploy
+- [x] Stripe live cutover complete (`pk_live`/`sk_live` + live webhook on Vercel)
 - [x] Resend domain verified (SPF/DKIM)
 - [x] `OPENAI_API_KEY` for matching (Vercel + GitHub secrets)
 - [x] Google Search Console verification support (meta tag + HTML file)

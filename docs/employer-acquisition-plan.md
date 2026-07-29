@@ -8,7 +8,7 @@
 
 | # | Channel | Action | Cadence |
 |---|---------|--------|---------|
-| 1 | **Email outreach** | `employer-outreach` ≤50/day to CQC/SME prospects | Daily 10:00 UTC + manual boost |
+| 1 | **Email outreach** | `employer-outreach` ≤50/day to CQC + UK board-discovered SMEs | Daily 10:00 UTC + manual boost |
 | 2 | **Facebook community** | Join UK employer/SME/HR groups; wall posts + replies (employer copy) | Daily / every 4h light |
 | 3 | **Social publish** | Employer posts on FB Page + IG + LinkedIn Company | 2–3×/week |
 | 4 | **Backlinks / SEO** | Directory submissions · IndexNow · GSC · compare/hire pages · press kit | Weekly batch |
@@ -41,7 +41,18 @@ See `docs/backlinks/directory-targets.md`. Priority: startup directories, HR sof
 - [x] Employer social post pack (`docs/social-posts/employer-acquisition.md`)
 - [x] Directory / backlink targets (`docs/backlinks/directory-targets.md`)
 - [x] Press kit page (`/press`) + footer link (needs deploy)
-- [x] Email outreach batch — **50 sent** (suppressed now 213; ~14k sendable left)
-- [x] IndexNow / SEO workflow triggered
-- [ ] Publish FB + IG + LinkedIn employer posts — **attempted; composers failed** (retry: `node scripts/finish-facebook-post.mjs --pack=employer-acquisition` · LinkedIn needs login in Meta Chrome profile)
-- [ ] Community engage pass (employer groups) — queued behind publish retry
+- [x] Email outreach — **250+ sent** cumulative (latest +50; ~280 suppressed)
+- [x] IndexNow / Google Indexing + partner-feed chase emails
+- [x] Facebook employer Page post published
+- [x] Community engage pass — more UK groups joined + posts/replies (incl. 2026-07-29 light pass)
+- [x] Press kit live at `/press` (HTTP 200)
+- [x] Instagram employer post published (`@recruitmentsite.uk`)
+- [x] LinkedIn Company Page branded + employer posts published (tagline/banner employer-first; daily pack 2026-07-29 on LI/FB/IG)
+- [x] Cloud automation `department=all` triggered (run 30474813265)
+- [x] Stripe business verification (`charges_enabled` + `payouts_enabled`, live products + webhook)
+- [ ] Directory submissions — forms opened again (Hotfrog/Scoot/Brownbook/SaaSHub/TAAFT); finish CAPTCHA/submit in Chrome tabs
+- [x] Vercel Analytics wired in `layout.tsx` (deployed via PR #4 — enable Web Analytics in Vercel if not already)
+- [~] Deploy `/signup/candidate` — code merged (PR #4/#5/#6/#7); Vercel upload/alias still failing READY; prod still 404
+- [x] LinkedIn company email domain `recruitmentsite.co.uk` added
+- [ ] LinkedIn HQ location (Stanmore / HA7 3DS) — Edit Page UI keeps bouncing to dashboard
+- [ ] YouTube `@RecruitmentSiteUK` setup — deferred (verification video under review; continue tomorrow)

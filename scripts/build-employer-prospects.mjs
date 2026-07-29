@@ -2,6 +2,7 @@
 /**
  * Build employer prospect list from CQC public directory + curated seeds.
  * No cap on list size — all England care homes & homecare agencies (excl. mega groups).
+ * Multi-sector UK growth continues via prospects:competitors + prospects:ingest (board discovery).
  */
 import { writeFileSync, readFileSync, existsSync, mkdirSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";

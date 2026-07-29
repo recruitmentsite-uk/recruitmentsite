@@ -39,6 +39,7 @@ jobs:
       github.event.schedule == '0 5 * * *' ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'expand-and-ops'))
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -48,12 +49,33 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm --filter @placeuk/shared build
-      - name: "Sales — expand employer prospect list"
+      - name: Restore employer prospect growth cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/employer-prospects.json
+            data/scrape-progress.json
+            data/cqc-care-directory.csv
+            data/competitor-search-progress.json
+            data/competitor-employers.json
+          key: employer-prospects-${{ github.run_id }}
+          restore-keys: |
+            employer-prospects-
+      - name: "Sales — expand employer prospect list (CQC + enrich)"
         run: pnpm prospects:expand
         continue-on-error: true
-      - name: "Sales — competitor board signals"
-        # Bound scrape so a hung board never blocks CS daily report
-        run: timeout 8m pnpm prospects:competitors || true
+      - name: "Sales — UK multi-sector board scrape + ingest new employers"
+        # Rotate ~60 Reed/Adzuna searches/day across UK sectors & nations; ingest unmatched
+        run: timeout 25m pnpm prospects:competitors || true
+        continue-on-error: true
+        env:
+          COMPETITOR_LIMIT: "60"
+          COMPETITOR_MAX_PAGES: "3"
+          COMPETITOR_DELAY_MS: "1000"
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+      - name: "Sales — scrape emails from employer websites (grow sendable list)"
+        run: SCRAPE_LIMIT=250 SCRAPE_CONCURRENCY=10 pnpm prospects:scrape || true
         continue-on-error: true
       - name: "Marketing — partner feed health (dry, no BD spam)"
         run: pnpm ops:partner-feeds
@@ -192,21 +214,23 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm --filter @placeuk/shared build
-      - name: Restore prospect email cache
+      - name: Restore employer prospect growth cache
         uses: actions/cache@v4
         with:
           path: |
             data/employer-prospects.json
             data/scrape-progress.json
             data/cqc-care-directory.csv
+            data/competitor-search-progress.json
+            data/competitor-employers.json
           key: employer-prospects-${{ github.run_id }}
           restore-keys: |
             employer-prospects-
       - name: "Sales — refresh prospects then send HTML outreach batch"
         run: |
           pnpm prospects:expand || true
-          # Grow scraped/public emails over time (best deliverability)
-          SCRAPE_LIMIT=40 pnpm prospects:scrape || true
+          # Extra scrape pass before send (main growth scrape runs at 05:00 expand)
+          SCRAPE_LIMIT=100 SCRAPE_CONCURRENCY=10 pnpm prospects:scrape || true
           pnpm campaign:employers
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
