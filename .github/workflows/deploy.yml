@@ -82,11 +82,30 @@ jobs:
       - name: Deploy prebuilt to production
         run: |
           set -euo pipefail
-          OUT=$(vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
+          OUT=$(vercel deploy --prebuilt --prod --yes --no-wait --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
           echo "$OUT"
           URL=$(echo "$OUT" | grep -Eo 'https://web-[a-z0-9]+-backend-7626s-projects\.vercel\.app' | head -n1)
           if [ -z "$URL" ]; then
             echo "No production deployment URL found"
+            exit 1
+          fi
+          echo "Waiting for $URL to become READY"
+          READY=0
+          for i in $(seq 1 40); do
+            INFO=$(vercel inspect "$URL" --token=${{ secrets.VERCEL_TOKEN }} 2>&1 || true)
+            echo "poll $i: $(echo "$INFO" | tr '\n' ' ' | cut -c1-220)"
+            if echo "$INFO" | grep -Eqi '(^|[[:space:]])Ready([[:space:]]|$)'; then
+              READY=1
+              break
+            fi
+            if echo "$INFO" | grep -Eqi '(Error|Canceled|Failed)'; then
+              echo "Deployment failed"
+              exit 1
+            fi
+            sleep 15
+          done
+          if [ "$READY" -ne 1 ]; then
+            echo "Timed out waiting for READY"
             exit 1
           fi
           echo "Aliasing $URL"
