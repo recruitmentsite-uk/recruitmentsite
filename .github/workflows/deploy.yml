@@ -81,12 +81,15 @@ jobs:
 
       - name: Deploy prebuilt to production
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          set +e
           OUT=$(vercel deploy --prebuilt --prod --yes --no-wait --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
+          CODE=$?
+          set -e
           echo "$OUT"
-          URL=$(echo "$OUT" | grep -Eo 'https://web-[a-z0-9]+-backend-7626s-projects\.vercel\.app' | head -n1)
+          URL=$(echo "$OUT" | grep -Eo 'https://web-[a-z0-9]+-backend-7626s-projects\.vercel\.app' | head -n1 || true)
           if [ -z "$URL" ]; then
-            echo "No production deployment URL found"
+            echo "No production deployment URL found (vercel exit $CODE)"
             exit 1
           fi
           echo "Waiting for $URL to become READY"
@@ -98,7 +101,7 @@ jobs:
               READY=1
               break
             fi
-            if echo "$INFO" | grep -Eqi '(Error|Canceled|Failed)'; then
+            if echo "$INFO" | grep -Eqi '(^|[[:space:]])(Error|Canceled)([[:space:]]|$)'; then
               echo "Deployment failed"
               exit 1
             fi
