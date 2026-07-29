@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import type { Vertical } from "@placeuk/shared";
+import { normalizeUkPhone } from "@/lib/sms";
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
@@ -8,7 +9,19 @@ function slugify(text: string): string {
 
 export async function POST(request: Request) {
   try {
-    const { email, password, companyName, vertical, inviteToken } = await request.json();
+    const body = await request.json();
+    const {
+      email,
+      password,
+      companyName,
+      vertical,
+      inviteToken,
+      role = "employer",
+      fullName,
+      city,
+      phone,
+      smsEnabled,
+    } = body;
 
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password required" }, { status: 400 });
@@ -23,6 +36,7 @@ export async function POST(request: Request) {
       email,
       password,
       email_confirm: true,
+      user_metadata: { role: role === "candidate" ? "candidate" : "employer" },
     });
 
     if (authError || !authData.user) {
@@ -30,6 +44,36 @@ export async function POST(request: Request) {
     }
 
     const userId = authData.user.id;
+
+    if (role === "candidate") {
+      if (!fullName) {
+        return NextResponse.json({ error: "Full name required" }, { status: 400 });
+      }
+
+      const phoneE164 = phone ? normalizeUkPhone(String(phone)) : null;
+      const { error: candError } = await admin.from("candidates").insert({
+        id: userId,
+        email: email.toLowerCase(),
+        full_name: fullName,
+        city: city || null,
+        verticals: vertical ? [vertical] : [],
+        phone_e164: phoneE164,
+        sms_enabled: Boolean(smsEnabled && phoneE164),
+        alert_frequency: "daily",
+      });
+
+      if (candError) {
+        return NextResponse.json({ error: "Failed to create candidate profile" }, { status: 500 });
+      }
+
+      // Link existing talent pool row if they previously applied as guest
+      await admin
+        .from("talent_profiles")
+        .update({ candidate_id: userId, active: true, updated_at: new Date().toISOString() })
+        .eq("email", email.toLowerCase());
+
+      return NextResponse.json({ success: true, role: "candidate" });
+    }
 
     if (inviteToken) {
       const { data: invite } = await admin
@@ -66,7 +110,7 @@ export async function POST(request: Request) {
         .update({ accepted_at: new Date().toISOString() })
         .eq("id", invite.id);
 
-      return NextResponse.json({ success: true, employerId: invite.employer_id });
+      return NextResponse.json({ success: true, employerId: invite.employer_id, role: "employer" });
     }
 
     if (!companyName) {
@@ -84,6 +128,7 @@ export async function POST(request: Request) {
         plan: "starter",
         contact_email: email,
         active_job_limit: 3,
+        screening_credits: 10,
       })
       .select("id")
       .single();
@@ -99,7 +144,14 @@ export async function POST(request: Request) {
       accepted_at: new Date().toISOString(),
     });
 
-    return NextResponse.json({ success: true, employerId: employer.id });
+    await admin.from("screening_credit_ledger").insert({
+      employer_id: employer.id,
+      delta: 10,
+      balance_after: 10,
+      reason: "signup_bonus",
+    });
+
+    return NextResponse.json({ success: true, employerId: employer.id, role: "employer" });
   } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
