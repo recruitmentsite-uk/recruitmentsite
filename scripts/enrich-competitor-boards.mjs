@@ -1,19 +1,21 @@
 #!/usr/bin/env node
 /**
- * Find employers actively hiring on Reed/Indeed/Hays and match to CQC prospects.
+ * Find employers actively hiring on Reed/Adzuna across UK sectors and match
+ * (or discover) prospects. Continuous growth: rotate via COMPETITOR_LIMIT.
  *
  * Env:
- *   COMPETITOR_MAX_PAGES   Reed pages per search (default 8)
- *   COMPETITOR_DELAY_MS    Delay between Reed requests (default 1500)
+ *   COMPETITOR_MAX_PAGES   Reed pages per search (default 4)
+ *   COMPETITOR_DELAY_MS    Delay between Reed requests (default 1200)
  *   COMPETITOR_LIMIT       Max searches to run this session (0 = all)
- *   ADZUNA_APP_ID/KEY      Optional — also searches Adzuna (covers Indeed/Reed redirects)
+ *   ADZUNA_APP_ID/KEY      Optional — also searches Adzuna
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { setTimeout as sleep } from "node:timers/promises";
+import { spawnSync } from "node:child_process";
 import {
-  CARE_SEARCHES,
+  SECTOR_SEARCHES,
   LOCATION_SLUGS,
   scrapeReedSearch,
   scrapeAdzunaSearch,
@@ -25,8 +27,8 @@ const prospectsPath = join(__dirname, "../data/employer-prospects.json");
 const progressPath = join(__dirname, "../data/competitor-search-progress.json");
 const employersPath = join(__dirname, "../data/competitor-employers.json");
 
-const maxPages = Number(process.env.COMPETITOR_MAX_PAGES ?? 8);
-const delayMs = Number(process.env.COMPETITOR_DELAY_MS ?? 1500);
+const maxPages = Number(process.env.COMPETITOR_MAX_PAGES ?? 4);
+const delayMs = Number(process.env.COMPETITOR_DELAY_MS ?? 1200);
 const searchLimit = Number(process.env.COMPETITOR_LIMIT ?? 0);
 
 function loadProgress() {
@@ -80,19 +82,27 @@ async function main() {
   const index = buildProspectIndex(prospects);
 
   const searches = [];
-  for (const { slug, role } of CARE_SEARCHES) {
+  for (const { slug, role, vertical } of SECTOR_SEARCHES) {
     for (const location of LOCATION_SLUGS) {
-      searches.push({ type: "reed", slug, role, location, key: searchKey("reed", slug, location) });
+      searches.push({
+        type: "reed",
+        slug,
+        role,
+        vertical,
+        location,
+        key: searchKey("reed", slug, location),
+      });
     }
   }
 
   if (process.env.ADZUNA_APP_ID && process.env.ADZUNA_APP_KEY) {
-    for (const { role } of CARE_SEARCHES) {
-      for (const location of ["uk", ...LOCATION_SLUGS.slice(0, 10)]) {
+    for (const { role, vertical } of SECTOR_SEARCHES) {
+      for (const location of ["uk", "scotland", "wales", "belfast", ...LOCATION_SLUGS.slice(0, 15)]) {
         searches.push({
           type: "adzuna",
           what: role,
           location,
+          vertical,
           key: searchKey("adzuna", role, location),
         });
       }
@@ -212,6 +222,16 @@ async function main() {
   const remaining = searches.filter((s) => !completed.has(s.key)).length;
   if (remaining > 0) {
     console.log(`\n  ${remaining.toLocaleString()} searches remaining — re-run to continue`);
+  }
+
+  // Grow prospect list with unmatched UK board employers (multi-sector)
+  console.log("\n— Ingesting unmatched board employers into prospects —");
+  const ingest = spawnSync(process.execPath, [join(__dirname, "ingest-board-prospects.mjs")], {
+    stdio: "inherit",
+    env: process.env,
+  });
+  if (ingest.status !== 0) {
+    console.warn("  ⚠ Board ingest exited non-zero (prospects file still updated for matches)");
   }
 }
 

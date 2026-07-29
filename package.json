@@ -22,6 +22,8 @@
     "prospects:enrich": "node scripts/enrich-prospect-emails.mjs",
     "prospects:scrape": "node scripts/scrape-prospect-emails.mjs",
     "prospects:competitors": "node scripts/enrich-competitor-boards.mjs",
+    "prospects:ingest": "node scripts/ingest-board-prospects.mjs",
+    "prospects:grow": "node scripts/build-employer-prospects.mjs && node scripts/enrich-prospect-emails.mjs && node scripts/enrich-competitor-boards.mjs && node scripts/scrape-prospect-emails.mjs",
     "metrics:weekly": "node scripts/weekly-metrics.mjs",
     "ops:readiness": "node scripts/check-production-readiness.mjs",
     "ops:accounts": "node scripts/go-live-accounts.mjs",
@@ -54,7 +56,9 @@
     "ops:seed-jobs": "node scripts/seed-demo-jobs.mjs",
     "jobs:seed": "node scripts/bulk-seed-jobs.mjs",
     "jobs:polish": "node scripts/polish-job-descriptions.mjs",
-    "ops:openai": "node scripts/setup-openai.mjs"
+    "ops:openai": "node scripts/setup-openai.mjs",
+    "community:engage": "node scripts/community-engage-facebook.mjs --max-joins=12 --max-replies=6 --chats=8",
+    "community:engage:light": "node scripts/community-engage-facebook.mjs --light"
   },
   "devDependencies": {
     "@placeuk/shared": "workspace:*",

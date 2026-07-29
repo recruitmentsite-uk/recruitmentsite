@@ -148,15 +148,41 @@ export async function scrapeAdzunaSearch({ what, where = "uk", maxPages = 5, del
   return { listings };
 }
 
+/** @deprecated Use SECTOR_SEARCHES — kept for older callers */
 export const CARE_SEARCHES = [
-  { slug: "care-assistant", role: "Care Assistant" },
-  { slug: "support-worker", role: "Support Worker" },
-  { slug: "registered-nurse", role: "Registered Nurse" },
-  { slug: "healthcare-assistant", role: "Healthcare Assistant" },
-  { slug: "care-worker", role: "Care Worker" },
+  { slug: "care-assistant", role: "Care Assistant", vertical: "healthcare" },
+  { slug: "support-worker", role: "Support Worker", vertical: "healthcare" },
+  { slug: "registered-nurse", role: "Registered Nurse", vertical: "healthcare" },
+  { slug: "healthcare-assistant", role: "Healthcare Assistant", vertical: "healthcare" },
+  { slug: "care-worker", role: "Care Worker", vertical: "healthcare" },
 ];
 
+/** Multi-sector UK hiring searches — rotated daily via COMPETITOR_LIMIT */
+export const SECTOR_SEARCHES = [
+  ...CARE_SEARCHES,
+  { slug: "chef", role: "Chef", vertical: "hospitality" },
+  { slug: "kitchen-porter", role: "Kitchen Porter", vertical: "hospitality" },
+  { slug: "hotel-receptionist", role: "Hotel Receptionist", vertical: "hospitality" },
+  { slug: "bar-staff", role: "Bar Staff", vertical: "hospitality" },
+  { slug: "housekeeper", role: "Housekeeper", vertical: "hospitality" },
+  { slug: "site-manager", role: "Site Manager", vertical: "trades" },
+  { slug: "electrician", role: "Electrician", vertical: "trades" },
+  { slug: "plumber", role: "Plumber", vertical: "trades" },
+  { slug: "carpenter", role: "Carpenter", vertical: "trades" },
+  { slug: "construction-labourer", role: "Construction Labourer", vertical: "trades" },
+  { slug: "retail-assistant", role: "Retail Assistant", vertical: "retail" },
+  { slug: "store-manager", role: "Store Manager", vertical: "retail" },
+  { slug: "warehouse-operative", role: "Warehouse Operative", vertical: "logistics" },
+  { slug: "hgv-driver", role: "HGV Driver", vertical: "logistics" },
+  { slug: "teaching-assistant", role: "Teaching Assistant", vertical: "education" },
+  { slug: "nursery-practitioner", role: "Nursery Practitioner", vertical: "education" },
+  { slug: "office-administrator", role: "Office Administrator", vertical: "office" },
+  { slug: "receptionist", role: "Receptionist", vertical: "office" },
+];
+
+/** England + Scotland + Wales + NI cities/counties for Reed location slugs */
 export const LOCATION_SLUGS = [
+  // England — major cities
   "london",
   "manchester",
   "birmingham",
@@ -177,6 +203,27 @@ export const LOCATION_SLUGS = [
   "wolverhampton",
   "derby",
   "plymouth",
+  "york",
+  "cambridge",
+  "oxford",
+  "norwich",
+  "exeter",
+  "bournemouth",
+  "portsmouth",
+  "stoke-on-trent",
+  "hull",
+  "sunderland",
+  "middlesbrough",
+  "ipswich",
+  "chelmsford",
+  "slough",
+  "swindon",
+  "milton-keynes",
+  "peterborough",
+  "gloucester",
+  "worcester",
+  "chester",
+  // England — counties
   "kent",
   "essex",
   "surrey",
@@ -185,6 +232,53 @@ export const LOCATION_SLUGS = [
   "norfolk",
   "devon",
   "cornwall",
-  "york",
-  "cambridge",
+  "sussex",
+  "suffolk",
+  "lincolnshire",
+  "yorkshire",
+  "cumbria",
+  "dorset",
+  "somerset",
+  "wiltshire",
+  "berkshire",
+  "buckinghamshire",
+  "hertfordshire",
+  "warwickshire",
+  // Scotland
+  "glasgow",
+  "edinburgh",
+  "aberdeen",
+  "dundee",
+  "inverness",
+  "stirling",
+  "perth",
+  "paisley",
+  // Wales
+  "cardiff",
+  "swansea",
+  "newport",
+  "wrexham",
+  "bangor",
+  // Northern Ireland
+  "belfast",
+  "derry",
+  "lisburn",
+  "newry",
 ];
+
+/** Infer vertical from a free-text job role */
+export function inferVerticalFromRole(role) {
+  const r = (role ?? "").toLowerCase();
+  if (/care|nurse|healthcare|support worker|hca|carer/.test(r)) return "healthcare";
+  if (/chef|hotel|hospitality|kitchen|bar |housekeep|waiter|waitress|porter/.test(r)) {
+    return "hospitality";
+  }
+  if (/site manager|construction|electrician|plumber|carpenter|labourer|builder|trades/.test(r)) {
+    return "trades";
+  }
+  if (/retail|store manager|shop |sales assistant/.test(r)) return "retail";
+  if (/warehouse|hgv|driver|logistics|forklift/.test(r)) return "logistics";
+  if (/teach|nursery|school|education|tutor/.test(r)) return "education";
+  if (/admin|receptionist|office|clerk|pa |secretary/.test(r)) return "office";
+  return "sme";
+}
