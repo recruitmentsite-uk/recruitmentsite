@@ -130,6 +130,12 @@ export default function SignupClient() {
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-500">
+            Looking for a job?{" "}
+            <Link href="/signup/candidate" className="font-semibold text-brand hover:underline">
+              Candidate signup
+            </Link>
+          </p>
+          <p className="mt-2 text-center text-sm text-slate-500">
             Already have an account?{" "}
             <Link href="/login" className="font-semibold text-brand hover:underline">Sign in</Link>
           </p>

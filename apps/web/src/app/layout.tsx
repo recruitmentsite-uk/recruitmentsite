@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import { SITE_NAME, SITE_TAGLINE } from "@placeuk/shared";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -98,6 +99,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MarketingOnly>
           <CookieBanner />
         </MarketingOnly>
+        <Analytics />
       </body>
     </html>
   );
