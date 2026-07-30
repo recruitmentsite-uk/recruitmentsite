@@ -35,6 +35,12 @@ export function Header() {
             Sign in
           </Link>
           <Link
+            href="/signup/candidate"
+            className="hidden sm:inline text-sm font-medium text-slate-500 hover:text-brand"
+          >
+            Candidate signup
+          </Link>
+          <Link
             href="/pricing"
             className="hidden md:inline text-sm font-medium text-slate-500 hover:text-brand"
           >

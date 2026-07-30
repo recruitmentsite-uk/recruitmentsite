@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { href: "/for-employers", label: "For employers" },
   { href: "/compare", label: "vs Reed" },
   { href: "/pricing", label: "Employer pricing" },
+  { href: "/signup/candidate", label: "Candidate signup" },
   { href: "/login", label: "Sign in" },
 ];
 
