@@ -49,7 +49,7 @@ export const PLATFORM_SOCIAL: Record<string, SocialPlatform> = {
   youtube: {
     key: "youtube",
     label: "YouTube",
-    href: "",
+    href: "https://www.youtube.com/@RecruitmentSiteUK",
     handle: SOCIAL_HANDLES.youtube,
   },
 };

@@ -7,10 +7,13 @@ import {
   cityToSlug,
   SEO_ROLE_PAGES,
   COMPETITOR_SEO_PAGES,
+  liveSocialLinks,
 } from "@placeuk/shared";
 import { Logo } from "./Logo";
 
 export function Footer() {
+  const social = liveSocialLinks();
+
   return (
     <footer className="bg-ink text-white/55">
       <div className="relative h-48 overflow-hidden">
@@ -24,11 +27,28 @@ export function Footer() {
             <p className="mt-3 text-sm leading-relaxed text-white/45">
               UK jobs with salary shown upfront. Free to apply, free job alerts.
             </p>
+            {social.length > 0 && (
+              <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                {social.map((p) => (
+                  <li key={p.key}>
+                    <a
+                      href={p.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition hover:text-brand-light"
+                    >
+                      {p.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div>
             <p className="font-display text-base font-medium text-white">Candidates</p>
             <ul className="mt-3 space-y-2 text-sm">
               <li><Link href="/jobs" className="transition hover:text-brand-light">Browse jobs</Link></li>
+              <li><Link href="/signup/candidate" className="transition hover:text-brand-light">Create free account</Link></li>
               <li><Link href="/sectors" className="transition hover:text-brand-light">All sectors</Link></li>
               <li><Link href="/healthcare" className="transition hover:text-brand-light">Healthcare</Link></li>
               <li><Link href="/education" className="transition hover:text-brand-light">Education</Link></li>

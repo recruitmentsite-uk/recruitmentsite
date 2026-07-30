@@ -44,10 +44,22 @@ export default async function HomePage() {
     <>
       <Hero
         image={UNSPLASH.hero.ukCity}
+        showBrand
         title="UK roles with salary shown upfront"
         subtitle={SITE_TAGLINE}
       >
-        <JobSearchForm jobCount={allJobs.length} />
+        <div className="w-full max-w-2xl">
+          <JobSearchForm jobCount={allJobs.length} />
+          <p className="mt-4 text-center text-sm text-white/70">
+            <Link href="/signup/candidate" className="font-semibold text-white underline-offset-4 hover:underline">
+              Create free candidate account
+            </Link>
+            <span className="mx-2 text-white/35">·</span>
+            <Link href="/pricing" className="font-semibold text-white underline-offset-4 hover:underline">
+              Post a job
+            </Link>
+          </p>
+        </div>
       </Hero>
 
       <section className="surface-mist border-b border-ink/6 py-16">

@@ -52,7 +52,7 @@ See `docs/backlinks/directory-targets.md`. Priority: startup directories, HR sof
 - [x] Stripe business verification (`charges_enabled` + `payouts_enabled`, live products + webhook)
 - [ ] Directory submissions — forms opened again (Hotfrog/Scoot/Brownbook/SaaSHub/TAAFT); finish CAPTCHA/submit in Chrome tabs
 - [x] Vercel Analytics wired in `layout.tsx` (deployed via PR #4 — enable Web Analytics in Vercel if not already)
-- [~] Deploy `/signup/candidate` — code merged (PR #4/#5/#6/#7); Vercel upload/alias still failing READY; prod still 404
+- [x] Deploy `/signup/candidate` — live (HTTP 200); nav CTA + homepage hero links
 - [x] LinkedIn company email domain `recruitmentsite.co.uk` added
 - [ ] LinkedIn HQ location (Stanmore / HA7 3DS) — Edit Page UI keeps bouncing to dashboard
-- [ ] YouTube `@RecruitmentSiteUK` setup — deferred (verification video under review; continue tomorrow)
+- [x] YouTube `@RecruitmentSiteUK` — live brand channel on rbee.mehmood@gmail.com (public name brand-only)
