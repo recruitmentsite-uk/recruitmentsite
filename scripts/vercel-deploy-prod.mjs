@@ -15,23 +15,24 @@ import { spawnSync } from "node:child_process";
 
 const root = resolve(import.meta.dirname, "..");
 const tempRoot = mkdtempSync(join(tmpdir(), "placeuk-deploy-"));
-const exclude = new Set([
-  "node_modules",
-  ".git",
-  ".next",
-  ".vercel",
-  "apps/web/.next",
-  "apps/web/.vercel",
-]);
+const excludeExact = new Set([".git", ".next", ".vercel", "apps/web/.next", "apps/web/.vercel"]);
+
+function shouldCopy(source) {
+  const rel = source.slice(root.length + 1).replace(/\\/g, "/");
+  if (!rel) return true;
+  if (excludeExact.has(rel)) return false;
+  // Skip any node_modules / build / git path segment (pnpm workspace symlinks break on Windows).
+  const parts = rel.split("/");
+  if (parts.some((p) => p === "node_modules" || p === ".git" || p === ".next" || p === ".vercel")) {
+    return false;
+  }
+  return true;
+}
 
 function copyDir(src, dest) {
   cpSync(src, dest, {
     recursive: true,
-    filter: (source) => {
-      const rel = source.slice(root.length + 1).replace(/\\/g, "/");
-      if (!rel) return true;
-      return !exclude.has(rel) && ![...exclude].some((part) => rel.startsWith(`${part}/`));
-    },
+    filter: shouldCopy,
   });
 }
 

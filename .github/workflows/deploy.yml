@@ -29,6 +29,11 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@56.5.0
 
+      # Hobby teams block CLI deploys when git commit author ≠ Vercel member.
+      # Strip .git so vercel deploy does not attach githubCommitAuthor* metadata.
+      - name: Strip git metadata (Hobby author block)
+        run: rm -rf .git
+
       - name: Pull Vercel settings
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         env:
@@ -95,14 +100,16 @@ jobs:
           echo "Waiting for $URL to become READY"
           READY=0
           for i in $(seq 1 40); do
+            STATE=$(vercel inspect "$URL" --json --token=${{ secrets.VERCEL_TOKEN }} 2>/dev/null | python3 -c 'import sys,json; print(json.load(sys.stdin).get("readyState",""))' 2>/dev/null || true)
             INFO=$(vercel inspect "$URL" --token=${{ secrets.VERCEL_TOKEN }} 2>&1 || true)
-            echo "poll $i: $(echo "$INFO" | tr '\n' ' ' | cut -c1-220)"
-            if echo "$INFO" | grep -Eqi '(^|[[:space:]])Ready([[:space:]]|$)'; then
+            echo "poll $i: readyState=${STATE:-?} $(echo "$INFO" | tr '\n' ' ' | cut -c1-180)"
+            if [ "$STATE" = "READY" ] || echo "$INFO" | grep -Eqi '(^|[[:space:]])Ready([[:space:]]|$)'; then
               READY=1
               break
             fi
-            if echo "$INFO" | grep -Eqi '(^|[[:space:]])(Error|Canceled)([[:space:]]|$)'; then
-              echo "Deployment failed"
+            if [ "$STATE" = "ERROR" ] || [ "$STATE" = "CANCELED" ] || [ "$STATE" = "BLOCKED" ] \
+              || echo "$INFO" | grep -Eqi '(^|[[:space:]])(Error|Canceled|Blocked)([[:space:]]|$)'; then
+              echo "Deployment failed (state=${STATE:-unknown})"
               exit 1
             fi
             sleep 15
