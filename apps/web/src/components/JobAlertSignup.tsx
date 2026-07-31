@@ -5,10 +5,12 @@ import { VERTICAL_LABELS, type Vertical } from "@placeuk/shared";
 
 export function JobAlertSignup() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("loading");
+    setError("");
     const form = e.currentTarget;
     const data = new FormData(form);
 
@@ -21,12 +23,16 @@ export function JobAlertSignup() {
           city: data.get("city") || undefined,
           vertical: data.get("vertical") || undefined,
           keywords: data.get("keywords") || undefined,
+          phone: data.get("phone") || undefined,
+          smsEnabled: data.get("smsEnabled") === "on",
         }),
       });
-      if (!res.ok) throw new Error("Failed to create alert");
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Failed to create alert");
       setStatus("success");
       form.reset();
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not create alert");
       setStatus("error");
     }
   }
@@ -35,7 +41,7 @@ export function JobAlertSignup() {
     return (
       <div className="rounded-xl border border-teal-200 bg-teal-50 p-6 text-center">
         <p className="font-semibold text-brand">Alert created!</p>
-        <p className="mt-1 text-sm text-slate-600">We&apos;ll email you matching jobs daily.</p>
+        <p className="mt-1 text-sm text-slate-600">We&apos;ll email (and SMS if you opted in) matching jobs daily.</p>
       </div>
     );
   }
@@ -43,7 +49,7 @@ export function JobAlertSignup() {
   return (
     <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md">
       <h3 className="font-semibold text-slate-900">Get job alerts</h3>
-      <p className="mt-1 text-sm text-slate-500">Free daily emails — same as Reed offers candidates, always free here.</p>
+      <p className="mt-1 text-sm text-slate-500">Free daily emails — optional SMS for UK mobiles.</p>
 
       <div className="mt-4 space-y-3">
         <input
@@ -72,10 +78,20 @@ export function JobAlertSignup() {
           placeholder="Keywords (e.g. nurse, band 5)"
           className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
         />
+        <input
+          name="phone"
+          type="tel"
+          placeholder="Mobile for SMS (optional)"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+        />
+        <label className="flex items-center gap-2 text-sm text-slate-600">
+          <input type="checkbox" name="smsEnabled" />
+          Also send SMS alerts
+        </label>
       </div>
 
       {status === "error" && (
-        <p className="mt-2 text-sm text-red-600">Could not create alert. Try again.</p>
+        <p className="mt-2 text-sm text-red-600">{error || "Could not create alert. Try again."}</p>
       )}
 
       <button

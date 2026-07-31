@@ -11,6 +11,7 @@ export interface EmployerContext {
   plan: PlanTier;
   role: "owner" | "admin" | "recruiter";
   cvDatabaseEnabled: boolean;
+  screeningCredits: number;
   stripeCustomerId: string | null;
   teamSeats: number;
   demo: boolean;
@@ -35,7 +36,7 @@ export async function getEmployerContext(): Promise<EmployerContext | null> {
   if (membership?.employer_id) {
     const { data: employerRow } = await admin
       .from("employers")
-      .select("id, company_name, slug, plan, cv_database_enabled, contact_email, stripe_customer_id")
+      .select("id, company_name, slug, plan, cv_database_enabled, contact_email, stripe_customer_id, screening_credits")
       .eq("id", membership.employer_id)
       .single();
 
@@ -50,6 +51,7 @@ export async function getEmployerContext(): Promise<EmployerContext | null> {
         plan: employerRow.plan as PlanTier,
         role: membership.role as EmployerContext["role"],
         cvDatabaseEnabled: employerRow.cv_database_enabled,
+        screeningCredits: employerRow.screening_credits ?? 0,
         stripeCustomerId: employerRow.stripe_customer_id,
         teamSeats: plan?.teamSeats ?? 1,
         demo: false,
@@ -59,7 +61,7 @@ export async function getEmployerContext(): Promise<EmployerContext | null> {
 
   const { data: employerByEmail } = await admin
     .from("employers")
-    .select("id, company_name, slug, plan, cv_database_enabled, stripe_customer_id")
+    .select("id, company_name, slug, plan, cv_database_enabled, stripe_customer_id, screening_credits")
     .eq("contact_email", user.email)
     .maybeSingle();
 
@@ -84,6 +86,7 @@ export async function getEmployerContext(): Promise<EmployerContext | null> {
       plan: employerByEmail.plan as PlanTier,
       role: "owner",
       cvDatabaseEnabled: employerByEmail.cv_database_enabled,
+      screeningCredits: employerByEmail.screening_credits ?? 0,
       stripeCustomerId: employerByEmail.stripe_customer_id,
       teamSeats: plan?.teamSeats ?? 1,
       demo: false,

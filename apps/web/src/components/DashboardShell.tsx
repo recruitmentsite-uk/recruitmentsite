@@ -10,6 +10,7 @@ const NAV = [
   { href: "/dashboard/jobs", label: "Jobs", icon: "💼" },
   { href: "/dashboard/applications", label: "Applications", icon: "📥" },
   { href: "/dashboard/analytics", label: "Analytics", icon: "📈" },
+  { href: "/dashboard/equality", label: "Equality export", icon: "📋" },
   { href: "/dashboard/careers", label: "Careers page", icon: "🌐" },
   { href: "/dashboard/candidates", label: "CV database", icon: "🔍" },
   { href: "/dashboard/jobs/bulk", label: "Bulk upload", icon: "📋" },

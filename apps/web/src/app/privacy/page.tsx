@@ -1,4 +1,4 @@
-import { CV_RETENTION_DAYS, SITE_NAME, COMPANY_LEGAL_NAME, COMPANY_NUMBER, COMPANY_REGISTERED_ADDRESS } from "@placeuk/shared";
+import { CV_RETENTION_DAYS, SITE_NAME, COMPANY_LEGAL_NAME, COMPANY_NUMBER, COMPANY_VAT_NUMBER, COMPANY_REGISTERED_ADDRESS } from "@placeuk/shared";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
@@ -16,7 +16,8 @@ export default function PrivacyPage() {
       <h2>Who we are</h2>
       <p>
         {SITE_NAME} (&quot;we&quot;, &quot;us&quot;) is a trading name of {COMPANY_LEGAL_NAME} (Company No.{" "}
-        {COMPANY_NUMBER}), registered in England and Wales. Registered office: {COMPANY_REGISTERED_ADDRESS}.
+        {COMPANY_NUMBER}, VAT No. {COMPANY_VAT_NUMBER}), registered in England and Wales. Registered office:{" "}
+        {COMPANY_REGISTERED_ADDRESS}.
       </p>
       <p>
         We operate an automated UK job board and hiring platform and are the data controller for personal

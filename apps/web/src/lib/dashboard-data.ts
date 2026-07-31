@@ -86,7 +86,7 @@ export async function getDashboardData(ctx: EmployerContext | null): Promise<Das
 
   const { data: jobs } = await admin
     .from("jobs")
-    .select("id, title, slug, status, vertical, application_count")
+    .select("id, title, slug, status, vertical, application_count, view_count")
     .eq("employer_id", ctx.employerId)
     .in("status", ["active", "paused", "pending_review"])
     .order("published_at", { ascending: false });
@@ -97,21 +97,24 @@ export async function getDashboardData(ctx: EmployerContext | null): Promise<Das
     title: j.title,
     slug: j.slug,
     applications: j.application_count ?? 0,
-    views: Math.max((j.application_count ?? 0) * 20, 50),
+    views: j.view_count ?? 0,
     status: j.status,
     vertical: j.vertical,
   }));
 
   let applications: DashboardApplication[] = [];
   let newApplications = 0;
+  let totalApplications = 0;
+  let avgMatchScore = 0;
 
   if (jobIds.length > 0) {
+    const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString();
     const { data: apps } = await admin
       .from("applications")
       .select("id, guest_name, guest_email, match_score, status, submitted_at, jobs(title)")
       .in("job_id", jobIds)
       .order("submitted_at", { ascending: false })
-      .limit(20);
+      .limit(50);
 
     const weekAgo = Date.now() - 7 * 86400000;
     applications = (apps ?? []).map((a) => {
@@ -131,23 +134,29 @@ export async function getDashboardData(ctx: EmployerContext | null): Promise<Das
     newApplications = (apps ?? []).filter(
       (a) => new Date(a.submitted_at).getTime() > weekAgo,
     ).length;
+
+    const { count } = await admin
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .in("job_id", jobIds)
+      .gte("submitted_at", monthAgo);
+
+    totalApplications = count ?? applications.length;
+
+    const scored = (apps ?? []).filter((a) => a.match_score != null);
+    avgMatchScore = scored.length
+      ? Math.round(scored.reduce((s, a) => s + (a.match_score ?? 0), 0) / scored.length)
+      : 0;
   }
 
-  const totalApplications = applications.length > 0
-    ? applications.length
-    : activeJobs.reduce((s, j) => s + j.applications, 0);
-
   const profileViews = activeJobs.reduce((s, j) => s + j.views, 0);
-  const avgMatchScore = applications.length
-    ? Math.round(applications.reduce((s, a) => s + a.score, 0) / applications.length)
-    : 0;
 
   return {
     stats: {
       activeJobs: activeJobs.filter((j) => j.status === "active").length,
       totalApplications,
-      newApplications: newApplications || Math.min(applications.length, 5),
-      avgMatchScore: avgMatchScore || 72,
+      newApplications,
+      avgMatchScore,
       profileViews,
       conversionRate: profileViews
         ? Math.round((totalApplications / profileViews) * 1000) / 10
@@ -157,6 +166,136 @@ export async function getDashboardData(ctx: EmployerContext | null): Promise<Das
     activeJobs,
     demo: false,
   };
+}
+
+export interface AnalyticsPoint {
+  day: string;
+  views: number;
+  apps: number;
+}
+
+export interface SourceBreakdown {
+  source: string;
+  pct: number;
+  color: string;
+}
+
+const SOURCE_COLORS: Record<string, string> = {
+  "Google Jobs": "bg-blue-500",
+  "Indeed feed": "bg-indigo-500",
+  "Recruitment Site direct": "bg-brand",
+  "Job alerts": "bg-teal-400",
+  Careers: "bg-cyan-500",
+  Other: "bg-slate-400",
+};
+
+function labelSource(raw: string | null | undefined): string {
+  const s = (raw || "direct").toLowerCase();
+  if (s.includes("google")) return "Google Jobs";
+  if (s.includes("indeed")) return "Indeed feed";
+  if (s.includes("alert")) return "Job alerts";
+  if (s.includes("career")) return "Careers";
+  if (s === "direct" || s === "organic") return "Recruitment Site direct";
+  return "Other";
+}
+
+export async function getAnalyticsSeries(ctx: EmployerContext | null): Promise<{
+  weekly: AnalyticsPoint[];
+  sources: SourceBreakdown[];
+  demo: boolean;
+}> {
+  if (!ctx) {
+    return {
+      weekly: [
+        { day: "Mon", views: 0, apps: 0 },
+        { day: "Tue", views: 0, apps: 0 },
+        { day: "Wed", views: 0, apps: 0 },
+        { day: "Thu", views: 0, apps: 0 },
+        { day: "Fri", views: 0, apps: 0 },
+        { day: "Sat", views: 0, apps: 0 },
+        { day: "Sun", views: 0, apps: 0 },
+      ],
+      sources: [],
+      demo: true,
+    };
+  }
+
+  const admin = getSupabaseAdmin();
+  if (!admin) return getAnalyticsSeries(null);
+
+  const { data: jobs } = await admin
+    .from("jobs")
+    .select("id")
+    .eq("employer_id", ctx.employerId);
+  const jobIds = (jobs ?? []).map((j) => j.id);
+
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weeklyMap = new Map<string, AnalyticsPoint>();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    weeklyMap.set(key, { day: days[d.getDay()]!, views: 0, apps: 0 });
+  }
+
+  if (jobIds.length === 0) {
+    return { weekly: [...weeklyMap.values()], sources: [], demo: false };
+  }
+
+  const weekAgoIso = new Date(Date.now() - 7 * 86400000).toISOString();
+
+  const { data: events } = await admin
+    .from("job_events")
+    .select("event_type, created_at")
+    .in("job_id", jobIds)
+    .gte("created_at", weekAgoIso)
+    .limit(5000);
+
+  for (const ev of events ?? []) {
+    const key = new Date(ev.created_at).toISOString().slice(0, 10);
+    const point = weeklyMap.get(key);
+    if (!point) continue;
+    if (ev.event_type === "view") point.views += 1;
+    if (ev.event_type === "apply") point.apps += 1;
+  }
+
+  const { data: apps } = await admin
+    .from("applications")
+    .select("source, submitted_at")
+    .in("job_id", jobIds)
+    .gte("submitted_at", weekAgoIso)
+    .limit(2000);
+
+  // Prefer application rows for apps if job_events apply not yet populated
+  const hasApplyEvents = (events ?? []).some((e) => e.event_type === "apply");
+  if (!hasApplyEvents) {
+    for (const point of weeklyMap.values()) point.apps = 0;
+    for (const a of apps ?? []) {
+      const key = new Date(a.submitted_at).toISOString().slice(0, 10);
+      const point = weeklyMap.get(key);
+      if (point) point.apps += 1;
+    }
+  }
+
+  const counts = new Map<string, number>();
+  for (const a of apps ?? []) {
+    const label = labelSource(a.source);
+    counts.set(label, (counts.get(label) ?? 0) + 1);
+  }
+  const total = [...counts.values()].reduce((s, n) => s + n, 0);
+  const sources: SourceBreakdown[] =
+    total === 0
+      ? []
+      : [...counts.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .map(([source, n]) => ({
+            source,
+            pct: Math.round((n / total) * 100),
+            color: SOURCE_COLORS[source] ?? "bg-slate-400",
+          }));
+
+  return { weekly: [...weeklyMap.values()], sources, demo: false };
 }
 
 export async function getAllApplications(ctx: EmployerContext | null): Promise<DashboardApplication[]> {
@@ -274,18 +413,52 @@ export async function searchCandidates(ctx: EmployerContext, query?: string): Pr
   const admin = getSupabaseAdmin();
   if (!admin) return [];
 
-  let q = admin.from("candidates").select("id, email, full_name, headline, city, skills").limit(50);
+  let candidatesQ = admin
+    .from("candidates")
+    .select("id, email, full_name, headline, city, skills")
+    .limit(50);
   if (query) {
-    q = q.or(`full_name.ilike.%${query}%,email.ilike.%${query}%,headline.ilike.%${query}%`);
+    candidatesQ = candidatesQ.or(
+      `full_name.ilike.%${query}%,email.ilike.%${query}%,headline.ilike.%${query}%`,
+    );
   }
 
-  const { data } = await q;
-  return (data ?? []).map((c) => ({
-    id: c.id,
-    email: c.email,
-    fullName: c.full_name,
-    headline: c.headline,
-    city: c.city,
-    skills: c.skills ?? [],
-  }));
+  let talentQ = admin
+    .from("talent_profiles")
+    .select("id, email, full_name, headline, city, skills")
+    .eq("active", true)
+    .limit(50);
+  if (query) {
+    talentQ = talentQ.or(
+      `full_name.ilike.%${query}%,email.ilike.%${query}%,headline.ilike.%${query}%`,
+    );
+  }
+
+  const [{ data: candidates }, { data: talent }] = await Promise.all([candidatesQ, talentQ]);
+
+  const byEmail = new Map<string, CandidateSearchResult>();
+  for (const c of candidates ?? []) {
+    byEmail.set(c.email.toLowerCase(), {
+      id: c.id,
+      email: c.email,
+      fullName: c.full_name,
+      headline: c.headline,
+      city: c.city,
+      skills: c.skills ?? [],
+    });
+  }
+  for (const c of talent ?? []) {
+    const key = c.email.toLowerCase();
+    if (byEmail.has(key)) continue;
+    byEmail.set(key, {
+      id: c.id,
+      email: c.email,
+      fullName: c.full_name,
+      headline: c.headline,
+      city: c.city,
+      skills: c.skills ?? [],
+    });
+  }
+
+  return [...byEmail.values()].slice(0, 50);
 }

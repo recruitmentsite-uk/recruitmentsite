@@ -5,9 +5,11 @@ import {
   type PlanTier,
   COMPANY_LEGAL_NAME,
   COMPANY_NUMBER,
+  COMPANY_VAT_NUMBER,
   STRIPE_INVOICE_FOOTER,
 } from "@placeuk/shared";
 import { getStripe } from "@/lib/stripe";
+import { grantScreeningCredits } from "@/lib/screening-credits";
 
 async function updateEmployerByIdOrEmail(
   supabase: NonNullable<ReturnType<typeof getSupabaseAdmin>>,
@@ -57,6 +59,7 @@ export async function POST(request: Request) {
           custom_fields: [
             { name: "Legal entity", value: COMPANY_LEGAL_NAME },
             { name: "Company No.", value: COMPANY_NUMBER },
+            { name: "VAT No.", value: COMPANY_VAT_NUMBER },
           ],
         },
       }).catch(() => null);
@@ -68,6 +71,23 @@ export async function POST(request: Request) {
         cv_database_stripe_sub_id: subscriptionId,
         ...(customerId ? { stripe_customer_id: customerId } : {}),
       });
+    } else if (metadata.type === "screening_credits" && supabase && metadata.employerId) {
+      const credits = Number(metadata.credits || 0);
+      if (credits > 0) {
+        await grantScreeningCredits(
+          supabase,
+          metadata.employerId,
+          credits,
+          "stripe_purchase",
+          session.id,
+        );
+        if (customerId) {
+          await supabase
+            .from("employers")
+            .update({ stripe_customer_id: customerId })
+            .eq("id", metadata.employerId);
+        }
+      }
     } else if (metadata.type === "boost" && supabase && metadata.jobId) {
       const featuredUntil = new Date(Date.now() + 7 * 86400000).toISOString();
       await supabase

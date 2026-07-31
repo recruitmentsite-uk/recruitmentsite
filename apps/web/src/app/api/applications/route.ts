@@ -4,6 +4,7 @@ import { scoreApplication } from "@/lib/matching";
 import { getEmployerAtsWebhook, notifyAtsWebhook } from "@/lib/ats";
 import { sendEmail } from "@/lib/email";
 import { getSiteUrl } from "@/lib/site";
+import { debitScreeningCredit } from "@/lib/screening-credits";
 
 function escapeHtml(text: string): string {
   return text
@@ -22,6 +23,11 @@ export async function POST(request: Request) {
     const coverNote = (formData.get("coverNote") as string) || null;
     const consent = formData.get("consent");
     const cvFile = formData.get("cv") as File | null;
+    const sourceRaw = formData.get("source");
+    const source =
+      typeof sourceRaw === "string" && sourceRaw.trim()
+        ? sourceRaw.trim().slice(0, 40)
+        : null;
 
     if (!jobId || !fullName || !email || !consent) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -84,6 +90,7 @@ export async function POST(request: Request) {
         status: "submitted",
         match_score: match.score,
         match_summary: match.summary,
+        source,
       })
       .select("id, submitted_at")
       .single();
@@ -91,6 +98,9 @@ export async function POST(request: Request) {
     if (insertError || !application) {
       return NextResponse.json({ error: "Failed to save application" }, { status: 500 });
     }
+
+    // Consume a screening credit when available; scoring still runs if balance is 0.
+    await debitScreeningCredit(supabase, job.employer_id, application.id);
 
     const atsUrl = await getEmployerAtsWebhook(supabase, job.employer_id);
     if (atsUrl) {
@@ -152,7 +162,11 @@ export async function POST(request: Request) {
       });
     }
 
-    return NextResponse.json({ success: true, matchScore: match.score });
+    return NextResponse.json({
+      success: true,
+      matchScore: match.score,
+      applicationId: application.id,
+    });
   } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
