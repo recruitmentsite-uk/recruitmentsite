@@ -1,58 +1,117 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { MobileNav } from "./MobileNav";
 
+function heroOwnsTop(): boolean {
+  const hero = document.querySelector("[data-hero]");
+  if (!hero) return false;
+  const top = hero.getBoundingClientRect().top;
+  return top <= 72 && top > -120;
+}
+
 export function Header() {
+  const pathname = usePathname();
+  const [overHero, setOverHero] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    setOverHero(heroOwnsTop());
+  }, [pathname]);
+
+  useEffect(() => {
+    const update = () => setOverHero(heroOwnsTop());
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  const transparent = overHero && !menuOpen;
+
   return (
-    <header className="border-b border-white/10 bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Logo />
-        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
-          <Link href="/jobs" className="hover:text-brand transition-colors">
+    <header
+      className={`sticky top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
+        transparent
+          ? "border-b border-transparent bg-transparent"
+          : "border-b border-ink/5 bg-paper/90 backdrop-blur-xl"
+      }`}
+    >
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5">
+        <Logo variant={transparent ? "light" : "dark"} />
+        <nav
+          className={`hidden items-center gap-7 text-[13px] font-medium tracking-wide lg:flex ${
+            transparent ? "text-white/75" : "text-ink-soft/70"
+          }`}
+        >
+          <Link
+            href="/jobs"
+            className={`transition-colors ${transparent ? "hover:text-white" : "hover:text-brand"}`}
+          >
             Find jobs
           </Link>
-          <Link href="/healthcare" className="hover:text-brand transition-colors">
-            Healthcare
+          <Link
+            href="/sectors"
+            className={`transition-colors ${transparent ? "hover:text-white" : "hover:text-brand"}`}
+          >
+            Sectors
           </Link>
-          <Link href="/trades" className="hover:text-brand transition-colors">
-            Trades
-          </Link>
-          <Link href="/tech" className="hover:text-brand transition-colors">
-            Tech
-          </Link>
-          <Link href="/blog" className="hover:text-brand transition-colors">
+          <Link
+            href="/blog"
+            className={`transition-colors ${transparent ? "hover:text-white" : "hover:text-brand"}`}
+          >
             Guides
           </Link>
-          <Link href="/for-employers" className="hover:text-brand transition-colors">
-            For employers
+          <Link
+            href="/for-employers"
+            className={`transition-colors ${transparent ? "hover:text-white" : "hover:text-brand"}`}
+          >
+            Employers
+          </Link>
+          <Link
+            href="/pricing"
+            className={`transition-colors ${transparent ? "hover:text-white" : "hover:text-brand"}`}
+          >
+            Pricing
           </Link>
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <Link
             href="/login"
-            className="hidden sm:inline text-sm font-medium text-slate-500 hover:text-brand"
+            className={`hidden text-[13px] font-medium transition-colors sm:inline ${
+              transparent ? "text-white/70 hover:text-white" : "text-ink-soft/60 hover:text-brand"
+            }`}
           >
             Sign in
           </Link>
           <Link
-            href="/signup/candidate"
-            className="hidden sm:inline text-sm font-medium text-slate-500 hover:text-brand"
-          >
-            Candidate signup
-          </Link>
-          <Link
-            href="/pricing"
-            className="hidden md:inline text-sm font-medium text-slate-500 hover:text-brand"
-          >
-            Hiring?
-          </Link>
-          <Link
             href="/jobs"
-            className="hidden sm:inline rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-brand-dark transition-colors"
+            className={`hidden text-[13px] font-medium transition-colors sm:inline ${
+              transparent ? "text-white/70 hover:text-white" : "text-ink-soft/60 hover:text-brand"
+            }`}
           >
-            Find jobs
+            Browse roles
           </Link>
-          <MobileNav />
+          <Link
+            href="/onboarding"
+            className={`hidden rounded-full px-4 py-2.5 text-[13px] font-semibold shadow-sm transition md:inline ${
+              transparent
+                ? "bg-white text-ink hover:bg-mist"
+                : "bg-brand text-white hover:bg-brand-dark"
+            }`}
+          >
+            Post a job
+          </Link>
+          <MobileNav tone={transparent ? "light" : "dark"} open={menuOpen} onOpenChange={setMenuOpen} />
         </div>
       </div>
     </header>

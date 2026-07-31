@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SITE_NAME, SITE_TAGLINE } from "@placeuk/shared";
 import { Header } from "@/components/Header";
@@ -9,6 +10,18 @@ import { MarketingOnly } from "@/components/ConditionalShell";
 import { DEFAULT_SITE_URL, getSiteUrl } from "@/lib/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 /**
  * Job inventory must load at request time. `vercel build` in CI pulls masked
@@ -86,8 +99,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-GB">
-      <body className="min-h-screen flex flex-col">
+    <html lang="en-GB" className={`${fraunces.variable} ${jakarta.variable}`}>
+      <body className="flex min-h-screen flex-col font-sans">
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <MarketingOnly>
           <Header />

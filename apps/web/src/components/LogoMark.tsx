@@ -20,9 +20,9 @@ export function LogoMark({ className = "", size = 36 }: LogoMarkProps) {
     >
       <defs>
         <linearGradient id="rs-grad" x1="6" y1="4" x2="30" y2="32" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#2dd4bf" />
-          <stop offset="0.45" stopColor="#14b8a6" />
-          <stop offset="1" stopColor="#0f766e" />
+          <stop stopColor="#2bc4b0" />
+          <stop offset="0.45" stopColor="#1aa896" />
+          <stop offset="1" stopColor="#0c6b63" />
         </linearGradient>
       </defs>
       <rect width="36" height="36" rx="10" fill="url(#rs-grad)" />

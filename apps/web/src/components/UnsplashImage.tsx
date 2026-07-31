@@ -8,6 +8,7 @@ interface UnsplashImageProps {
   fill?: boolean;
   width?: number;
   height?: number;
+  sizes?: string;
 }
 
 export function UnsplashImage({
@@ -18,6 +19,7 @@ export function UnsplashImage({
   fill = false,
   width,
   height,
+  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
 }: UnsplashImageProps) {
   if (fill) {
     return (
@@ -27,7 +29,7 @@ export function UnsplashImage({
         fill
         priority={priority}
         className={`object-cover ${className}`}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        sizes={sizes}
       />
     );
   }

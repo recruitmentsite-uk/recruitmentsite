@@ -1,0 +1,41 @@
+Recruitment Site — social bio copy
+=================================
+
+Owner login email: admin@recruitmentsite.co.uk
+Public contact: hello@recruitmentsite.co.uk
+Website: https://recruitmentsite.co.uk
+
+SHORT BIO
+---------
+UK jobs with salary shown upfront. Free to apply. Flat-fee hiring for employers.
+
+ABOUT / LONG BIO
+----------------
+Recruitment Site is a UK job board for candidates and employers. Salary is shown on every listing. Candidates apply free. Employers get unlimited posts on a flat monthly fee — AI match scores, Google Jobs syndication, no agency commission.
+
+LinkedIn Company Page (employer channel)
+----------------------------------------
+Page name: Recruitment Site
+Website: https://recruitmentsite.co.uk
+Industry: Staffing and Recruiting
+Company size: 1–10
+Vanity URL: linkedin.com/company/recruitmentsite-uk
+Tagline: Flat-fee UK hiring. Unlimited posts. No agency commission.
+Cover (Company Page): apps/web/public/brand/social/linkedin-cover-4200x700.jpg
+  Size must be 4200×700 (6:1). Do not use 1584×396 — that is personal-profile only.
+About: (use ABOUT / LONG BIO above)
+Note: Lead with flat fee / no commission on LinkedIn. Keep salary-upfront for candidate channels.
+
+X / Instagram
+-------------
+Handle preference: RecruitSiteUK / recruitmentsite.uk
+Bio: UK jobs with salary shown upfront · Free to apply · Flat-fee hiring
+Link: https://recruitmentsite.co.uk
+
+YouTube
+-------
+Google login (private owner): rbee.mehmood@gmail.com — never show this or personal name on the channel
+Channel (public): Recruitment Site UK
+Handle: @RecruitmentSiteUK
+Description: Job search tips, NHS band guides, and hiring walkthroughs for UK employers and candidates on recruitmentsite.co.uk
+Status: Create blocked until YouTube Studio “Get advanced features” verification (selfie or ID) on that Google account

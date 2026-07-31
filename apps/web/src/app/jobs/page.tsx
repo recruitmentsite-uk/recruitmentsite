@@ -124,7 +124,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   return (
     <>
       <Hero
-        image={UNSPLASH.hero.ukCity}
+        image={UNSPLASH.hero.commute}
         badge={`${total.toLocaleString()} open roles`}
         title={`${verticalLabel} jobs${titleSuffix}`}
         subtitle="Verified employers · Salary shown on every listing · Apply free in under 5 minutes"

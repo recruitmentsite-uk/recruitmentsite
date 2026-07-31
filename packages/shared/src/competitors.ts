@@ -1,11 +1,18 @@
 /** Curated Unsplash images — free to use via images.unsplash.com */
 export const UNSPLASH = {
   hero: {
+    /** Workplace hiring atmosphere — preferred for homepage / employers */
     hiring: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1920&q=80",
     healthcare: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1920&q=80",
     ukCity: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1920&q=80",
     team: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1920&q=80",
     office: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80",
+    /** Commercial kitchen — hospitality / ops hiring */
+    kitchen: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1920&q=80",
+    /** Workshop / trades atmosphere */
+    workshop: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1920&q=80",
+    /** Candidate job-search / commute feel */
+    commute: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1920&q=80",
   },
   vertical: {
     healthcare: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=80",
@@ -29,6 +36,16 @@ export const UNSPLASH = {
     laptop: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80",
     handshake: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&q=80",
     dashboard: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
+    meeting: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80",
+    checklist: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&q=80",
+  },
+  /** Category defaults for blog covers / OG (1200-wide) */
+  blog: {
+    hiring: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&q=80",
+    healthcare: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&q=80",
+    trades: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1200&q=80",
+    tech: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80",
+    comparison: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80",
   },
   avatars: [
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&q=80",
