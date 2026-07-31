@@ -43,10 +43,11 @@ export const EMPLOYER_TAGLINE = "Flat-fee hiring for UK employers. AI-matched ca
 
 export const COMPANY_LEGAL_NAME = "Recruitment Drive Ltd";
 export const COMPANY_NUMBER = "13481215";
+export const COMPANY_VAT_NUMBER = "GB386325866";
 export const COMPANY_REGISTERED_ADDRESS = "21-25 Burnley Road, Dollis Hill, London NW10 1ED";
 
 /** Full legal entity line for footers and policies */
-export const COMPANY_LEGAL_NOTICE = `${SITE_NAME} is a trading name of ${COMPANY_LEGAL_NAME} (Company No. ${COMPANY_NUMBER}). Registered office: ${COMPANY_REGISTERED_ADDRESS}.`;
+export const COMPANY_LEGAL_NOTICE = `${SITE_NAME} is a trading name of ${COMPANY_LEGAL_NAME} (Company No. ${COMPANY_NUMBER}, VAT No. ${COMPANY_VAT_NUMBER}). Registered office: ${COMPANY_REGISTERED_ADDRESS}.`;
 
 /** Quick-search chips on homepage — mirrors Reed/Indeed trending searches */
 export const POPULAR_SEARCHES = [
