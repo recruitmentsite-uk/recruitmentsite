@@ -1,17 +1,89 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
-/** Canonical host is apex; send www traffic there with a permanent redirect. */
-export function middleware(request: NextRequest) {
-  const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
-  if (host === "www.recruitmentsite.co.uk") {
+const CAREERS_HOST_SUFFIX = ".recruitmentsite.co.uk";
+const APEX_HOST = "recruitmentsite.co.uk";
+
+function careersSlugFromHost(host: string): string | null {
+  if (host === APEX_HOST || host === `www.${APEX_HOST}`) return null;
+  if (!host.endsWith(CAREERS_HOST_SUFFIX)) return null;
+  const slug = host.slice(0, -CAREERS_HOST_SUFFIX.length);
+  if (!slug || slug.includes(".")) return null;
+  return slug;
+}
+
+export async function middleware(request: NextRequest) {
+  const host = request.headers.get("host")?.split(":")[0]?.toLowerCase() ?? "";
+  const { pathname } = request.nextUrl;
+
+  if (host === `www.${APEX_HOST}`) {
     const url = request.nextUrl.clone();
     url.protocol = "https:";
-    url.hostname = "recruitmentsite.co.uk";
+    url.hostname = APEX_HOST;
     url.port = "";
     return NextResponse.redirect(url, 308);
   }
-  return NextResponse.next();
+
+  const careersSlug = careersSlugFromHost(host);
+  if (careersSlug && (pathname === "/" || pathname === "")) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/careers/${careersSlug}`;
+    return NextResponse.rewrite(url);
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  let supabaseResponse = NextResponse.next({ request });
+
+  if (!supabaseUrl || !supabaseKey) {
+    return supabaseResponse;
+  }
+
+  const isProtected = pathname.startsWith("/dashboard") || pathname.startsWith("/onboarding");
+  const isAuthPage = pathname === "/login" || pathname === "/signup" || pathname === "/forgot-password";
+  const isAdmin = pathname.startsWith("/admin");
+
+  if (!isProtected && !isAuthPage && !isAdmin) {
+    return supabaseResponse;
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        supabaseResponse = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) =>
+          supabaseResponse.cookies.set(name, value, options),
+        );
+      },
+    },
+  });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (isAdmin && !user) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (isProtected && !user) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (isAuthPage && user) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  return supabaseResponse;
 }
 
 export const config = {

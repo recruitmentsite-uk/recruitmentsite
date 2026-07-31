@@ -5,6 +5,7 @@ import {
   PRICING_PLANS,
   PAYG_JOB_POST_PRICE,
   FREE_TRIAL_DAYS,
+  SCREENING_CREDIT_PACKS,
 } from "@placeuk/shared";
 import { getSiteUrl } from "@/lib/site";
 import { getEmployerContext } from "@/lib/employer";
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
     }
 
     const siteUrl = getSiteUrl();
-    const { tier, interval = "month", type, jobId } = await request.json();
+    const { tier, interval = "month", type, jobId, credits } = await request.json();
     const ctx = await getEmployerContext();
 
     if (type === "boost") {
@@ -76,6 +77,43 @@ export async function POST(request: Request) {
         success_url: `${siteUrl}/dashboard/jobs/new?checkout=success&type=payg`,
         cancel_url: `${siteUrl}/pricing?checkout=cancelled`,
         metadata: { type: "payg", employerId: ctx?.employerId ?? "" },
+      });
+      return NextResponse.json({ url: session.url });
+    }
+
+    if (type === "screening_credits") {
+      if (!ctx?.employerId) {
+        return NextResponse.json({ error: "Sign in as an employer first" }, { status: 401 });
+      }
+      const pack = SCREENING_CREDIT_PACKS.find((p) => p.credits === Number(credits));
+      if (!pack) {
+        return NextResponse.json({ error: "Invalid credit pack" }, { status: 400 });
+      }
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        payment_method_types: ["card"],
+        ...checkoutCustomerParams("payment", ctx.stripeCustomerId, ctx.email),
+        custom_text: stripeCheckoutCustomText,
+        line_items: [
+          {
+            price_data: {
+              currency: "gbp",
+              product_data: stripeProductData(
+                `Recruitment Site AI Screening — ${pack.label}`,
+                `${pack.credits} AI applicant screens`,
+              ),
+              unit_amount: pack.priceGbp * 100,
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${siteUrl}/dashboard/billing?credits=success`,
+        cancel_url: `${siteUrl}/dashboard/billing?credits=cancelled`,
+        metadata: {
+          type: "screening_credits",
+          employerId: ctx.employerId,
+          credits: String(pack.credits),
+        },
       });
       return NextResponse.json({ url: session.url });
     }

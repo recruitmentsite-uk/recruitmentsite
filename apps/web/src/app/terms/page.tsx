@@ -1,4 +1,4 @@
-import { SITE_NAME, COMPANY_LEGAL_NAME, COMPANY_NUMBER, COMPANY_REGISTERED_ADDRESS } from "@placeuk/shared";
+import { SITE_NAME, COMPANY_LEGAL_NAME, COMPANY_NUMBER, COMPANY_VAT_NUMBER, COMPANY_REGISTERED_ADDRESS } from "@placeuk/shared";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
@@ -15,8 +15,9 @@ export default function TermsPage() {
 
       <h2>1. Service</h2>
       <p>
-        {SITE_NAME} is a trading name of {COMPANY_LEGAL_NAME} (Company No. {COMPANY_NUMBER}), registered in
-        England and Wales with registered office at {COMPANY_REGISTERED_ADDRESS}.
+        {SITE_NAME} is a trading name of {COMPANY_LEGAL_NAME} (Company No. {COMPANY_NUMBER}, VAT No.{" "}
+        {COMPANY_VAT_NUMBER}), registered in England and Wales with registered office at{" "}
+        {COMPANY_REGISTERED_ADDRESS}.
       </p>
       <p>
         We provide an online job board and hiring platform for UK employers and job seekers.

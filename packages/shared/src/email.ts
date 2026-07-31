@@ -3,6 +3,7 @@ import {
   COMPANY_LEGAL_NOTICE,
   COMPANY_NUMBER,
   COMPANY_REGISTERED_ADDRESS,
+  COMPANY_VAT_NUMBER,
   SITE_DOMAIN,
   SITE_NAME,
 } from "./constants.js";
@@ -129,5 +130,6 @@ export const STRIPE_PRODUCT_METADATA = {
   trading_name: SITE_NAME,
   legal_entity: COMPANY_LEGAL_NAME,
   company_number: COMPANY_NUMBER,
+  vat_number: COMPANY_VAT_NUMBER,
   registered_address: COMPANY_REGISTERED_ADDRESS,
 } as const;

@@ -1,8 +1,16 @@
 import Link from "next/link";
-import { getPlanByTier, PRICING_PLANS, formatGbp, CV_DATABASE_ADDON_PRICE, COMPANY_LEGAL_NOTICE } from "@placeuk/shared";
+import {
+  getPlanByTier,
+  PRICING_PLANS,
+  formatGbp,
+  CV_DATABASE_ADDON_PRICE,
+  COMPANY_LEGAL_NOTICE,
+  SCREENING_CREDIT_PACKS,
+} from "@placeuk/shared";
 import { DashboardHeader } from "@/components/DashboardShell";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import { CvDatabaseButton } from "@/components/CvDatabaseButton";
+import { ScreeningCreditsButton } from "@/components/ScreeningCreditsButton";
 import { ManageBillingButton } from "@/components/ManageBillingButton";
 import { getEmployerContext } from "@/lib/employer";
 
@@ -33,19 +41,17 @@ export default async function BillingPage() {
         </div>
 
         <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
-          <h2 className="font-semibold text-slate-900">Compare what you&apos;re saving</h2>
+          <h2 className="font-semibold text-slate-900">Included on your plan</h2>
           <div className="mt-4 space-y-3">
             {[
-              { label: `Recruitment Site ${plan.name} (unlimited hires)`, cost: `${formatGbp(plan.priceMonthly)}/mo` },
-              { label: "Reed (5 listings × £100)", cost: "£500/mo" },
-              { label: "Hays (1 × £35k hire @ 18%)", cost: "£6,300 once" },
-              { label: "Indeed PPC (est. 50 applies)", cost: "£400+/mo" },
+              { label: "Job posts", value: plan.tier === "starter" ? "Limited" : "Unlimited" },
+              { label: "AI applicant scoring", value: "Included" },
+              { label: "Salary required on listings", value: "Included" },
+              { label: "Monthly price", value: `${formatGbp(plan.priceMonthly)}/mo` },
             ].map((row) => (
               <div key={row.label} className="flex justify-between text-sm border-b border-slate-50 pb-2">
                 <span className="text-slate-600">{row.label}</span>
-                <span className={`font-semibold ${row.label.startsWith("Recruitment Site") ? "text-brand" : "text-slate-400 line-through"}`}>
-                  {row.cost}
-                </span>
+                <span className="font-semibold text-brand">{row.value}</span>
               </div>
             ))}
           </div>
@@ -63,9 +69,29 @@ export default async function BillingPage() {
           >
             Manage subscription & invoices
           </ManageBillingButton>
-          <Link href="/compare" className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-600 hover:border-brand">
-            Full comparison →
+          <Link href="/for-employers" className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-600 hover:border-brand">
+            See features →
           </Link>
+        </div>
+
+        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+          <h2 className="font-semibold text-slate-900">AI screening credits</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Balance: <span className="font-semibold text-slate-800">{ctx?.screeningCredits ?? 0}</span> screens.
+            Each application AI score uses 1 credit.
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            {SCREENING_CREDIT_PACKS.map((pack) => (
+              <div key={pack.credits} className="rounded-xl bg-slate-50 p-4 text-center">
+                <p className="font-semibold text-slate-900">{pack.label}</p>
+                <p className="mt-1 text-brand font-bold">{formatGbp(pack.priceGbp)}</p>
+                <ScreeningCreditsButton
+                  credits={pack.credits}
+                  className="mt-3 w-full rounded-lg bg-brand px-3 py-2 text-xs font-semibold text-white hover:bg-teal-800 disabled:opacity-50"
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
@@ -73,7 +99,7 @@ export default async function BillingPage() {
           <div className="mt-4 flex items-center justify-between rounded-xl bg-slate-50 p-4 gap-4">
             <div>
               <p className="font-medium text-slate-900">CV database access</p>
-              <p className="text-sm text-slate-500">Search candidate profiles — Reed charges extra for this.</p>
+              <p className="text-sm text-slate-500">Search candidate profiles from your talent pool.</p>
               {ctx?.cvDatabaseEnabled && (
                 <Link href="/dashboard/candidates" className="text-sm font-semibold text-brand hover:underline">
                   Search candidates →

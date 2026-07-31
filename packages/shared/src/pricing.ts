@@ -77,6 +77,13 @@ export const PRICING_PLANS: PricingPlan[] = [
 export const PAYG_JOB_POST_PRICE = 79;
 export const FEATURED_BOOST_PRICE = 49;
 export const CV_DATABASE_ADDON_PRICE = 149;
+/** One AI screen debit = one credit; packs sold in checkout */
+export const SCREENING_CREDIT_UNIT_PRICE = 2;
+export const SCREENING_CREDIT_PACKS = [
+  { credits: 25, priceGbp: 45, label: "25 screens" },
+  { credits: 100, priceGbp: 160, label: "100 screens" },
+  { credits: 500, priceGbp: 700, label: "500 screens" },
+] as const;
 export const FREE_TRIAL_DAYS = 30;
 
 export function getPlanByTier(tier: PlanTier): PricingPlan | undefined {

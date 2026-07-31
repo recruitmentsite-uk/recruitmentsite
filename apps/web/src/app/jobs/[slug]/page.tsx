@@ -15,12 +15,14 @@ import { getJobBySlug, getAllJobSlugs, getJobs, getSiteUrl } from "@/lib/jobs";
 import { formatSalary } from "@/lib/format";
 import { JobPostingSchema } from "@/components/JobPostingSchema";
 import { ApplyForm } from "@/components/ApplyForm";
+import { TrackJobView } from "@/components/TrackJobView";
 import { UnsplashImage } from "@/components/UnsplashImage";
 import { CityJobLanding } from "@/components/SeoLandingPages";
 import { buildPageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 interface JobDetailPageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ src?: string }>;
 }
 
 export async function generateStaticParams() {
@@ -59,8 +61,9 @@ export async function generateMetadata({ params }: JobDetailPageProps): Promise<
   };
 }
 
-export default async function JobDetailPage({ params }: JobDetailPageProps) {
+export default async function JobDetailPage({ params, searchParams }: JobDetailPageProps) {
   const { slug } = await params;
+  const { src } = await searchParams;
 
   if (isCitySlug(slug)) {
     const city = slugToCity(slug);
@@ -95,9 +98,11 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   if (!job) notFound();
 
   const siteUrl = getSiteUrl();
+  const source = typeof src === "string" ? src.slice(0, 40) : undefined;
 
   return (
     <>
+      <TrackJobView jobId={job.id} source={source} />
       <JobPostingSchema job={job} siteUrl={siteUrl} />
 
       <div data-hero className="relative -mt-[65px] h-64 overflow-hidden sm:h-72">
@@ -159,7 +164,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             ))}
           </div>
 
-          <ApplyForm jobId={job.id} jobTitle={job.title} />
+          <ApplyForm jobId={job.id} jobTitle={job.title} source={source} />
 
           <p className="mt-6 text-xs text-slate-400">
             {job.applicationCount} applications · Posted{" "}
