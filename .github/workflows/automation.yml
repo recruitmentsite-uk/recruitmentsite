@@ -3,14 +3,16 @@ name: Recruitment Site Automation
 # Cloud departments — run on GitHub even when local machines are off.
 on:
   schedule:
-    - cron: "0 5 * * *"   # Expand prospect list + partner feeds + CS + daily report (05:00 UTC)
-    - cron: "0 6 * * *"   # Job sync (06:00 UTC)
+    # Note: GitHub coalesces same-minute crons into one run with one schedule string.
+    # Keep department crons OFF the hour so they are not skipped by hourly matching.
+    - cron: "15 5 * * *"  # Expand prospect list + partner feeds + CS + daily report (05:15 UTC)
+    - cron: "0 6 * * *"   # Job sync (06:00 UTC) — ok: matching also fires; sync job checks its own cron
     - cron: "30 6 * * *"  # IndexNow / SEO URL ping after sync (06:30 UTC)
-    - cron: "0 7 * * *"   # Enrichment + expire (07:00 UTC)
-    - cron: "0 9 * * *"   # Alert digests (09:00 UTC)
-    - cron: "0 10 * * *"  # Employer sales outreach daily (10:00 UTC)
+    - cron: "15 7 * * *"  # Enrichment + expire (07:15 UTC)
+    - cron: "15 9 * * *"  # Alert digests (09:15 UTC)
+    - cron: "15 10 * * *" # Employer sales outreach daily (10:15 UTC)
     - cron: "0 * * * *"   # Matching hourly
-    - cron: "0 8 * * 1"   # Weekly metrics Monday 08:00 UTC
+    - cron: "15 8 * * 1"  # Weekly metrics Monday 08:15 UTC
   workflow_dispatch:
     inputs:
       department:
@@ -36,7 +38,7 @@ env:
 jobs:
   expand-and-ops:
     if: >
-      github.event.schedule == '0 5 * * *' ||
+      github.event.schedule == '15 5 * * *' ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'expand-and-ops'))
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -156,7 +158,7 @@ jobs:
 
   enrich-and-expire:
     if: >
-      github.event.schedule == '0 7 * * *' ||
+      github.event.schedule == '15 7 * * *' ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'enrich-and-expire'))
     runs-on: ubuntu-latest
     steps:
@@ -181,7 +183,7 @@ jobs:
 
   alert-digests:
     if: >
-      github.event.schedule == '0 9 * * *' ||
+      github.event.schedule == '15 9 * * *' ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'alert-digests'))
     runs-on: ubuntu-latest
     steps:
@@ -202,7 +204,7 @@ jobs:
 
   employer-outreach:
     if: >
-      github.event.schedule == '0 10 * * *' ||
+      github.event.schedule == '15 10 * * *' ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'employer-outreach'))
     runs-on: ubuntu-latest
     steps:
@@ -281,7 +283,7 @@ jobs:
 
   weekly-metrics:
     if: >
-      github.event.schedule == '0 8 * * 1' ||
+      github.event.schedule == '15 8 * * 1' ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'weekly-metrics'))
     runs-on: ubuntu-latest
     steps:

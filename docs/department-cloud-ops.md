@@ -13,7 +13,7 @@ These **Cursor Automations** (cloud agents) are the operating departments. Creat
 
 | Department | Status | Trigger | Job |
 |------------|--------|---------|-----|
-| **Marketing** | Live | Daily 09:00 Europe/London | Draft LinkedIn + Instagram from product updates; queue for approval unless told to publish |
+| **Marketing** | Live | Daily 09:00 Europe/London | Publish next **stock** pack (Unsplash/Canva-style PNGs in-repo) when authorised; else draft from stock + product updates |
 | **Community** | Live | Daily 08:00 + every 4h (`0 8 * * *` / `0 */4 * * *`) | Join UK Facebook groups; engage threads; **own all Messenger / Page chats daily**; log activity |
 | **Sales** | Live | Weekdays (via `automation.yml` 10:00 UTC) | Employer outreach ≤50/day |
 | **SEO** | Live | Daily (via `automation.yml` 06:30 UTC) | IndexNow + Google Indexing |
@@ -37,24 +37,35 @@ Sound like a real person on the Recruitment Site team — not a bot, not a press
 
 ---
 
-## Marketing — daily social draft
+## Marketing — stock creatives + scheduled publish
 
-**Automation name:** Recruitment Site Marketing — daily social draft  
+**Model:** Build creatives with **Unsplash + Canva-style local render** (or Canva when a human/PC session is available). **Save in-repo.** Cloud Marketing **posts when planned** — no live Canva OAuth and no operator PC required for daily publish.
+
+**Stock location:**
+- PNGs: `apps/web/public/brand/social/posts/stock/` (14-day pack from 2026-08-01)
+- Queue: `docs/social-posts/stock/QUEUE.md` + `queue.json`
+- Rebuild: `node scripts/render-social-stock.mjs`
+- Optional Canva polish: `rbee.mehmood@gmail.com` — export over the same filenames
+
+**Automation name:** Recruitment Site Marketing — daily stock publish  
 **Trigger:** Cron `0 9 * * *` (display as 09:00 Europe/London)  
 **Tools:** web + repo  
 **Instructions:**
 
 ```
 You are Recruitment Site Marketing. Each run:
-1. Read packages/shared/src/social.ts and docs/social-media-setup.md for live profile URLs.
-2. Scan recent commits / docs on master for shippable product updates (last 24–48h).
-3. Write one LinkedIn company post and one Instagram caption into docs/social-posts/YYYY-MM-DD-daily.md.
-4. Keep brand voice: UK jobs with salary shown upfront; CTA https://recruitmentsite.co.uk or /pricing.
-5. Do NOT publish unless this run was explicitly authorised to publish. Leave status: draft and ping for approval.
-6. After a human publishes, update docs/department-cloud-ops.md Published posts table.
+1. Read docs/social-posts/stock/QUEUE.md and queue.json. Find today's date (Europe/London) or the next queued pack.
+2. Open the matching docs/social-posts/stock/YYYY-MM-DD.md for captions + asset paths.
+3. Confirm IG + LinkedIn PNGs exist under apps/web/public/brand/social/posts/stock/.
+4. Do NOT invent new Canva sessions in cloud. Stock is pre-built. If stock is empty (<3 days left), open a PR note / brief asking a human to run node scripts/render-social-stock.mjs (or polish in Canva) and commit new stock — do not block today's publish if a pack exists.
+5. Publish ONLY if this run is authorised for publish (standing authorisation: publish the day's queued stock pack). Platforms: Instagram @recruitmentsite.uk, Facebook Page, LinkedIn company 136674000. Use existing publish helpers when available.
+6. If not authorised, leave status queued/draft and summarise the pack for approval.
+7. After publish: set that pack status to published in QUEUE.md + the pack md; append docs/department-cloud-ops.md Published posts table.
+8. Brand voice: rotate benefits (flat fee, free apply, AI match, Google Jobs, video screens). Soft CTA recruitmentsite.co.uk or /pricing. Never say you are an AI.
 ```
 
-**Launch pack (authorised & published 27 Jul 2026):** `docs/social-posts/launch.md`
+**Launch pack (authorised & published 27 Jul 2026):** `docs/social-posts/launch.md`  
+**Premium pack (published ~2026-07-30):** `apps/web/public/brand/social/posts/2026-07-30-*.png`
 
 ---
 

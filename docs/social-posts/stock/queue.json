@@ -1,0 +1,119 @@
+{
+  "generatedAt": "2026-07-31T14:50:11.008Z",
+  "method": "unsplash-premium-match-published-pack",
+  "note": "Canva profile was not logged in; posts match published quality with Unsplash variety. Publish when planned.",
+  "items": [
+    {
+      "date": "2026-08-01",
+      "slug": "01-no-placement",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-01-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-01-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-01.md"
+    },
+    {
+      "date": "2026-08-02",
+      "slug": "02-apply-free",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-02-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-02-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-02.md"
+    },
+    {
+      "date": "2026-08-03",
+      "slug": "03-ai-match",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-03-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-03-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-03.md"
+    },
+    {
+      "date": "2026-08-04",
+      "slug": "04-google-jobs",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-04-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-04-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-04.md"
+    },
+    {
+      "date": "2026-08-05",
+      "slug": "05-care",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-05-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-05-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-05.md"
+    },
+    {
+      "date": "2026-08-06",
+      "slug": "06-hospitality",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-06-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-06-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-06.md"
+    },
+    {
+      "date": "2026-08-07",
+      "slug": "07-trades",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-07-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-07-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-07.md"
+    },
+    {
+      "date": "2026-08-08",
+      "slug": "08-sme",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-08-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-08-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-08.md"
+    },
+    {
+      "date": "2026-08-09",
+      "slug": "09-unlimited",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-09-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-09-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-09.md"
+    },
+    {
+      "date": "2026-08-10",
+      "slug": "10-warehouse",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-10-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-10-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-10.md"
+    },
+    {
+      "date": "2026-08-11",
+      "slug": "11-retail",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-11-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-11-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-11.md"
+    },
+    {
+      "date": "2026-08-12",
+      "slug": "12-build",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-12-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-12-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-12.md"
+    },
+    {
+      "date": "2026-08-13",
+      "slug": "13-cafe",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-13-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-13-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-13.md"
+    },
+    {
+      "date": "2026-08-14",
+      "slug": "14-pricing",
+      "status": "queued",
+      "ig": "apps/web/public/brand/social/posts/stock/2026-08-14-ig.png",
+      "linkedin": "apps/web/public/brand/social/posts/stock/2026-08-14-linkedin.png",
+      "pack": "docs/social-posts/stock/2026-08-14.md"
+    }
+  ]
+}

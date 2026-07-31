@@ -18,10 +18,26 @@ const LINKEDIN_COMPANY = "https://www.linkedin.com/company/recruitmentsite-uk";
 const FACEBOOK_PAGE = "https://www.facebook.com/profile.php?id=61592529213211";
 const INSTAGRAM = "https://www.instagram.com/recruitmentsite.uk/";
 
+function argValue(prefix) {
+  const a = process.argv.find((x) => x.startsWith(prefix));
+  return a ? a.slice(prefix.length).trim() : "";
+}
+
 const MEDIA = {
-  linkedin: join(root, "apps/web/public/brand/social/instagram-post-1080.png"),
-  facebook: join(root, "apps/web/public/brand/social/instagram-post-1080.png"),
-  instagram: join(root, "apps/web/public/brand/social/instagram-post-1080.png"),
+  linkedin: join(
+    root,
+    argValue("--linkedin=") || "apps/web/public/brand/social/instagram-post-1080.png",
+  ),
+  facebook: join(
+    root,
+    argValue("--facebook=") ||
+      argValue("--ig=") ||
+      "apps/web/public/brand/social/instagram-post-1080.png",
+  ),
+  instagram: join(
+    root,
+    argValue("--ig=") || "apps/web/public/brand/social/instagram-post-1080.png",
+  ),
 };
 
 const DEFAULT_POSTS = {
