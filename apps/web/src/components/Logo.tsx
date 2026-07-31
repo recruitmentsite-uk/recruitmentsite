@@ -8,15 +8,16 @@ interface LogoProps {
 }
 
 export function Logo({ variant = "dark", showText = true, className = "" }: LogoProps) {
-  const textColor = variant === "light" ? "text-white" : "text-slate-900";
+  const primary = variant === "light" ? "text-white" : "text-ink";
+  const secondary = variant === "light" ? "text-white/70" : "text-ink/55";
 
   return (
     <Link href="/" className={`group flex items-center gap-2.5 ${className}`}>
-      <LogoMark size={36} className="shadow-md transition-transform group-hover:scale-105" />
+      <LogoMark size={34} className="transition-transform duration-300 group-hover:scale-[1.04]" />
       {showText && (
-        <span className={`font-bold text-xl leading-tight ${textColor}`}>
-          <span className={variant === "light" ? "text-white" : "text-brand"}>Recruitment</span>
-          <span className={variant === "light" ? "text-teal-200/90" : "text-slate-700"}> Site</span>
+        <span className={`font-display text-[1.35rem] font-medium leading-none tracking-brand ${primary}`}>
+          Recruitment
+          <span className={secondary}> Site</span>
         </span>
       )}
     </Link>

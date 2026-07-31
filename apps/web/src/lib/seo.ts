@@ -4,6 +4,7 @@ import {
   SITE_TAGLINE,
   COMPANY_LEGAL_NAME,
   COMPANY_NUMBER,
+  COMPANY_VAT_NUMBER,
 } from "@placeuk/shared";
 import { getSiteUrl } from "./site";
 
@@ -63,11 +64,19 @@ export function organizationJsonLd() {
     url,
     logo: `${url}/icon`,
     description: SITE_TAGLINE,
-    identifier: {
-      "@type": "PropertyValue",
-      name: "Companies House",
-      value: COMPANY_NUMBER,
-    },
+    identifier: [
+      {
+        "@type": "PropertyValue",
+        name: "Companies House",
+        value: COMPANY_NUMBER,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "VAT",
+        value: COMPANY_VAT_NUMBER,
+      },
+    ],
+    vatID: COMPANY_VAT_NUMBER,
     address: {
       "@type": "PostalAddress",
       streetAddress: "21-25 Burnley Road, Dollis Hill",
@@ -111,6 +120,7 @@ export function articleJsonLd(post: {
   slug: string;
   publishedAt: string;
   author: string;
+  coverImage?: string;
 }) {
   const url = `${getSiteUrl()}/blog/${post.slug}`;
   return {
@@ -122,6 +132,7 @@ export function articleJsonLd(post: {
     author: { "@type": "Organization", name: post.author },
     publisher: { "@type": "Organization", name: SITE_NAME },
     mainEntityOfPage: url,
+    ...(post.coverImage ? { image: [post.coverImage] } : {}),
   };
 }
 

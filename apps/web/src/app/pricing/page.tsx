@@ -1,9 +1,16 @@
 import Link from "next/link";
-import { PRICING_PLANS, formatGbp, PAYG_JOB_POST_PRICE, UNSPLASH, EMPLOYER_TAGLINE, COMPANY_LEGAL_NOTICE } from "@placeuk/shared";
+import Image from "next/image";
+import {
+  PRICING_PLANS,
+  formatGbp,
+  PAYG_JOB_POST_PRICE,
+  UNSPLASH,
+  EMPLOYER_TAGLINE,
+  COMPANY_LEGAL_NOTICE,
+} from "@placeuk/shared";
 import { Hero } from "@/components/Hero";
 import { PaygCheckoutButton, PricingCards } from "@/components/CheckoutButton";
 import { EmployerFeatureGrid } from "@/components/CompetitorComparison";
-import { UnsplashImage } from "@/components/UnsplashImage";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
@@ -12,11 +19,18 @@ export const metadata = buildPageMetadata({
   path: "/pricing",
 });
 
+const STEPS = [
+  { step: "01", title: "Post your role", body: "Self-serve dashboard. Salary required — boosts applies 25–30%." },
+  { step: "02", title: "We syndicate", body: "Google Jobs, SEO pages, job alerts — automatically." },
+  { step: "03", title: "AI screens", body: "Applicants scored 0–100. Strong matches emailed instantly." },
+  { step: "04", title: "You hire", body: "No commission. Unlimited hires on Growth." },
+];
+
 export default function PricingPage() {
   return (
     <>
       <Hero
-        image={UNSPLASH.hero.office}
+        image={UNSPLASH.sections.meeting}
         badge="No placement commission · ever"
         title="Simple, flat-fee pricing"
         subtitle={EMPLOYER_TAGLINE}
@@ -26,60 +40,74 @@ export default function PricingPage() {
 
       <div id="plans" className="mx-auto max-w-6xl px-4 py-16">
         <PricingCards />
-        <p className="mt-8 text-center text-sm text-slate-500">
+        <p className="mt-8 text-center text-sm text-ink/50">
           Just one role?{" "}
           <PaygCheckoutButton className="font-semibold text-brand underline-offset-2 hover:underline">
             {formatGbp(PAYG_JOB_POST_PRICE)} for a 30-day single post
           </PaygCheckoutButton>
         </p>
-        <p className="mt-4 text-center text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="mx-auto mt-4 max-w-2xl text-center text-xs leading-relaxed text-ink/35">
           {COMPANY_LEGAL_NOTICE}
         </p>
       </div>
 
-      <section className="bg-slate-50 border-y border-slate-200 py-16">
+      <section className="surface-mist border-y border-ink/8 py-16">
         <div className="mx-auto max-w-6xl px-4">
           <EmployerFeatureGrid />
         </div>
       </section>
 
-      <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-16">
-        <div className="grid gap-12 lg:grid-cols-2 items-center">
-          <div className="relative rounded-2xl overflow-hidden h-80 shadow-xl">
-            <UnsplashImage src={UNSPLASH.sections.dashboard} alt="Dashboard" fill />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900">How it works</h2>
-            <div className="mt-6 space-y-5">
-              {[
-                { step: "1", title: "Post your role", body: "Self-serve dashboard. Salary required — boosts applies 25–30%." },
-                { step: "2", title: "We syndicate", body: "Google Jobs, SEO pages, job alerts — automatically." },
-                { step: "3", title: "AI screens", body: "Applicants scored 0–100. Strong matches emailed instantly." },
-                { step: "4", title: "You hire", body: "No commission. Unlimited hires on Growth." },
-              ].map((item) => (
-                <div key={item.step} className="flex gap-4">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-white text-sm font-bold">
-                    {item.step}
-                  </span>
-                  <div>
-                    <p className="font-semibold text-slate-900">{item.title}</p>
-                    <p className="text-sm text-slate-500">{item.body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+      <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-20">
+        <div className="max-w-2xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
+            How it works
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
+            From post to hire — without agency fees
+          </h2>
+          <p className="mt-3 text-ink/55">
+            Four steps. Flat fee. Salary shown on every role.
+          </p>
         </div>
+
+        <div className="relative mt-10 aspect-[1200/630] w-full overflow-hidden bg-ink">
+          <Image
+            src="/brand/how-it-works.png"
+            alt="How Recruitment Site hiring works: post, syndicate, AI screen, hire"
+            fill
+            className="object-cover"
+            sizes="(max-width: 1152px) 100vw, 1152px"
+            priority={false}
+          />
+        </div>
+
+        <ol className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map((item) => (
+            <li key={item.step} className="border-t border-ink/10 pt-5">
+              <span className="font-display text-2xl font-medium text-accent">{item.step}</span>
+              <p className="mt-3 font-semibold text-ink">{item.title}</p>
+              <p className="mt-1 text-sm leading-relaxed text-ink/55">{item.body}</p>
+            </li>
+          ))}
+        </ol>
       </section>
 
-      <section className="bg-slate-900 py-16 text-center text-white">
-        <h2 className="text-2xl font-bold">Predictable hiring cost</h2>
-        <p className="mx-auto mt-4 max-w-xl text-slate-300">
-          Growth is {formatGbp(PRICING_PLANS[1].priceMonthly)}/month with unlimited posts, AI scoring and zero placement commission — hire as often as you need.
+      <section className="relative overflow-hidden bg-ink py-20 text-center text-white">
+        <div
+          className="pointer-events-none absolute -left-16 top-0 h-64 w-64 rounded-full opacity-25 blur-3xl"
+          style={{ background: "radial-gradient(circle, var(--brand-light), transparent 70%)" }}
+          aria-hidden
+        />
+        <h2 className="relative font-display text-3xl font-medium tracking-tight">
+          Predictable hiring cost
+        </h2>
+        <p className="relative mx-auto mt-4 max-w-xl text-white/55">
+          Growth is {formatGbp(PRICING_PLANS[1].priceMonthly)}/month with unlimited posts, AI scoring
+          and zero placement commission — hire as often as you need.
         </p>
         <Link
           href="/dashboard"
-          className="mt-8 inline-block rounded-xl bg-white px-8 py-3 font-semibold text-brand hover:bg-teal-50"
+          className="relative mt-8 inline-block rounded-full bg-white px-8 py-3 text-sm font-semibold text-ink transition hover:bg-mist"
         >
           Try the dashboard demo
         </Link>

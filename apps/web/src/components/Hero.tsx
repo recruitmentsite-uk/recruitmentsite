@@ -33,17 +33,24 @@ export function Hero({
   const alignClass = align === "center" ? "items-center text-center" : "items-start text-left";
   const sectionClass =
     size === "compact"
-      ? "relative flex min-h-[52svh] items-end overflow-hidden sm:min-h-[48svh] sm:items-center"
-      : "relative flex min-h-[100svh] items-end overflow-hidden sm:min-h-[92svh] sm:items-center";
-  const padClass = size === "compact" ? "px-4 pb-10 pt-24 sm:py-16" : "px-4 pb-16 pt-28 sm:py-28";
+      ? "relative -mt-[65px] flex min-h-[52svh] items-end overflow-hidden sm:min-h-[48svh] sm:items-center"
+      : "relative -mt-[65px] flex min-h-[100svh] items-end overflow-hidden sm:min-h-[92svh] sm:items-center";
+  const padClass = size === "compact" ? "px-4 pb-10 pt-28 sm:pt-24 sm:pb-16" : "px-4 pb-16 pt-32 sm:py-28";
   const titleClass =
     size === "compact"
       ? "animate-rise-delay-1 max-w-3xl font-display text-2xl font-medium tracking-tight text-white/95 sm:text-3xl lg:text-4xl text-balance"
       : "animate-rise-delay-1 max-w-3xl font-display text-3xl font-medium tracking-tight text-white/95 sm:text-4xl lg:text-5xl text-balance";
 
   return (
-    <section className={sectionClass}>
-      <UnsplashImage src={image} alt="" fill priority className="ken-burns scale-105 object-cover" />
+    <section data-hero className={sectionClass}>
+      <UnsplashImage
+        src={image}
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="ken-burns scale-105 object-cover"
+      />
       <div className="absolute inset-0 hero-overlay" />
       <div
         className="pointer-events-none absolute inset-0 opacity-40"

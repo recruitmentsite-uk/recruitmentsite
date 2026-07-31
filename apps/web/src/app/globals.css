@@ -2,28 +2,106 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
-  --brand: #0f766e;
-  --brand-dark: #0d5c56;
-  --brand-light: #14b8a6;
-  --accent: #f59e0b;
+  --brand: #0c6b63;
+  --brand-dark: #084f49;
+  --brand-light: #1aa896;
+  --brand-glow: rgba(26, 168, 150, 0.35);
+  --ink: #0b1220;
+  --ink-soft: #1a2332;
+  --mist: #f3f5f7;
+  --mist-deep: #e8ecef;
+  --paper: #fafbfc;
+  --accent: #c4a35a;
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
-  font-family: 'Inter', system-ui, sans-serif;
+  @apply antialiased;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(12, 107, 99, 0.07), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 0%, rgba(196, 163, 90, 0.05), transparent 50%);
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
   .hero-overlay {
-    background: linear-gradient(135deg, rgba(15, 118, 110, 0.92) 0%, rgba(13, 92, 86, 0.85) 50%, rgba(15, 23, 42, 0.75) 100%);
+    background:
+      linear-gradient(105deg, rgba(11, 18, 32, 0.88) 0%, rgba(11, 18, 32, 0.55) 48%, rgba(12, 107, 99, 0.45) 100%),
+      linear-gradient(to top, rgba(11, 18, 32, 0.75) 0%, transparent 45%);
   }
+
+  .surface-mist {
+    background:
+      linear-gradient(180deg, rgba(250, 251, 252, 0.92), rgba(243, 245, 247, 0.98)),
+      radial-gradient(ellipse at top, rgba(12, 107, 99, 0.04), transparent 60%);
+  }
+
   .glass {
-    @apply bg-white/80 backdrop-blur-md border border-white/20;
+    @apply border border-white/20 bg-white/80 backdrop-blur-md;
+  }
+
+  .animate-rise {
+    animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-rise-delay-1 {
+    animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+  }
+
+  .animate-rise-delay-2 {
+    animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
+  }
+
+  .animate-rise-delay-3 {
+    animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.36s both;
+  }
+
+  .ken-burns {
+    animation: kenBurns 28s ease-out forwards;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kenBurns {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise,
+  .animate-rise-delay-1,
+  .animate-rise-delay-2,
+  .animate-rise-delay-3,
+  .ken-burns {
+    animation: none;
   }
 }

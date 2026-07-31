@@ -43,7 +43,7 @@ export default async function HomePage() {
   return (
     <>
       <Hero
-        image={UNSPLASH.hero.ukCity}
+        image={UNSPLASH.hero.hiring}
         showBrand
         title="UK roles with salary shown upfront"
         subtitle={SITE_TAGLINE}
@@ -303,33 +303,35 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-ink py-24 text-white">
-        <div
-          className="pointer-events-none absolute -right-20 top-0 h-80 w-80 rounded-full opacity-30 blur-3xl"
-          style={{ background: "radial-gradient(circle, var(--brand-light), transparent 70%)" }}
-          aria-hidden
+      <section className="relative min-h-[420px] overflow-hidden">
+        <UnsplashImage
+          src={UNSPLASH.sections.handshake}
+          alt="UK employer and candidate handshake"
+          fill
+          sizes="100vw"
         />
-        <div className="relative mx-auto max-w-6xl px-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-light">
+        <div className="absolute inset-0 hero-overlay" />
+        <div className="relative mx-auto flex min-h-[420px] max-w-6xl flex-col justify-center px-4 py-24">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/55">
             For employers
           </p>
-          <h2 className="mt-4 max-w-2xl font-display text-3xl font-medium tracking-tight text-balance sm:text-4xl">
+          <h2 className="mt-4 max-w-2xl font-display text-3xl font-medium tracking-tight text-white text-balance sm:text-4xl">
             Hire with clear salaries and faster shortlists
           </h2>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-white/55">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">
             Post to verified UK candidates, score applicants with AI matching, and reach Google
             Jobs from one dashboard.
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/onboarding"
-              className="rounded-full bg-brand px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-brand-light"
+              className="rounded-full bg-white px-6 py-3 text-center text-sm font-semibold text-ink transition hover:bg-mist"
             >
               Start hiring
             </Link>
             <Link
               href="/for-employers"
-              className="rounded-full border border-white/20 px-6 py-3 text-center text-sm font-semibold text-white transition hover:border-white/40"
+              className="rounded-full border border-white/30 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Learn more
             </Link>

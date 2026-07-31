@@ -1,14 +1,30 @@
 /** SEO blog posts — hiring guides and competitor comparisons */
 
+import { UNSPLASH } from "./competitors.js";
+
+export type BlogCategory = "hiring" | "healthcare" | "trades" | "tech" | "comparison";
+
 export interface BlogPost {
   slug: string;
   title: string;
   excerpt: string;
-  category: "hiring" | "healthcare" | "trades" | "tech" | "comparison";
+  category: BlogCategory;
   publishedAt: string;
   readMinutes: number;
   author: string;
+  /** Unsplash (or self-hosted) cover — used on cards, post hero, and OG */
+  coverImage: string;
+  coverAlt: string;
   content: string[];
+}
+
+export function getBlogCover(post: Pick<BlogPost, "coverImage" | "category">): string {
+  return post.coverImage || UNSPLASH.blog[post.category] || UNSPLASH.blog.hiring;
+}
+
+/** Local Canva-style OG cards under /brand/og/blog-{category}.png */
+export function getBlogOgImage(post: Pick<BlogPost, "category" | "coverImage">): string {
+  return `/brand/og/blog-${post.category}.png`;
 }
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -21,6 +37,8 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2026-07-10",
     readMinutes: 6,
     author: "Recruitment Site Team",
+    coverImage: UNSPLASH.blog.comparison,
+    coverAlt: "UK employers reviewing hiring costs in a meeting",
     content: [
       "When hiring costs sit on a per-listing or placement-fee model, a single £35,000 hire can quietly run into thousands before you’ve counted your team’s time.",
       "Recruitment Site Growth is a predictable monthly subscription — unlimited job posts, AI applicant scoring included, and no placement commission when you hire.",
@@ -37,6 +55,8 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2026-07-05",
     readMinutes: 8,
     author: "Recruitment Site Team",
+    coverImage: UNSPLASH.blog.healthcare,
+    coverAlt: "Healthcare professional in a UK care setting",
     content: [
       "Healthcare remains the UK's tightest hiring market. Care homes and NHS trusts compete with locum agencies charging premium day rates — yet many roles can be filled directly if compliance is handled upfront.",
       "Start with role clarity: Band level, NMC pin requirement, DBS level (enhanced for patient-facing roles), and salary band shown on the listing. Candidates filter heavily on pay — hiding salary wastes everyone's time.",
@@ -53,6 +73,8 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2026-06-28",
     readMinutes: 5,
     author: "Recruitment Site Team",
+    coverImage: UNSPLASH.sections.laptop,
+    coverAlt: "Laptop showing hiring analytics and job listings",
     content: [
       "Since 2023, Google Jobs has increasingly favoured listings with structured salary data. UK candidates, meanwhile, overwhelmingly skip roles without pay shown — especially in healthcare and trades.",
       "Recruitment Site requires salary on every employer post. That isn't bureaucracy — it's a conversion and SEO lever. Listings with min/max GBP and period (year, hour, day) syndicate cleanly to Google Jobs JSON-LD.",
@@ -69,6 +91,8 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2026-06-20",
     readMinutes: 7,
     author: "Recruitment Site Team",
+    coverImage: UNSPLASH.blog.trades,
+    coverAlt: "Workshop tools for UK trades hiring",
     content: [
       "Trades hiring in the UK splits into two problems: finding skilled workers (electricians, plumbers, gas engineers) and finding site leadership (foremen, site managers, QS).",
       "Checkatrade and Randstad serve parts of this market, but SMEs running multiple sites need a pipeline — not a one-off lead. Job alerts by city and trade keyword keep your bench warm.",
@@ -85,6 +109,8 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2026-06-12",
     readMinutes: 6,
     author: "Recruitment Site Team",
+    coverImage: UNSPLASH.sections.dashboard,
+    coverAlt: "Dashboard charts representing hiring spend",
     content: [
       "Pay-per-click can work when you have a strong employer brand and high apply conversion. For most UK SMEs hiring year-round, click costs become a treadmill — especially on competitive roles.",
       "A Growth plan at a flat monthly fee with unlimited posts flips the incentive. You're not penalised for posting another role when a project expands — common in trades and healthcare.",
@@ -101,6 +127,8 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2026-07-15",
     readMinutes: 4,
     author: "Recruitment Site Team",
+    coverImage: UNSPLASH.sections.checklist,
+    coverAlt: "Checklist and notebook for employer onboarding",
     content: [
       "Getting live on Recruitment Site takes three steps: set up your company profile, publish a role with salary disclosed, and turn on job alerts for your sector.",
       "Your company slug powers a branded careers page on Growth — candidates see your roles under your brand, not lost in a generic feed.",
@@ -117,6 +145,8 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2026-07-22",
     readMinutes: 7,
     author: "Recruitment Site Team",
+    coverImage: UNSPLASH.sections.nurse,
+    coverAlt: "Practice nurse in a clinical setting",
     content: [
       "Practice nurses are central to UK primary care — immunisations, smear clinics, chronic disease management and triage. Demand stays high as PCNs expand services beyond the GP appointment.",
       "Typical pay sits in NHS Band 5–7 territory depending on sessions, prescribing qualifications and leadership responsibility. Always check the listing shows salary or hourly rate before applying.",
@@ -133,6 +163,8 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2026-07-23",
     readMinutes: 6,
     author: "Recruitment Site Team",
+    coverImage: UNSPLASH.sections.careHome,
+    coverAlt: "Care and rehabilitation setting for occupational therapy",
     content: [
       "Occupational therapists support discharge planning, rehabilitation and independent living across NHS trusts, community teams and social care. HCPC registration is non-negotiable for clinical roles.",
       "Band 5 newly qualified OTs through Band 6–7 specialists see structured Agenda for Change pay. Private and locum markets vary — insist on the figure before interview.",

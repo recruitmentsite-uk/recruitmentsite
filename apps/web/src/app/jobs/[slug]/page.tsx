@@ -15,12 +15,14 @@ import { getJobBySlug, getAllJobSlugs, getJobs, getSiteUrl } from "@/lib/jobs";
 import { formatSalary } from "@/lib/format";
 import { JobPostingSchema } from "@/components/JobPostingSchema";
 import { ApplyForm } from "@/components/ApplyForm";
+import { TrackJobView } from "@/components/TrackJobView";
 import { UnsplashImage } from "@/components/UnsplashImage";
 import { CityJobLanding } from "@/components/SeoLandingPages";
 import { buildPageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 interface JobDetailPageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ src?: string }>;
 }
 
 export async function generateStaticParams() {
@@ -59,8 +61,9 @@ export async function generateMetadata({ params }: JobDetailPageProps): Promise<
   };
 }
 
-export default async function JobDetailPage({ params }: JobDetailPageProps) {
+export default async function JobDetailPage({ params, searchParams }: JobDetailPageProps) {
   const { slug } = await params;
+  const { src } = await searchParams;
 
   if (isCitySlug(slug)) {
     const city = slugToCity(slug);
@@ -85,7 +88,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             { label: "Jobs", href: "/jobs" },
             { label: city },
           ]}
-          heroImage={UNSPLASH.hero.ukCity}
+          heroImage={UNSPLASH.hero.commute}
         />
       </>
     );
@@ -95,22 +98,34 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   if (!job) notFound();
 
   const siteUrl = getSiteUrl();
+  const source = typeof src === "string" ? src.slice(0, 40) : undefined;
 
   return (
     <>
+      <TrackJobView jobId={job.id} source={source} />
       <JobPostingSchema job={job} siteUrl={siteUrl} />
 
-      <div className="relative h-56 overflow-hidden">
-        <UnsplashImage src={getVerticalImage(job.vertical)} alt={job.title} fill priority />
+      <div data-hero className="relative -mt-[65px] h-64 overflow-hidden sm:h-72">
+        <UnsplashImage
+          src={getVerticalImage(job.vertical)}
+          alt={job.title}
+          fill
+          priority
+          sizes="100vw"
+        />
         <div className="absolute inset-0 hero-overlay" />
-        <div className="relative mx-auto max-w-3xl px-4 h-full flex flex-col justify-end pb-8">
+        <div className="relative mx-auto flex h-full max-w-3xl flex-col justify-end px-4 pb-8 pt-28">
           {job.featured && (
             <span className="mb-2 inline-block w-fit rounded-full bg-accent px-3 py-0.5 text-xs font-bold text-amber-900">
               Featured
             </span>
           )}
-          <h1 className="text-2xl font-bold text-white sm:text-3xl">{job.title}</h1>
-          <p className="mt-1 text-teal-100">{job.employerName} · {job.city}</p>
+          <h1 className="font-display text-2xl font-medium tracking-tight text-white sm:text-3xl">
+            {job.title}
+          </h1>
+          <p className="mt-1 text-white/70">
+            {job.employerName} · {job.city}
+          </p>
         </div>
       </div>
 
@@ -149,7 +164,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             ))}
           </div>
 
-          <ApplyForm jobId={job.id} jobTitle={job.title} />
+          <ApplyForm jobId={job.id} jobTitle={job.title} source={source} />
 
           <p className="mt-6 text-xs text-slate-400">
             {job.applicationCount} applications · Posted{" "}
