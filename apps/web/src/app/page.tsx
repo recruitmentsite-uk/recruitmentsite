@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import {
-  SITE_TAGLINE,
   LAUNCH_VERTICAL,
   VERTICAL_LABELS,
   VERTICAL_META,
@@ -27,8 +26,9 @@ import { buildPageMetadata } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata = buildPageMetadata({
-  title: "Find UK Jobs with Salary Shown Upfront",
-  description: SITE_TAGLINE,
+  title: "Thousands of UK Jobs — Apply Instantly",
+  description:
+    "Browse thousands of UK jobs across healthcare, trades, tech and more. Apply free in minutes.",
   path: "/",
 });
 
@@ -39,14 +39,18 @@ export default async function HomePage() {
   const newest = [...allJobs]
     .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
     .slice(0, 3);
+  const jobCountLabel =
+    allJobs.length >= 1000
+      ? `${(Math.floor(allJobs.length / 1000) * 1000).toLocaleString()}+`
+      : allJobs.length.toLocaleString();
 
   return (
     <>
       <Hero
         image={UNSPLASH.hero.hiring}
         showBrand
-        title="UK roles with salary shown upfront"
-        subtitle={SITE_TAGLINE}
+        title={`${jobCountLabel} UK jobs — apply instantly`}
+        subtitle="Browse open roles across the UK and apply free in minutes. No account needed to start."
       >
         <div className="w-full max-w-2xl">
           <JobSearchForm jobCount={allJobs.length} />
