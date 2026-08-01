@@ -13,6 +13,7 @@ on:
     - cron: "15 10 * * *" # Employer sales outreach daily (10:15 UTC)
     - cron: "0 * * * *"   # Matching hourly
     - cron: "15 8 * * 1"  # Weekly metrics Monday 08:15 UTC
+    - cron: "20 8 * * *"  # Social CMS — publish due scheduled posts (08:20 UTC)
   workflow_dispatch:
     inputs:
       department:
@@ -31,6 +32,7 @@ on:
           - match-candidates
           - weekly-metrics
           - site-smoke
+          - social-publish
 
 env:
   NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
@@ -307,3 +309,29 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+
+  social-publish:
+    if: >
+      github.event.schedule == '20 8 * * *' ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'social-publish'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - name: "Marketing — publish due Social CMS posts"
+        run: pnpm social:publish-due
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+          META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
+          META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          META_IG_USER_ID: ${{ secrets.META_IG_USER_ID }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_ORGANIZATION_ID: ${{ secrets.LINKEDIN_ORGANIZATION_ID }}
+        continue-on-error: true

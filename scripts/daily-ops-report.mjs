@@ -43,8 +43,15 @@ async function main() {
   };
 
   let cs = { totalAction: 0, totalSeen: 0, actions: [], errors: [] };
+  let ticketsSynced = { created: 0, skipped: 0 };
   try {
     cs = await runCsTriage({ quiet: true });
+    try {
+      const { syncCsTickets } = await import("./sync-cs-tickets.mjs");
+      ticketsSynced = await syncCsTickets(cs);
+    } catch (syncErr) {
+      cs.errors = [...(cs.errors || []), `ticket sync: ${syncErr.message || syncErr}`];
+    }
   } catch (err) {
     cs.errors = [err.message || String(err)];
   }
@@ -89,7 +96,7 @@ async function main() {
     <p style="margin:0 0 16px;color:#475569;font-size:14px">IndexNow + Google Indexing API run at 06:30 UTC. Candidate alert digests at 09:00.</p>
 
     <p style="margin:0 0 8px;font-weight:600">4) Customer service / email</p>
-    <p style="margin:0 0 8px;color:#475569;font-size:14px">Marked ${cs.totalSeen} vendor/noise messages Seen · <strong>${cs.totalAction}</strong> actionable</p>
+    <p style="margin:0 0 8px;color:#475569;font-size:14px">Marked ${cs.totalSeen} vendor/noise messages Seen · <strong>${cs.totalAction}</strong> actionable · tickets created ${ticketsSynced.created} (skipped ${ticketsSynced.skipped}) · <a href="${SITE}/admin/tickets">Open tickets</a></p>
     ${actionRows}
     ${
       cs.errors.length

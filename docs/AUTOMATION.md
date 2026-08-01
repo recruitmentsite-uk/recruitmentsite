@@ -29,15 +29,32 @@ Community cloud departments: **`docs/department-cloud-ops.md`** (Cursor Automati
 
 Stripe webhooks stay on the edge runtime. Prod deploys: `.github/workflows/deploy.yml` (+ site smoke).
 
+## Super admin (web)
+
+`/admin` (allowlist `ADMIN_EMAILS`) — platform hub:
+
+- **Overview / Stats** — live employers, jobs, apps, MRR, ticket + social queue counts
+- **Tickets** — CS / partner / internal tickets with reply thread (table `support_tickets`)
+- **Social CMS** — compose, library, reuse, publish via Meta/LinkedIn APIs (`social_posts`)
+- **Moderation** — pending job review
+
+Schema: `supabase/migrations/011_super_admin.sql`. Social tokens: `META_*` / `LINKEDIN_*` env only (never in DB).
+
+**One-time setup**
+1. Apply schema: Actions → **Super admin setup** (or paste `011_super_admin.sql` in Supabase SQL editor)
+2. `pnpm social:import-stock` (also part of that workflow) loads all `docs/social-posts/stock` packs into the library
+3. Add GitHub + Vercel secrets when ready to publish live: `META_PAGE_ID`, `META_PAGE_ACCESS_TOKEN`, `META_IG_USER_ID`, `LINKEDIN_ACCESS_TOKEN`, `LINKEDIN_ORGANIZATION_ID`
+4. Daily CS triage auto-creates tickets; cron `social-publish` at 08:20 UTC publishes due scheduled posts
+
 ## Your ≤1 hour/week (Monday)
 
-Triggered by email: **Weekly ops brief** to `hello@`.
+Triggered by email: **Weekly ops brief** to `hello@` — or skim `/admin`.
 
 1. Skim brief + daily ops emails + [Actions](https://github.com/rbeemehmood-arch/recruitmentsite/actions/workflows/automation.yml) (~10 min)
-2. **CS:** reply to any ACTION items listed in daily ops (~15–20 min)
+2. **CS:** reply to any ACTION items listed in daily ops; log in `/admin/tickets` (~15–20 min)
 3. Admin: fraud / spam jobs (~10 min)
 4. Stripe: refunds or verification docs if waiting (~10 min)
-5. Sales/marketing: partner (Indeed/LinkedIn) replies only if flagged (~10 min)
+5. Sales/marketing: partner (Indeed/LinkedIn) replies only if flagged; social via `/admin/social` (~10 min)
 
 Do **not** run departments locally unless Actions is red.
 

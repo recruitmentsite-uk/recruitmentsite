@@ -1,17 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
-import { isAdminEmail } from "@/lib/admin";
-
-async function requireAdmin() {
-  const supabase = await createClient();
-  if (!supabase) return null;
-
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user?.email || !isAdminEmail(user.email)) return null;
-
-  return user;
-}
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function GET() {
   const user = await requireAdmin();
