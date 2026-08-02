@@ -10,7 +10,7 @@ on:
     - cron: "30 6 * * *"  # IndexNow / SEO URL ping after sync (06:30 UTC)
     - cron: "15 7 * * *"  # Enrichment + expire (07:15 UTC)
     - cron: "15 9 * * *"  # Alert digests (09:15 UTC)
-    - cron: "15 10 * * *" # Employer sales outreach daily (10:15 UTC)
+    - cron: "15 10 * * 1-5" # Employer sales outreach weekdays (10:15 UTC)
     - cron: "0 * * * *"   # Matching hourly
     - cron: "15 8 * * 1"  # Weekly metrics Monday 08:15 UTC
     - cron: "20 8 * * *"  # Social CMS — publish due scheduled posts (08:20 UTC)
@@ -33,6 +33,7 @@ on:
           - weekly-metrics
           - site-smoke
           - social-publish
+          - warm-leads
 
 env:
   NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
@@ -100,6 +101,39 @@ jobs:
           NOTIFICATIONS_IMAP_PASS: ${{ secrets.NOTIFICATIONS_IMAP_PASS }}
           GHMAIL_IMAP_PASS: ${{ secrets.GHMAIL_IMAP_PASS }}
           JOBS_IMAP_PASS: ${{ secrets.JOBS_IMAP_PASS }}
+      - name: "Sales — warm opens/clicks → tickets + £99 offers"
+        run: pnpm ops:warm-leads
+        continue-on-error: true
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+          WARM_LEAD_OFFER_LIMIT: "20"
+          WARM_LEAD_SEND_EMAIL: "1"
+
+  warm-leads:
+    if: >
+      github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'warm-leads')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm --filter @placeuk/shared build
+      - name: "Sales — sync warm leads to tickets and send £99 offers"
+        run: pnpm ops:warm-leads
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+          WARM_LEAD_OFFER_LIMIT: "20"
+          WARM_LEAD_SEND_EMAIL: "1"
 
   sync-jobs:
     if: >
@@ -206,7 +240,7 @@ jobs:
 
   employer-outreach:
     if: >
-      github.event.schedule == '15 10 * * *' ||
+      github.event.schedule == '15 10 * * 1-5' ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.department == 'all' || github.event.inputs.department == 'employer-outreach'))
     runs-on: ubuntu-latest
     steps:
@@ -244,6 +278,16 @@ jobs:
           # CI starts without scraped cache; guessed emails from public domains until scrape fills
           OUTREACH_INCLUDE_GUESSED: "1"
           NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+      - name: "Sales — ticket every open/click + offer first 20 warm leads £99"
+        run: pnpm ops:warm-leads
+        continue-on-error: true
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+          WARM_LEAD_OFFER_LIMIT: "20"
+          WARM_LEAD_SEND_EMAIL: "1"
 
   match-candidates:
     if: >

@@ -108,6 +108,13 @@ async function loadSuppressed(supabase) {
 }
 
 async function main() {
+  const utcDay = new Date().getUTCDay(); // 0 Sun … 6 Sat
+  const isWeekend = utcDay === 0 || utcDay === 6;
+  if (isWeekend && process.env.OUTREACH_ALLOW_WEEKEND !== "1") {
+    console.log("⏭  Weekday-only outreach — skipping weekend (set OUTREACH_ALLOW_WEEKEND=1 to force).");
+    return;
+  }
+
   const prospects = JSON.parse(readFileSync(prospectsPath, "utf8"));
   const resendKey = process.env.RESEND_API_KEY;
   const supabase = getSupabaseAdmin();

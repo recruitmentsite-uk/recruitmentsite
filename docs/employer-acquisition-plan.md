@@ -18,11 +18,11 @@
 
 ### This week push
 
-1. Run outreach every weekday (care + SME first).  
-2. Re-login Meta/LinkedIn; publish Social CMS queue.  
-3. Restart FB employer-group engage (quiet since 29 Jul).  
-4. Follow every open/click into `/admin/tickets`.  
-5. Offer first 20 warm leads: skip trial — **£99 month 1** → post a role same day.
+1. Run outreach every weekday (care + SME first) — cron `15 10 * * 1-5`, `OUTREACH_LIMIT=50`.  
+2. Re-login Meta/LinkedIn; publish Social CMS queue (`pnpm social:publish-due` / browser publish).  
+3. Restart FB employer-group engage (`pnpm community:engage`).  
+4. Opens/clicks → tickets via `pnpm ops:warm-leads` (auto after outreach).  
+5. First 20 warm leads get email + link `/pricing?offer=warm99` — skip trial, **£99 month 1** Growth.
 
 ## Channel mix (this sprint)
 

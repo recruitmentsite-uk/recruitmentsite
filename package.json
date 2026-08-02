@@ -13,6 +13,7 @@
     "social:import-stock": "node scripts/import-social-stock.mjs",
     "social:publish-due": "node scripts/publish-scheduled-social.mjs",
     "ops:cs-tickets": "node scripts/sync-cs-tickets.mjs",
+    "ops:warm-leads": "node scripts/sync-warm-lead-tickets.mjs",
     "jobs:sync": "node scripts/sync-job-feeds.mjs",
     "jobs:sync:reed": "node scripts/sync-job-feeds.mjs --reed-only",
     "jobs:enrich": "node scripts/enrich-job-listings.mjs",

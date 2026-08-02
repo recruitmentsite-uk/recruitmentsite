@@ -26,20 +26,34 @@ const STEPS = [
   { step: "04", title: "You hire", body: "No commission. Unlimited hires on Growth." },
 ];
 
-export default function PricingPage() {
+export default async function PricingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ offer?: string }>;
+}) {
+  const params = await searchParams;
+  const warm99 = params.offer === "warm99";
+
   return (
     <>
       <Hero
         image={UNSPLASH.sections.meeting}
-        badge="No placement commission · ever"
-        title="Simple, flat-fee pricing"
-        subtitle={EMPLOYER_TAGLINE}
-        primaryCta={{ label: "Start free trial", href: "#plans" }}
+        badge={warm99 ? "Warm lead offer · first 20 this month" : "No placement commission · ever"}
+        title={warm99 ? "£99 month 1 — list a role today" : "Simple, flat-fee pricing"}
+        subtitle={
+          warm99
+            ? "Skip the trial. Growth plan billed at £99 for month one, then £249/mo. Unlimited posts, AI match, Google Jobs."
+            : EMPLOYER_TAGLINE
+        }
+        primaryCta={{
+          label: warm99 ? "Claim £99 month 1" : "Start free trial",
+          href: "#plans",
+        }}
         secondaryCta={{ label: "For employers", href: "/for-employers" }}
       />
 
       <div id="plans" className="mx-auto max-w-6xl px-4 py-16">
-        <PricingCards />
+        <PricingCards offer={warm99 ? "warm99" : undefined} />
         <p className="mt-8 text-center text-sm text-ink/50">
           Just one role?{" "}
           <PaygCheckoutButton className="font-semibold text-brand underline-offset-2 hover:underline">

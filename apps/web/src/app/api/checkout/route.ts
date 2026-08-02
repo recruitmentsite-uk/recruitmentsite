@@ -23,8 +23,17 @@ export async function POST(request: Request) {
     }
 
     const siteUrl = getSiteUrl();
-    const { tier, interval = "month", type, jobId, credits } = await request.json();
+    const {
+      tier,
+      interval = "month",
+      type,
+      jobId,
+      credits,
+      skipTrial = false,
+      offer,
+    } = await request.json();
     const ctx = await getEmployerContext();
+    const warm99 = offer === "warm99";
 
     if (type === "boost") {
       if (!jobId) {
@@ -157,8 +166,38 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
     }
 
+    // Warm-lead offer: Growth monthly, skip trial, £99 month 1 (then £249).
+    if (warm99 && (plan.tier !== "growth" || interval !== "month")) {
+      return NextResponse.json(
+        { error: "warm99 offer applies to Growth monthly only" },
+        { status: 400 },
+      );
+    }
+
     const amount = interval === "year" ? plan.priceAnnual : plan.priceMonthly;
     const intervalType = interval === "year" ? "year" : "month";
+    const noTrial = Boolean(skipTrial || warm99);
+
+    let couponId: string | undefined;
+    if (warm99) {
+      couponId = process.env.STRIPE_WARM_LEAD_COUPON_ID || undefined;
+      if (!couponId) {
+        try {
+          const existing = await stripe.coupons.retrieve("warm99");
+          couponId = existing.id;
+        } catch {
+          const created = await stripe.coupons.create({
+            id: "warm99",
+            name: "Warm lead — £99 month 1",
+            amount_off: (plan.priceMonthly - 99) * 100,
+            currency: "gbp",
+            duration: "once",
+            max_redemptions: 20,
+          });
+          couponId = created.id;
+        }
+      }
+    }
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -170,7 +209,7 @@ export async function POST(request: Request) {
           price_data: {
             currency: "gbp",
             product_data: stripeProductData(
-              `Recruitment Site ${plan.name}`,
+              `Recruitment Site ${plan.name}${warm99 ? " (warm lead £99 mo 1)" : ""}`,
               plan.highlights.join(" · "),
             ),
             unit_amount: amount * 100,
@@ -179,13 +218,22 @@ export async function POST(request: Request) {
           quantity: 1,
         },
       ],
+      ...(couponId ? { discounts: [{ coupon: couponId }] } : {}),
       subscription_data: {
-        trial_period_days: FREE_TRIAL_DAYS,
-        metadata: { tier: plan.tier, employerId: ctx?.employerId ?? "" },
+        ...(noTrial ? {} : { trial_period_days: FREE_TRIAL_DAYS }),
+        metadata: {
+          tier: plan.tier,
+          employerId: ctx?.employerId ?? "",
+          offer: warm99 ? "warm99" : "",
+        },
       },
-      success_url: `${siteUrl}/onboarding?checkout=success`,
-      cancel_url: `${siteUrl}/pricing?checkout=cancelled`,
-      metadata: { tier: plan.tier, employerId: ctx?.employerId ?? "" },
+      success_url: `${siteUrl}/onboarding?checkout=success${warm99 ? "&offer=warm99" : ""}`,
+      cancel_url: `${siteUrl}/pricing?checkout=cancelled${warm99 ? "&offer=warm99" : ""}`,
+      metadata: {
+        tier: plan.tier,
+        employerId: ctx?.employerId ?? "",
+        offer: warm99 ? "warm99" : "",
+      },
     });
 
     return NextResponse.json({ url: session.url });
