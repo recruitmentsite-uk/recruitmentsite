@@ -1,8 +1,28 @@
 # Employer acquisition — plan & execution
 
-**Goal:** Paying UK employers (care / SME / hospitality first).  
-**Primary CTA:** https://recruitmentsite.co.uk/pricing · trial → /onboarding  
-**Offer:** 30-day free trial · flat-fee unlimited posts · AI match · Google Jobs · no agency commission.
+**Goal:** Paying UK employers (care / SME / hospitality first) — **get HR to list roles on our site**.  
+**Primary CTA:** https://recruitmentsite.co.uk/pricing · trial → /onboarding → first job live  
+**Offer:** 30-day free trial · flat-fee unlimited posts · AI match · Google Jobs · no agency commission.  
+**Month-1 revenue north star:** £10k MRR ≈ **41 Growth** (£249) or **21 Scale** (£499). Cash in month 1 needs annual / PAYG / skip-trial offers (standard trial bills after 30 days).
+
+### Tools → employer listings (use these)
+
+| Tool | How it gets listings |
+|------|----------------------|
+| `employer-outreach` ≤50/day | Email HR / hiring managers with open roles → `/pricing` |
+| Prospect grow (CQC + boards) | Keep 30k+ list filled with real emails |
+| Social CMS `/admin/social` | Employer creatives → FB/IG/LI (needs API tokens) |
+| `community:engage` | UK employer/SME Facebook groups |
+| Stripe trial checkout | Self-serve signup path |
+| `/admin` tickets + stats | Never drop warm replies; track MRR |
+
+### This week push
+
+1. Run outreach every weekday (care + SME first).  
+2. Re-login Meta/LinkedIn; publish Social CMS queue.  
+3. Restart FB employer-group engage (quiet since 29 Jul).  
+4. Follow every open/click into `/admin/tickets`.  
+5. Offer first 20 warm leads: skip trial — **£99 month 1** → post a role same day.
 
 ## Channel mix (this sprint)
 
@@ -49,6 +69,8 @@ See `docs/backlinks/directory-targets.md`. Priority: startup directories, HR sof
 - [x] Instagram employer post published (`@recruitmentsite.uk`)
 - [x] LinkedIn Company Page branded + employer posts published (tagline/banner employer-first; daily pack 2026-07-29 on LI/FB/IG)
 - [x] Cloud automation `department=all` triggered (run 30474813265)
+- [x] Cloud automation `department=all` re-run 2026-08-01 (run 30702593541) — outreach + SEO + metrics + site-smoke green; sync/expand in flight
+- [ ] Social stock 2026-08-01 — blocked: Meta/LinkedIn Chrome sessions expired (re-login admin@recruitmentsite.co.uk, then publish)
 - [x] Stripe business verification (`charges_enabled` + `payouts_enabled`, live products + webhook)
 - [ ] Directory submissions — forms opened again (Hotfrog/Scoot/Brownbook/SaaSHub/TAAFT); finish CAPTCHA/submit in Chrome tabs
 - [x] Vercel Analytics wired in `layout.tsx` (deployed via PR #4 — enable Web Analytics in Vercel if not already)

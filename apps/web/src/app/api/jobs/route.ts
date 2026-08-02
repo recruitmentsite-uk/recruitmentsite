@@ -71,7 +71,10 @@ export async function POST(request: Request) {
       }
     }
 
-    const needsReview = employerId !== SYSTEM_EMPLOYER_ID;
+    // Paid/trial plans go live immediately; free Starter stays in moderation.
+    const paidPlan =
+      employerRow?.plan === "growth" || employerRow?.plan === "scale";
+    const needsReview = employerId !== SYSTEM_EMPLOYER_ID && !paidPlan;
     const jobStatus = needsReview ? "pending_review" : "active";
 
     const { data: job, error } = await supabase
