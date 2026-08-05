@@ -11,6 +11,7 @@ coverage
 .vercel
 .wrangler
 go-live-credentials.local.txt
+.gh-pat.local
 .secrets/
 stripe-products.local.json
 .supabase-templates.json

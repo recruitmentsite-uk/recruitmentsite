@@ -50,7 +50,7 @@ Schema: `supabase/migrations/011_super_admin.sql`. Social tokens: `META_*` / `LI
 
 Triggered by email: **Weekly ops brief** to `hello@` — or skim `/admin`.
 
-1. Skim brief + daily ops emails + [Actions](https://github.com/rbeemehmood-arch/recruitmentsite/actions/workflows/automation.yml) (~10 min)
+1. Skim brief + daily ops emails + [Actions](https://github.com/recruitmentsite-uk/recruitmentsite/actions/workflows/automation.yml) (~10 min)
 2. **CS:** reply to any ACTION items listed in daily ops; log in `/admin/tickets` (~15–20 min)
 3. Admin: fraud / spam jobs (~10 min)
 4. Stripe: refunds or verification docs if waiting (~10 min)

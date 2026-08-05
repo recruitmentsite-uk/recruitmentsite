@@ -8,7 +8,7 @@ import { EMAIL_FROM, buildBrandedEmailHtml } from "@placeuk/shared";
 
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL || "https://recruitmentsite.co.uk").replace(/\/$/, "");
 const ACTIONS =
-  "https://github.com/rbeemehmood-arch/recruitmentsite/actions/workflows/automation.yml";
+  "https://github.com/recruitmentsite-uk/recruitmentsite/actions/workflows/automation.yml";
 
 async function count(supabase, table, filters = (q) => q) {
   if (!supabase) return null;
