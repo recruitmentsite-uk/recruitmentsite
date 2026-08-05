@@ -270,6 +270,9 @@ jobs:
           # Extra scrape pass before send (main growth scrape runs at 05:00 expand)
           SCRAPE_LIMIT=100 SCRAPE_CONCURRENCY=10 pnpm prospects:scrape || true
           pnpm campaign:employers
+          # NHS trusts + UK councils HR (continues next day when Resend quota resets)
+          pnpm prospects:nhs-council || true
+          OUTREACH_LIMIT=75 pnpm campaign:nhs-council || true
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

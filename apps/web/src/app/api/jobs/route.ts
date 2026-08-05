@@ -49,6 +49,7 @@ export async function POST(request: Request) {
       );
     }
 
+    let paidPlan = false;
     if (ctx) {
       const { count: activeCount } = await supabase
         .from("jobs")
@@ -62,8 +63,11 @@ export async function POST(request: Request) {
         .eq("id", employerId)
         .single();
 
+      paidPlan =
+        employerRow?.plan === "growth" || employerRow?.plan === "scale";
+
       const limit = employerRow?.active_job_limit ?? 3;
-      if (employerRow?.plan !== "growth" && employerRow?.plan !== "scale" && (activeCount ?? 0) >= limit) {
+      if (!paidPlan && (activeCount ?? 0) >= limit) {
         return NextResponse.json(
           { error: `Active job limit reached (${limit}). Upgrade your plan.` },
           { status: 400 },
@@ -72,8 +76,6 @@ export async function POST(request: Request) {
     }
 
     // Paid/trial plans go live immediately; free Starter stays in moderation.
-    const paidPlan =
-      employerRow?.plan === "growth" || employerRow?.plan === "scale";
     const needsReview = employerId !== SYSTEM_EMPLOYER_ID && !paidPlan;
     const jobStatus = needsReview ? "pending_review" : "active";
 
