@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isUsableEnvValue, isValidHttpUrl } from "@/lib/env";
 
 const CAREERS_HOST_SUFFIX = ".recruitmentsite.co.uk";
 const APEX_HOST = "recruitmentsite.co.uk";
@@ -36,7 +37,13 @@ export async function middleware(request: NextRequest) {
 
   let supabaseResponse = NextResponse.next({ request });
 
-  if (!supabaseUrl || !supabaseKey) {
+  // Match client/server helpers: reject masked/malformed URLs so middleware
+  // never throws MIDDLEWARE_INVOCATION_FAILED on auth routes.
+  if (
+    !isUsableEnvValue(supabaseUrl) ||
+    !isValidHttpUrl(supabaseUrl) ||
+    !isUsableEnvValue(supabaseKey)
+  ) {
     return supabaseResponse;
   }
 
@@ -48,39 +55,43 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
+  try {
+    const supabase = createServerClient(supabaseUrl, supabaseKey, {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          supabaseResponse = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          );
+        },
       },
-      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        supabaseResponse = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options),
-        );
-      },
-    },
-  });
+    });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  if (isAdmin && !user) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+    if (isAdmin && !user) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
 
-  if (isProtected && !user) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+    if (isProtected && !user) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
 
-  if (isAuthPage && user) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    if (isAuthPage && user) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+  } catch {
+    return supabaseResponse;
   }
 
   return supabaseResponse;

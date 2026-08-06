@@ -53,8 +53,10 @@ jobs:
               "NEXT_PUBLIC_SUPABASE_URL",
               "NEXT_PUBLIC_SUPABASE_ANON_KEY",
               "SUPABASE_SERVICE_ROLE_KEY",
+              "NEXT_PUBLIC_SITE_URL",
+              "SUPABASE_URL",
           ]
-          values = {k: os.environ[k] for k in keys}
+          values = {k: os.environ[k] for k in keys if os.environ.get(k)}
           kept = []
           for line in lines:
               if not line or line.lstrip().startswith("#") or "=" not in line:
@@ -63,17 +65,62 @@ jobs:
               k = line.split("=", 1)[0]
               if k in values:
                   continue
+              # Drop masked placeholders that would break middleware/auth.
+              v = line.split("=", 1)[1]
+              if "[SENSITIVE]" in v or "REDACTED" in v:
+                  continue
               kept.append(line)
           for k, v in values.items():
               kept.append(f"{k}={v}")
           path.parent.mkdir(parents=True, exist_ok=True)
           path.write_text("\n".join(kept) + "\n")
-          print("Injected", ", ".join(keys))
+          print("Injected", ", ".join(values.keys()))
           PY
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+
+      - name: Sync Supabase env to Vercel Production project
+        # Runtime middleware/server reads project env; keep it unmasked.
+        continue-on-error: true
+        run: |
+          python3 - <<'PY'
+          import os, subprocess, tempfile
+          token = os.environ["VERCEL_TOKEN"]
+          pairs = {
+              "NEXT_PUBLIC_SUPABASE_URL": os.environ["NEXT_PUBLIC_SUPABASE_URL"],
+              "NEXT_PUBLIC_SUPABASE_ANON_KEY": os.environ["NEXT_PUBLIC_SUPABASE_ANON_KEY"],
+              "SUPABASE_SERVICE_ROLE_KEY": os.environ["SUPABASE_SERVICE_ROLE_KEY"],
+              "SUPABASE_URL": os.environ.get("SUPABASE_URL") or os.environ["NEXT_PUBLIC_SUPABASE_URL"],
+              "NEXT_PUBLIC_SITE_URL": os.environ.get("NEXT_PUBLIC_SITE_URL") or "https://recruitmentsite.co.uk",
+          }
+          for name, value in pairs.items():
+              subprocess.run(
+                  ["vercel", "env", "rm", name, "production", "-y", f"--token={token}"],
+                  check=False,
+              )
+              with tempfile.NamedTemporaryFile("w", delete=False) as f:
+                  f.write(value)
+                  path = f.name
+              r = subprocess.run(
+                  f'vercel env add {name} production --token={token} < "{path}"',
+                  shell=True,
+                  check=False,
+              )
+              print(("OK" if r.returncode == 0 else "FAIL"), name)
+          PY
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SITE_URL: https://recruitmentsite.co.uk
 
       - name: Build for Vercel
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
